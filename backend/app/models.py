@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, AbstractUser
-from app.value_objects import DISCIPLINE_CHOICES, AGE_RESTRICTIONS, TARGET_CHOICES
+from app.value_objects import DISCIPLINE_CHOICES, AGE_RESTRICTIONS, TARGET_CHOICES, COMPETITION_STATUSES, SHARE_STATUSES
 
 class User(AbstractUser):
     phone_number = models.CharField(max_length=9)
@@ -31,6 +31,8 @@ class Competition(models.Model):
     house_number = models.CharField(max_length=9)
     age_restriction = models.CharField(max_length=20, choices=AGE_RESTRICTIONS, null=False)
     target = models.CharField(max_length=20, choices=TARGET_CHOICES, null=False)
+    status = models.CharField(max_length=20, choices=COMPETITION_STATUSES, null=False, default="created")
+    share_status = models.CharField(max_length=20, choices=SHARE_STATUSES, null=False, default="not_shared")
     organization = models.ForeignKey(User, on_delete=models.SET_NULL, limit_choices_to={"is_organization": True}, null=True)
 
 class Round(models.Model):

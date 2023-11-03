@@ -12,6 +12,17 @@ TARGET_CHOICES = [
 AGE_RESTRICTIONS = [
     ("youth", "Młodzicy"),
     ("younger juniors", "Młodsi juniorzy"),
-    ("junior", "Juniorzy"),
+    ("juniors", "Juniorzy"),
     ("seniors", "Seniorzy")
+]
+
+COMPETITION_STATUSES = [
+    ("created", "Utworzone"),
+    ("started", "Wystartowane"),
+    ("ended", "Zakończone")
+]
+
+SHARE_STATUSES = [
+    ("shared", "Udostępniony"),
+    ("not_shared", "Nie udostępniony")
 ]
