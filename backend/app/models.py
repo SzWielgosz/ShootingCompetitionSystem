@@ -25,6 +25,7 @@ class Organization(models.Model):
 class Competition(models.Model):
     discipline = models.CharField(max_length=20, choices=DISCIPLINE_CHOICES)
     description = models.CharField(max_length=255)
+    rounds_count = models.PositiveSmallIntegerField(null=False, default=3)
     date_time = models.DateTimeField(null=False)
     city = models.CharField(max_length=90, null=False)
     street = models.CharField(max_length=90, null=False)
@@ -33,7 +34,10 @@ class Competition(models.Model):
     target = models.CharField(max_length=20, choices=TARGET_CHOICES, null=False)
     status = models.CharField(max_length=20, choices=COMPETITION_STATUSES, null=False, default="created")
     share_status = models.CharField(max_length=20, choices=SHARE_STATUSES, null=False, default="not_shared")
+    participants_count = models.PositiveSmallIntegerField(null=False, default=5)
     organization = models.ForeignKey(User, on_delete=models.SET_NULL, limit_choices_to={"is_organization": True}, null=True)
+    participants = models.ForeignKey(User, on_delete=models.SET_NULL, limit_choices_to={"is_participant": True}, related_name="participants_in_competition", null=True)
+
 
 class Round(models.Model):
     number = models.PositiveSmallIntegerField(null=False)
