@@ -1,19 +1,14 @@
 import graphene
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from graphql_jwt.shortcuts import get_token, create_refresh_token
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
-from app.schema.user import UserType
-from app.schema.participant import ParticipantType
 from app.models import Participant
 
 
 class RegisterParticipant(graphene.Mutation):
-    user = graphene.Field(UserType)
-    participant = graphene.Field(ParticipantType)
-    token = graphene.String()
-    refresh_token = graphene.String()
+    success = graphene.Boolean()
+    message = graphene.String()
 
     class Arguments:
         username = graphene.String(required=True)
@@ -43,10 +38,8 @@ class RegisterParticipant(graphene.Mutation):
 
         participant = Participant(user=new_user, date_of_birth=date_of_birth, city=city)
         participant.save()
-        token = get_token(new_user)
-        refresh_token = create_refresh_token(new_user)
 
-        return RegisterParticipant(user=new_user, participant=participant, token=token, refresh_token=refresh_token)
+        return RegisterParticipant(success=True, message="Participant registered successfully")
     
 
 class ParticipantMutation(graphene.ObjectType):

@@ -1,6 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
-from app.models import *
+from app.models import Competition, ParticipantCompetition
+from app.schema.participant_competition import ParticipantCompetitionNode
 from graphene import relay
 
 
@@ -16,9 +17,9 @@ class CompetitionConnection(graphene.Connection):
 
 
 class CompetitionQuery(graphene.ObjectType):
-    competitions = relay.ConnectionField(CompetitionConnection, first=graphene.Int(), last=graphene.Int())
+    competitions = relay.ConnectionField(CompetitionConnection)
 
-    def resolve_competitions(self, info, first=None, last=None, **kwargs):
+    def resolve_competitions(self, info, **kwargs):
         queryset = Competition.objects.all()
 
         return queryset

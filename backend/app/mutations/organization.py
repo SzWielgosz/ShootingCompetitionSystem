@@ -1,13 +1,14 @@
 import graphene
 from django.contrib.auth import get_user_model
-from graphql_jwt.shortcuts import get_token, create_refresh_token
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
 from app.models import Organization
+from django.db import transaction
+
 
 class RegisterOrganization(graphene.Mutation):
-    token = graphene.String()
-    refresh_token = graphene.String()
+    success = graphene.Boolean()
+    message = graphene.String()
 
     class Arguments:
         username = graphene.String(required=True)
@@ -20,6 +21,7 @@ class RegisterOrganization(graphene.Mutation):
         post_code = graphene.String(required=True)
         phone_number = graphene.String(required=True)
 
+    @transaction.atomic
     def mutate(self, info, username, email, password, name, street, house_number, city, post_code, phone_number):
         existing_user = get_user_model().objects.filter(email=email).first()
 
@@ -36,10 +38,8 @@ class RegisterOrganization(graphene.Mutation):
 
         organization = Organization(user=new_user, name=name, street=street, city=city, post_code=post_code, house_number=house_number)
         organization.save()
-        token = get_token(new_user)
-        refresh_token = create_refresh_token(new_user)
 
-        return RegisterOrganization(token=token, refresh_token=refresh_token)
+        return RegisterOrganization(success=True, message="Organization registered successfully")
     
 
 class OrganizationMutation(graphene.ObjectType):

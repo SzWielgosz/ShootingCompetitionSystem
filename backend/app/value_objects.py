@@ -16,6 +16,13 @@ AGE_RESTRICTIONS = [
     ("seniors", "Seniorzy")
 ]
 
+AGE_NUMBERS = [
+    ("youth", 14),
+    ("younger juniors", 15),
+    ("juniors", 17),
+    ("seniors", 20)
+]
+
 COMPETITION_STATUSES = [
     ("created", "Utworzone"),
     ("started", "Wystartowane"),

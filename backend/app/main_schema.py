@@ -4,16 +4,21 @@ from app.models import *
 from app.schema.competition import CompetitionQuery
 from app.schema.organization import OrganizationQuery
 from app.schema.participant import ParticipantQuery
+from app.schema.participant_competition import ParticipantCompetitionQuery
 from app.schema.user import UserQuery
 from app.mutations.competition import CompetitionMutation
 from app.mutations.organization import OrganizationMutation
 from app.mutations.participant import ParticipantMutation
+from app.mutations.participant_competition import ParticipantCompetitionMutation
+from app.mutations.referee import RefereeMutation
 from app.mutations.user import UserMutation
+
 
 class Query(CompetitionQuery,
             OrganizationQuery,
             ParticipantQuery,
             UserQuery,
+            ParticipantCompetitionQuery,
             graphene.ObjectType):
     pass
 
@@ -21,6 +26,8 @@ class Mutation(CompetitionMutation,
                OrganizationMutation,
                ParticipantMutation,
                UserMutation,
+               RefereeMutation,
+               ParticipantCompetitionMutation,
                graphene.ObjectType):
     
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()

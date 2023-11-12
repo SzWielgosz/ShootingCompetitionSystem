@@ -15,7 +15,7 @@ from datetime import timedelta
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-ALLOWED_HOSTS = ["localhost"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 # Application definition
 
@@ -102,9 +102,8 @@ AUTHENTICATION_BACKENDS = [
 
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
-    "JWT_EXPIRATION_DELTA": timedelta(seconds=5),
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=15),
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
-    "JWT_REFRESH_TOKEN_COOKIE_NAME": "refresh", 
     "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
 }
 
