@@ -12,6 +12,8 @@ from app.mutations.participant import ParticipantMutation
 from app.mutations.participant_competition import ParticipantCompetitionMutation
 from app.mutations.referee import RefereeMutation
 from app.mutations.user import UserMutation
+from app.mutations.round import RoundMutation
+from app.mutations.attempt import AttemptMutation
 
 
 class Query(CompetitionQuery,
@@ -28,6 +30,8 @@ class Mutation(CompetitionMutation,
                UserMutation,
                RefereeMutation,
                ParticipantCompetitionMutation,
+               RoundMutation,
+               AttemptMutation,
                graphene.ObjectType):
     
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()

@@ -29,23 +29,23 @@ class Organization(models.Model):
 class Competition(models.Model):
     discipline = models.CharField(max_length=20, choices=DISCIPLINE_CHOICES)
     description = models.CharField(max_length=255)
-    rounds_count = models.PositiveSmallIntegerField(null=False, default=3)
     date_time = models.DateTimeField(null=False)
     city = models.CharField(max_length=90, null=False)
     street = models.CharField(max_length=90, null=False)
     house_number = models.CharField(max_length=9)
     age_restriction = models.CharField(max_length=20, choices=AGE_RESTRICTIONS, null=False)
     target = models.CharField(max_length=20, choices=TARGET_CHOICES, null=False)
+    rounds_count = models.PositiveSmallIntegerField(null=False, default=3)
+    attempts_count = models.PositiveSmallIntegerField(null=False, default=5)
+    participants_count = models.PositiveSmallIntegerField(null=False, default=5)
     status = models.CharField(max_length=20, choices=COMPETITION_STATUSES, null=False, default="created")
     share_status = models.CharField(max_length=20, choices=SHARE_STATUSES, null=False, default="not_shared")
-    participants_count = models.PositiveSmallIntegerField(null=False, default=5)
     organization_user = models.ForeignKey(User, on_delete=models.SET_NULL, limit_choices_to={"is_organization": True}, null=True)
 
 
 class Round(models.Model):
     number = models.PositiveSmallIntegerField(null=False)
     competition = models.ForeignKey(Competition, on_delete=models.SET_NULL, null=True)
-    participant_user = models.ForeignKey(User, on_delete=models.SET_NULL, limit_choices_to={"is_participant": True}, null=True, related_name="participation_in_rounds")
     referee_user = models.ForeignKey(User, on_delete=models.SET_NULL, limit_choices_to={"is_referee": True}, null=True, related_name="referee_in_rounds")
 
 

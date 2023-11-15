@@ -22,5 +22,5 @@ class OrganizationQuery(graphene.ObjectType):
     def resolve_organization_competitions(self, info, **kwargs):
         user = info.context.user
         if user.is_organization:
-            return Competition.objects.filter(organization=user)
+            return Competition.objects.filter(organization_user=user)
         return None

@@ -4,7 +4,6 @@ from app.models import *
 from django.db import transaction
 from datetime import datetime
 from enum import Enum
-from graphql_jwt.decorators import login_required 
 from app.schema.competition import CompetitionNode
 from app.schema.user import UserNode
 from graphql_relay import from_global_id
@@ -43,11 +42,13 @@ class CreateCompetition(graphene.Mutation):
         target = graphene.String(required=True)
         participants_count = graphene.Int(required=True)
         rounds_count = graphene.Int(required=True)
+        attempts_count = graphene.Int(required=True)
 
     @login_required
     @transaction.atomic 
     def mutate(self, info, discipline, description, date_time, city, street,
-               house_number, age_restriction, target, participants_count, rounds_count):
+               house_number, age_restriction, target, participants_count, rounds_count,
+               attempts_count):
         
         user = info.context.user
 
@@ -79,15 +80,20 @@ class CreateCompetition(graphene.Mutation):
             street=street,
             house_number=house_number,
             age_restriction=age_restriction,
+            attempts_count=attempts_count,
             target=target,
             status="created",
             share_status="not_shared",
             organization_user=user,
             participants_count=participants_count,
-            rounds_count=rounds_count
+            rounds_count=rounds_count,
         )
 
         competition.save()
+
+        for number in range(rounds_count):
+            round = Round(number=number, competition=competition)
+            round.save()
 
         return CreateCompetition(competition=competition, user=user)
     
@@ -158,10 +164,14 @@ class DeleteCompetition(graphene.Mutation):
         if not user.is_organization:
             raise Exception("User is not an organization")
         
-        competition = Competition.objects.filter(id=competition_id).first()
+        decoded_id = from_global_id(competition_id)[1]
+        competition = Competition.objects.filter(id=decoded_id).first()
 
         if not competition:
             raise Exception("Competition not found")
+        
+        if competition.organization_user != user:
+            raise Exception("User is not assigned to competition")
         
         competition.delete()
 
@@ -189,7 +199,14 @@ class ShareStatusCompetition(graphene.Mutation):
         if competition.organization_user != user:
             raise Exception("User does not have permission to share this competition.")
         
+        rounds = Round.objects.filter(competition=competition)
+        for round in rounds:
+            if round.referee_user is None:
+                raise Exception("Assign referees to all rounds before sharing.")
+        
         competition.share_status = share_status
+
+        competition.save()
 
         return ShareStatusCompetition(success=True)
     
@@ -212,12 +229,17 @@ class StartCompetition(graphene.Mutation):
         if not competition:
             raise Exception("Competition not found.")
         
+        if competition.share_status != "shared":
+            raise Exception("Share competition before starting.")
+        
         if competition.organization_user != user:
-            raise Exception("User does not have permission to share this competition.")
+            raise Exception("User does not have permission to start this competition.")
         
         competition.status = "started"
 
-        return ShareStatusCompetition(competition=competition)
+        competition.save()
+
+        return StartCompetition(competition=competition)
 
 class CompetitionMutation(graphene.ObjectType):
     create_competition = CreateCompetition.Field()
