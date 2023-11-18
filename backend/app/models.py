@@ -55,7 +55,6 @@ class Attempt(models.Model):
     round = models.ForeignKey(Round, on_delete=models.SET_NULL, null=True)
     participant_user = models.ForeignKey(User, on_delete=models.SET_NULL, limit_choices_to={"is_participant": True}, null=True)
 
-
 class ParticipantCompetition(models.Model):
     participant_user = models.ForeignKey(User, on_delete=models.SET_NULL, limit_choices_to={"is_participant": True}, null=True)
     competition = models.ForeignKey(Competition, on_delete=models.SET_NULL, null=True)

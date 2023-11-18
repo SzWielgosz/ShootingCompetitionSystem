@@ -15,7 +15,12 @@ from datetime import timedelta
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://192.168.56.1:3000",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 
@@ -32,6 +37,7 @@ INSTALLED_APPS = [
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
     'graphql_auth',
     'django_filters',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -42,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -105,6 +112,9 @@ GRAPHQL_JWT = {
     "JWT_EXPIRATION_DELTA": timedelta(minutes=15),
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
     "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
+    "JWT_COOKIE_SECURE": False,
+    "JWT_ALLOW_ARGUMENT": True,
+    "JWT_COOKIE_SAMESITE": "Lax",
 }
 
 # Internationalization
