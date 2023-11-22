@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const GET_COMPETITIONS = gql`
+export const GET_SHARED_COMPETITIONS = gql`
   query {
-    competitions {
+    sharedCompetitions {
       edges {
         node {
           id
