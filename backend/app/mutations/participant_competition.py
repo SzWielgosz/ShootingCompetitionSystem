@@ -1,8 +1,6 @@
 import graphene
 from django.db import transaction
-from app.models import Competition, ParticipantCompetition, Participant
-from app.schema.participant import ParticipantNode
-from app.schema.competition import CompetitionNode
+from app.models import Competition, ParticipantCompetition, Participant, User
 from app.schema.participant_competition import ParticipantCompetitionNode
 from graphql_relay import from_global_id
 from graphql_jwt.decorators import login_required
@@ -77,6 +75,38 @@ class LeaveCompetition(graphene.Mutation):
         ParticipantCompetition.objects.delete(pk=participant_competition.id)
 
         return LeaveCompetition(participant=user, competition=competition)
+    
+
+
+class DisqualifyParticipant(graphene.Mutation):
+    success = graphene.Boolean()
+
+    class Arguments:
+        participant_user_id = graphene.ID()
+
+    @login_required
+    def mutate(self, info, participant_user_id):
+        user = info.context.user
+
+        if not user.is_referee:
+            raise Exception("User is not a referee")
+        
+        decoded_id = from_global_id(participant_user_id)[1]
+        participant_user = User.objects.filter(pk=decoded_id).first()
+
+        if participant_user is None:
+            raise Exception("Participant not found")
+        
+        participant_competition = ParticipantCompetition.objects.filter(participant_user=participant_user).first()
+
+        if participant_competition is None:
+            raise Exception("Participant is not assigned to the competition")
+    
+        participant_competition.delete()
+
+        return DisqualifyParticipant(success=True)
+
+
     
 
 class ParticipantCompetitionMutation(graphene.ObjectType):

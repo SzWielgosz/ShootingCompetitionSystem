@@ -60,7 +60,6 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-scripts
 
 # Flask stuff:
 instance/
@@ -155,6 +154,10 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# custom folders
+scripts
+profile_pictures
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

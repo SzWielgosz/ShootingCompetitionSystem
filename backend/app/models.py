@@ -1,9 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User, AbstractUser
+from django.contrib.auth.models import User, AbstractUser, AbstractBaseUser
 from app.value_objects import DISCIPLINE_CHOICES, AGE_RESTRICTIONS, TARGET_CHOICES, COMPETITION_STATUSES, SHARE_STATUSES
 
 
 class User(AbstractUser):
+    profile_picture = models.ImageField(upload_to="profile_pictures/", null=True)
     phone_number = models.CharField(max_length=9)
     is_participant = models.BooleanField("participant status", default=False)
     is_organization = models.BooleanField("organization status", default=False)
