@@ -27,6 +27,8 @@ class RegisterParticipant(graphene.Mutation):
 
     @transaction.atomic
     def mutate(self, info, username, email, password, first_name, last_name, city, date_of_birth, phone_number):
+        if not all([username, email, password, first_name, last_name, city, date_of_birth, phone_number]):
+            raise Exception("All fields must be filled")
         existing_user = get_user_model().objects.filter(email=email).first()
 
         if existing_user:
@@ -77,17 +79,12 @@ class UpdateParticipantProfile(graphene.Mutation):
         if participant is None:
             raise Exception("Participant not found")
 
-
-        x = 5 # zmienna typu int
-        x = "Hello World" # zmienna typu String
-        
-
         if "profile_picture" in kwargs:
             picture = kwargs["profile_picture"]
             max_size = 2 * 1024 * 1024
 
             if picture.size > max_size:
-                raise Exception('Rozmiar pliku nie może przekraczać 2 MB.')
+                raise Exception("Rozmiar pliku nie może przekraczać 2 MB.")
             user.profile_picture = picture
 
         if "first_name" in kwargs:

@@ -13,8 +13,10 @@ export default function CalendarData() {
       {data && data.sharedCompetitions ? (
         data.sharedCompetitions.edges.map((item) => (
           <div key={item.node.id}>
+            <p>Name: {item.node.name}</p>
             <p>Discipline: {item.node.discipline}</p>
             <p>DateTime: {item.node.dateTime}</p>
+            <p>Status: {item.node.status}</p>
           </div>
         ))
       ) : (

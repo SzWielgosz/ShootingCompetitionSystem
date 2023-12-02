@@ -23,10 +23,13 @@ class RegisterOrganization(graphene.Mutation):
 
     @transaction.atomic
     def mutate(self, info, username, email, password, name, street, house_number, city, post_code, phone_number):
+        if not all([username, email, password, name, street, house_number, city, post_code, phone_number]):
+            raise Exception("All fields must be filled")
+
         existing_user = get_user_model().objects.filter(email=email).first()
 
         if existing_user:
-            raise Exception("User with this email already exists.")
+            raise Exception("User with this email already exists")
         
         validate_email(email)
         validate_password(password)

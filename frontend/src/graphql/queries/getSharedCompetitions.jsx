@@ -6,6 +6,7 @@ export const GET_SHARED_COMPETITIONS = gql`
       edges {
         node {
           id
+          name
           discipline
           dateTime
           description
