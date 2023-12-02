@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { REGISTER_ORGANIZATION } from "../graphql/mutations/RegisterOrganization";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function RegisterParticipantForm() {
+export default function RegisterParticipant() {
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -14,24 +16,24 @@ export default function RegisterParticipantForm() {
   const [postCode, setPostCode] = useState("");
   const [registerOrganization, { error }] = useMutation(REGISTER_ORGANIZATION);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    registerOrganization({
-      variables: {
-        username,
-        name,
-        email,
-        password,
-        phoneNumber,
-        city,
-        street,
-        houseNumber,
-        postCode,
-      },
-    });
-
-    if (error) {
-      console.log(error);
+    try {
+      await registerOrganization({
+        variables: {
+          username,
+          name,
+          email,
+          password,
+          phoneNumber,
+          city,
+          street,
+          houseNumber,
+          postCode,
+        },
+      });
+    } catch (error) {
+      toast(error.message);
     }
   };
 
@@ -45,6 +47,7 @@ export default function RegisterParticipantForm() {
         value={username}
         onChange={(e) => setUsername(e.target.value)}
       />
+      <br />
 
       <label htmlFor="name">Nazwa firmy:</label>
       <input
@@ -54,6 +57,7 @@ export default function RegisterParticipantForm() {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
+      <br />
 
       <label htmlFor="email">Email:</label>
       <input
@@ -63,6 +67,7 @@ export default function RegisterParticipantForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
+      <br />
 
       <label htmlFor="password">Hasło:</label>
       <input
@@ -72,6 +77,7 @@ export default function RegisterParticipantForm() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
+      <br />
 
       <label htmlFor="phoneNumber">Numer telefonu:</label>
       <input
@@ -81,6 +87,7 @@ export default function RegisterParticipantForm() {
         value={phoneNumber}
         onChange={(e) => setPhoneNumber(e.target.value)}
       />
+      <br />
 
       <label htmlFor="city">Numer telefonu:</label>
       <input
@@ -90,6 +97,7 @@ export default function RegisterParticipantForm() {
         value={city}
         onChange={(e) => setCity(e.target.value)}
       />
+      <br />
 
       <label htmlFor="street">Ulica:</label>
       <input
@@ -99,6 +107,7 @@ export default function RegisterParticipantForm() {
         value={street}
         onChange={(e) => setStreet(e.target.value)}
       />
+      <br />
 
       <label htmlFor="houseNumber">Numer domu:</label>
       <input
@@ -108,6 +117,7 @@ export default function RegisterParticipantForm() {
         value={houseNumber}
         onChange={(e) => setHouseNumber(e.target.value)}
       />
+      <br />
 
       <label htmlFor="postCode">Kod pocztowy:</label>
       <input
@@ -117,8 +127,10 @@ export default function RegisterParticipantForm() {
         value={postCode}
         onChange={(e) => setPostCode(e.target.value)}
       />
+      <br />
 
       <button type="submit">Zarejestruj się</button>
+      <ToastContainer />
     </form>
   );
 }

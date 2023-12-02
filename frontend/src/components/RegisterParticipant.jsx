@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { REGISTER_PARTICIPANT } from "../graphql/mutations/RegisterParticipant";
 import { useMutation } from "@apollo/client";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function RegisterParticipantForm() {
+export default function RegisterParticipant() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -10,26 +12,31 @@ export default function RegisterParticipantForm() {
   const [lastName, setLastName] = useState("");
   const [city, setCity] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
+
+  var curr = new Date();
+  curr.setDate(curr.getDate());
+  var date = curr.toISOString().substring(0, 10);
+
+  const [dateOfBirth, setDateOfBirth] = useState(date);
   const [registerParticipant, { error }] = useMutation(REGISTER_PARTICIPANT);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    registerParticipant({
-      variables: {
-        username,
-        email,
-        password,
-        firstName,
-        lastName,
-        city,
-        phoneNumber,
-        dateOfBirth,
-      },
-    });
-
-    if (error) {
-      console.log(error);
+    try {
+      await registerParticipant({
+        variables: {
+          username,
+          email,
+          password,
+          firstName,
+          lastName,
+          city,
+          phoneNumber,
+          dateOfBirth,
+        },
+      });
+    } catch (error) {
+      toast(error.message);
     }
   };
 
@@ -44,6 +51,7 @@ export default function RegisterParticipantForm() {
         id="username"
         name="username"
       />
+      <br />
       <label htmlFor="email">Email:</label>
       <input
         value={email}
@@ -53,6 +61,7 @@ export default function RegisterParticipantForm() {
         id="email"
         name="email"
       />
+      <br />
       <label htmlFor="password">Hasło:</label>
       <input
         value={password}
@@ -62,6 +71,7 @@ export default function RegisterParticipantForm() {
         id="password"
         name="password"
       />
+      <br />
       <label htmlFor="firstName">Imie:</label>
       <input
         value={firstName}
@@ -71,6 +81,7 @@ export default function RegisterParticipantForm() {
         id="firstName"
         name="firstName"
       />
+      <br />
       <label htmlFor="lastName">Nazwisko:</label>
       <input
         value={lastName}
@@ -80,6 +91,7 @@ export default function RegisterParticipantForm() {
         id="lastName"
         name="lastName"
       />
+      <br />
       <label htmlFor="city">Miasto:</label>
       <input
         value={city}
@@ -89,6 +101,7 @@ export default function RegisterParticipantForm() {
         id="city"
         name="city"
       />
+      <br />
       <label htmlFor="phoneNumber">Numer telefonu:</label>
       <input
         value={phoneNumber}
@@ -98,16 +111,19 @@ export default function RegisterParticipantForm() {
         id="phoneNumber"
         name="phoneNumber"
       />
+      <br />
       <label htmlFor="dateOfBirth">Data urodzenia:</label>
       <input
-        value={dateOfBirth}
+        defaultValue={date}
         onChange={(e) => setDateOfBirth(e.target.value)}
         type="date"
         placeholder="Data urodzenia"
         id="dateOfBirth"
         name="dateOfBirth"
       />
+      <br />
       <button type="submit">Zarejestruj się</button>
+      <ToastContainer />
     </form>
   );
 }

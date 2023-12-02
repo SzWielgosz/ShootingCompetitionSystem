@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import RegisterParticipantForm from "../components/RegisterParticipantForm";
-import RegisterOrganizationForm from "../components/RegisterOrganizationForm";
+import RegisterParticipant from "../components/RegisterParticipant";
+import RegisterOrganization from "../components/RegisterOrganization";
 
 export default function Register() {
   const [registrationType, setRegistrationType] = useState("participant");
@@ -34,9 +34,9 @@ export default function Register() {
       {showForm && (
         <div>
           {registrationType === "participant" ? (
-            <RegisterParticipantForm />
+            <RegisterParticipant />
           ) : (
-            <RegisterOrganizationForm />
+            <RegisterOrganization />
           )}
 
           {showBackButton && <button onClick={handleGoBack}>Wróć</button>}
