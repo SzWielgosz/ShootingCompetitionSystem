@@ -4,11 +4,11 @@ export const GET_LOGGED_USER = gql`
   query {
     loggedUser {
       id
-      email
       username
-      isReferee
-      isOrganization
-      isParticipant
+      firstName
+      lastName
+      phoneNumber
+      profilePicture
     }
   }
 `;

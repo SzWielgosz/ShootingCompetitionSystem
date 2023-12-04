@@ -1,6 +1,7 @@
 import { Link, useMatch, useResolvedPath } from "react-router-dom";
 import "../styles/Navbar.css";
 import { useAuth } from "../hooks/useAuth";
+import Logout from "./Logout";
 
 export default function Navbar() {
   const { auth } = useAuth();
@@ -11,18 +12,21 @@ export default function Navbar() {
         Zawody strzeleckie XYZ
       </CustomLink>
       <ul>
+        <CustomLink to="/calendar">Kalendarz</CustomLink>
+        <CustomLink to="/about">O nas</CustomLink>
+        <CustomLink to="/contact">Kontakt</CustomLink>
+        <CustomLink to="/faq">FAQ</CustomLink>
         {!auth ? (
           <>
             <CustomLink to="/login">Zaloguj się</CustomLink>
             <CustomLink to="/register">Zarejestruj się</CustomLink>
           </>
         ) : (
-          <LogoutButton />
+          <>
+            <CustomLink to="/my_profile">Moj Profil</CustomLink>
+            <Logout />
+          </>
         )}
-        <CustomLink to="/calendar">Kalendarz</CustomLink>
-        <CustomLink to="/about">O nas</CustomLink>
-        <CustomLink to="/contact">Kontakt</CustomLink>
-        <CustomLink to="/faq">FAQ</CustomLink>
       </ul>
     </nav>
   );
@@ -37,21 +41,6 @@ function CustomLink({ to, children, ...props }) {
       <Link to={to} {...props}>
         {children}
       </Link>
-    </li>
-  );
-}
-
-function LogoutButton() {
-  const { setAuth } = useAuth();
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setAuth(null);
-  };
-
-  return (
-    <li>
-      <button onClick={handleLogout}>Wyloguj się</button>
     </li>
   );
 }

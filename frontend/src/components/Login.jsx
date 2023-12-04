@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 export default function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginUser, { error }] = useMutation(LOGIN_MUTATION);
   const { setAuth, auth } = useAuth();
@@ -26,13 +26,13 @@ export default function Login() {
     try {
       const response = await loginUser({
         variables: {
-          username,
+          email,
           password,
         },
       });
 
       const token = response.data.tokenAuth.token;
-      const user = jwtDecode(token).username;
+      const user = jwtDecode(token).email;
 
       localStorage.setItem("token", token);
 
@@ -45,14 +45,14 @@ export default function Login() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor="username">Nazwa użytkownika:</label>
+      <label htmlFor="username">Email:</label>
       <input
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        type="text"
-        placeholder="Nazwa użytkownika"
-        id="username"
-        name="username"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        type="email"
+        placeholder="Email"
+        id="Email"
+        name="Email"
       />
       <br />
       <label htmlFor="password">Hasło:</label>
