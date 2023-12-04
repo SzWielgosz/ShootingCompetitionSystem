@@ -11,13 +11,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from datetime import timedelta
+import os
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://192.168.56.1:3000",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -109,12 +109,15 @@ AUTHENTICATION_BACKENDS = [
 
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
-    "JWT_EXPIRATION_DELTA": timedelta(minutes=15),
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=5),
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
     "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
     "JWT_COOKIE_SECURE": False,
     "JWT_ALLOW_ARGUMENT": True,
     "JWT_COOKIE_SAMESITE": "Lax",
+    "JWT_REUSE_REFRESH_TOKENS": True,
+    'JWT_REFRESH_EXPIRED_HANDLER': lambda orig_iat, context: False,
+    "JWT_AUTH_HEADER_PREFIX": "Bearer"
 }
 
 # Internationalization
@@ -145,3 +148,6 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

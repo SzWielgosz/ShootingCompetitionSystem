@@ -89,7 +89,7 @@ export default function RegisterParticipant() {
       />
       <br />
 
-      <label htmlFor="city">Numer telefonu:</label>
+      <label htmlFor="city">Miasto:</label>
       <input
         type="text"
         id="city"

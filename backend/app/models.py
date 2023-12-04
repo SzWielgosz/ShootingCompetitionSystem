@@ -1,14 +1,23 @@
 from django.db import models
-from django.contrib.auth.models import User, AbstractUser, AbstractBaseUser
+from django.contrib.auth.models import User, AbstractUser
 from app.value_objects import DISCIPLINE_CHOICES, AGE_RESTRICTIONS, TARGET_CHOICES, COMPETITION_STATUSES, SHARE_STATUSES
+from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
-    profile_picture = models.ImageField(upload_to="profile_pictures/", null=True)
+
+    def user_profile_picture_path(instance, filename):
+        return f'profile_pictures/{instance.username}/{filename}'
+
+    email = models.EmailField(_('email address'), unique=True)
+    profile_picture = models.ImageField(upload_to=user_profile_picture_path, null=True)
     phone_number = models.CharField(max_length=9)
     is_participant = models.BooleanField("participant status", default=False)
     is_organization = models.BooleanField("organization status", default=False)
     is_referee = models.BooleanField("referee status", default=False)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
 
 class Participant(models.Model):

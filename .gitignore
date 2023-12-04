@@ -158,6 +158,7 @@ cython_debug/
 # custom folders
 scripts
 profile_pictures
+media
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

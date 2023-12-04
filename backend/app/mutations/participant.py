@@ -9,6 +9,7 @@ from app.schema.user import UserNode
 from graphene_file_upload.scalars import Upload
 from graphql_jwt.decorators import login_required
 from datetime import date
+from app.utils.file_operations import delete_profile_picture
 
 
 class RegisterParticipant(graphene.Mutation):
@@ -70,6 +71,7 @@ class UpdateParticipantProfile(graphene.Mutation):
     @login_required
     def mutate(self, info, **kwargs):
         user = info.context.user
+        print("User to: ", user)
 
         if user.is_participant is not True:
             raise Exception("User is not a participant")
@@ -85,7 +87,12 @@ class UpdateParticipantProfile(graphene.Mutation):
 
             if picture.size > max_size:
                 raise Exception("Rozmiar pliku nie może przekraczać 2 MB.")
-            user.profile_picture = picture
+            
+        if user.profile_picture:
+            delete_profile_picture(user.profile_picture.path)
+        
+        user.profile_picture.delete()
+        user.profile_picture = picture
 
         if "first_name" in kwargs:
             user.first_name = kwargs["first_name"]

@@ -9,6 +9,7 @@ import FAQ from "./pages/FAQ";
 import About from "./pages/About";
 import { AuthProvider } from "./hooks/useAuth";
 import ProtectedRoute from "./utils/ProtectedRoute";
+import MyProfile from "./pages/MyProfile";
 
 const ROLES = {
   Participant: "Participant",
@@ -28,11 +29,12 @@ function App() {
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />}></Route>
             <Route
-              path="/faq"
-              element={<ProtectedRoute roles={ROLES.Organization} />}
+              path="/my_profile"
+              element={<ProtectedRoute roles={ROLES} />}
             >
-              <Route path="/faq" element={<FAQ />}></Route>
+              <Route path="/my_profile" element={<MyProfile />}></Route>
             </Route>
           </Routes>
         </div>
