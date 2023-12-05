@@ -17,7 +17,6 @@ const AuthProvider = ({ children }) => {
         token: newToken.token,
         user: {
           id: decodedToken.id,
-          username: decodedToken.username,
           role: decodedToken.role,
         },
       });

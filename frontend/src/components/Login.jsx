@@ -45,7 +45,7 @@ export default function Login() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor="username">Email:</label>
+      <label htmlFor="email">Email:</label>
       <input
         value={email}
         onChange={(e) => setEmail(e.target.value)}
