@@ -11,7 +11,7 @@ from app.schema.connection import ExtendedConnection
 class CompetitionNode(DjangoObjectType):
     class Meta:
         model = Competition
-        filter_fields = ["date_time", "target", "age_restriction"]
+        filter_fields = ["date_time", "target", "age_restriction", "discipline"]
         interfaces = (relay.Node, )
         connection_class = ExtendedConnection
 
@@ -23,7 +23,7 @@ class CompetitionConnection(graphene.Connection):
 
 class CompetitionQuery(graphene.ObjectType):
     competitions = DjangoFilterConnectionField(CompetitionNode, search=graphene.String(), winner=graphene.ID())
-    shared_competitions = relay.ConnectionField(CompetitionConnection, search=graphene.String(), competition_id=graphene.ID())
+    shared_competitions = DjangoFilterConnectionField(CompetitionNode, search=graphene.String(), competition_id=graphene.ID())
     participant_competitions = DjangoFilterConnectionField(CompetitionNode, search=graphene.String(), win=graphene.Boolean())
 
     def resolve_competitions(self, info, **kwargs):
