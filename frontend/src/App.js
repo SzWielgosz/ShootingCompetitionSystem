@@ -1,15 +1,16 @@
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/NavBar";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Contact from "./pages/Contact";
-import Calendar from "./pages/Calendar";
-import FAQ from "./pages/FAQ";
-import About from "./pages/About";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/Register";
+import ContactPage from "./pages/ContactPage";
+import CalendarPage from "./pages/CalendarPage";
+import FAQPage from "./pages/FAQPage";
+import AboutPage from "./pages/AboutPage";
 import { AuthProvider } from "./hooks/useAuth";
 import ProtectedRoute from "./utils/ProtectedRoute";
-import MyProfile from "./pages/MyProfile";
+import CompetitionDetailsPage from "./pages/CompetitionDetailsPage";
+import MyProfilePage from "./pages/MyProfilePage";
 
 const ROLES = {
   Participant: "Participant",
@@ -23,18 +24,22 @@ function App() {
         <Navbar />
         <div className="container">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/faq" element={<FAQ />}></Route>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route
+              path="/competitions/:id"
+              element={<CompetitionDetailsPage />}
+            />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/faq" element={<FAQPage />} />
             <Route
               path="/my_profile"
               element={<ProtectedRoute roles={ROLES} />}
             >
-              <Route path="/my_profile" element={<MyProfile />}></Route>
+              <Route path="/my_profile" element={<MyProfilePage />}></Route>
             </Route>
           </Routes>
         </div>

@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GET_SHARED_COMPETITIONS = gql`
-  query {
-    sharedCompetitions {
+  query sharedCompetitions($competitionId: ID) {
+    sharedCompetitions(competitionId: $competitionId) {
       edges {
         node {
           id
@@ -11,8 +11,20 @@ export const GET_SHARED_COMPETITIONS = gql`
           dateTime
           description
           ageRestriction
-          shareStatus
           status
+          participantsCount
+          participantcompetitionSet {
+            edgeCount
+            edges {
+              node {
+                participantUser {
+                  id
+                  firstName
+                  lastName
+                }
+              }
+            }
+          }
         }
       }
     }
