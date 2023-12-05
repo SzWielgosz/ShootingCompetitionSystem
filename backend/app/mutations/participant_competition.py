@@ -9,6 +9,7 @@ from app.value_objects import AGE_NUMBERS
 
 
 class JoinCompetition(graphene.Mutation):
+    success = graphene.Boolean()
     participant_competition = graphene.Field(ParticipantCompetitionNode)
 
     class Arguments:
@@ -46,7 +47,7 @@ class JoinCompetition(graphene.Mutation):
         participant_competition = ParticipantCompetition.objects.create(participant_user=user, competition=competition)
 
 
-        return JoinCompetition(participant_competition=participant_competition)
+        return JoinCompetition(participant_competition=participant_competition, success=True)
     
 
 class LeaveCompetition(graphene.Mutation):
@@ -67,14 +68,14 @@ class LeaveCompetition(graphene.Mutation):
 
         competition = Competition.objects.filter(pk=decoded_id).first()
 
-        participant_competition = ParticipantCompetition.objects.filter(participant=user, competition=competition).first()
+        participant_competition = ParticipantCompetition.objects.filter(participant_user=user, competition=competition).first()
 
         if not participant_competition:
             raise Exception("Participant didn't join to competition")
         
-        ParticipantCompetition.objects.delete(pk=participant_competition.id)
+        participant_competition.delete()
 
-        return LeaveCompetition(participant=user, competition=competition)
+        return LeaveCompetition(success=True)
     
 
 

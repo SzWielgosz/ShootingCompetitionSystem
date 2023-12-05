@@ -40,7 +40,7 @@ export default function ParticipantProfile() {
     try {
       await updateUser({
         variables: {
-          username: data.loggedUser.username,
+          username: editedUser.username,
           firstName: editedUser.firstName,
           lastName: editedUser.lastName,
           phoneNumber: editedUser.phoneNumber,

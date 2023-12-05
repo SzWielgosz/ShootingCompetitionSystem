@@ -20,6 +20,7 @@ class ParticipantCompetitionConnection(graphene.Connection):
 class ParticipantCompetitionQuery(graphene.ObjectType):
     participants_in_competition = relay.ConnectionField(ParticipantCompetitionConnection, competition_id=graphene.ID())
     participant_competitions = relay.ConnectionField(ParticipantCompetitionConnection, winner=graphene.Boolean())
+    is_participant_in_competition = graphene.Boolean(competition_id=graphene.ID())
 
     def resolve_participants_in_competition(self, info, competition_id, **kwargs):
         try:
@@ -39,6 +40,15 @@ class ParticipantCompetitionQuery(graphene.ObjectType):
             participant_competitions = participant_competitions.filter(competition__winner=user)
 
         return participant_competitions
+    
+    @login_required
+    def resolve_is_participant_in_competition(self, info, competition_id, **kwargs):
+        user = info.context.user
+        participant_competition = ParticipantCompetition.objects.filter(participant_user=user).first()
+        if participant_competition:
+            return True
+        else:
+            return False
 
 
             
