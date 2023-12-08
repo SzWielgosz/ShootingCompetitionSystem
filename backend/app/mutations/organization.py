@@ -56,9 +56,10 @@ class UpdateOrganizationProfile(graphene.Mutation):
     organization = graphene.Field(OrganizationNode)
 
     class Arguments:
+        username = graphene.String(required=False)
         phone_number = graphene.String(required=False)
         name = graphene.String(required=False)
-        website_url = graphene.Date(required=False)
+        website_url = graphene.String(required=False)
         city = graphene.String(required=False)
         post_code = graphene.String(required=False)
         street = graphene.String(required=False)
@@ -80,7 +81,7 @@ class UpdateOrganizationProfile(graphene.Mutation):
             user.name = kwargs["name"]
 
         if "website_url" in kwargs:
-            user.website_url = kwargs["website_url"]
+            organization.website_url = kwargs["website_url"]
 
         if "city" in kwargs:
             organization.city = kwargs["city"]

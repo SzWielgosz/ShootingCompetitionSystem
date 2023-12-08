@@ -19,7 +19,6 @@ class ParticipantCompetitionConnection(graphene.Connection):
 
 class ParticipantCompetitionQuery(graphene.ObjectType):
     participants_in_competition = relay.ConnectionField(ParticipantCompetitionConnection, competition_id=graphene.ID())
-    participant_competitions = relay.ConnectionField(ParticipantCompetitionConnection, winner=graphene.Boolean())
     is_participant_in_competition = graphene.Boolean(competition_id=graphene.ID())
 
     def resolve_participants_in_competition(self, info, competition_id, **kwargs):
@@ -31,15 +30,6 @@ class ParticipantCompetitionQuery(graphene.ObjectType):
         except Competition.DoesNotExist:
             raise Exception("Competition does not exist")
         
-    @login_required
-    def resolve_participant_competitions(self, info, winner=None, **kwargs):
-        user = info.context.user
-        participant_competitions = ParticipantCompetition.objects.filter(participant_user=user)
-
-        if winner:
-            participant_competitions = participant_competitions.filter(competition__winner=user)
-
-        return participant_competitions
     
     @login_required
     def resolve_is_participant_in_competition(self, info, competition_id, **kwargs):

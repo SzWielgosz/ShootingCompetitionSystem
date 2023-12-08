@@ -1,23 +1,27 @@
 import { gql } from "@apollo/client";
 
-export const GET_SHARED_COMPETITIONS = gql`
-  query sharedCompetitions(
+export const GET_ORGANIZATION_COMPETITIONS = gql`
+  query getOrganizationCompetitions(
     $search: String
     $first: Int
     $offset: Int
     $target: CompetitionTarget
     $ageRestriction: CompetitionAgeRestriction
     $discipline: CompetitionDiscipline
+    $status: String
+    $shareStatus: String
     $startDate: Date
     $endDate: Date
   ) {
-    sharedCompetitions(
+    organizationCompetitions(
       search: $search
       first: $first
       offset: $offset
       target: $target
       ageRestriction: $ageRestriction
       discipline: $discipline
+      status: $status
+      shareStatus: $shareStatus
       startDate: $startDate
       endDate: $endDate
     ) {
@@ -26,17 +30,24 @@ export const GET_SHARED_COMPETITIONS = gql`
           id
           name
           discipline
-          dateTime
           description
-          ageRestriction
-          status
-          participantsCount
+          dateTime
           city
-          participantcompetitionSet {
-            edgeCount
+          street
+          houseNumber
+          ageRestriction
+          target
+          roundsCount
+          attemptsCount
+          participantsCount
+          status
+          shareStatus
+          roundSet {
             edges {
               node {
-                participantUser {
+                id
+                number
+                refereeUser {
                   id
                   firstName
                   lastName

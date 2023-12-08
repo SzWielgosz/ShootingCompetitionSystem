@@ -1,3 +1,5 @@
+import FAQ from "../components/FAQ";
+
 export default function FAQPage() {
-  return <h1>FAQ</h1>;
+  return <FAQ />;
 }

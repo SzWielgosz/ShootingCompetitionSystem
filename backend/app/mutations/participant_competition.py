@@ -31,6 +31,10 @@ class JoinCompetition(graphene.Mutation):
         if competition is None:
             raise Exception("No competition found")
         
+        existing_participation = ParticipantCompetition.objects.filter(participant_user=user, competition=competition).first()
+        if existing_participation:
+            raise Exception("User is already participating in this competition")
+        
         today = date.today()
         age = today.year - participant.date_of_birth.year - ((today.month, today.day) < (participant.date_of_birth.month, participant.date_of_birth.day))
 
@@ -72,6 +76,12 @@ class LeaveCompetition(graphene.Mutation):
 
         if not participant_competition:
             raise Exception("Participant didn't join to competition")
+        
+        if competition.status == "started":
+            raise Exception("You cannot leave started competition")
+        
+        if competition.status == "ended":
+            raise Exception("You cannot leave ended competition")
         
         participant_competition.delete()
 

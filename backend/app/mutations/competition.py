@@ -9,24 +9,6 @@ from app.schema.user import UserNode
 from graphql_relay import from_global_id
 
 
-class AgeRestriction(Enum):
-    YOUTH = "youth"
-    YOUNGER_JUNIORS = "younger juniors"
-    JUNIORS = "juniors"
-    SENIORS = "seniors"
-
-
-class TargetRestrictions(Enum):
-    STATIC = "static"
-    MOVING = "moving"
-
-
-class DisciplineRestriction(Enum):
-    PISTOL = "pistol"
-    RIFLE = "rifle"
-    SHOTGUN = "shotgun"
-
-
 class CreateCompetition(graphene.Mutation):
     competition = graphene.Field(CompetitionNode)
     user = graphene.Field(UserNode)
@@ -59,9 +41,9 @@ class CreateCompetition(graphene.Mutation):
         if date_time < datetime.now():
             raise Exception("Past date!")
         
-        valid_age_restrictions = [age.value for age in AgeRestriction]
-        valid_target_restrictions = [target.value for target in TargetRestrictions]
-        valid_discipline_restrictions = [discipline.value for discipline in DisciplineRestriction]
+        valid_age_restrictions = ["youth", "younger_juniors", "juniors", "seniors"]
+        valid_target_restrictions = ["static", "moving"]
+        valid_discipline_restrictions = ["pistol", "shotgun", "rifle"]
 
         if age_restriction not in valid_age_restrictions:
             raise Exception("Invalid age restriction value.")
@@ -132,9 +114,9 @@ class EditCompetition(graphene.Mutation):
         if "date_time" in kwargs and kwargs["date_time"] < datetime.now():
             raise Exception("Past date!")
 
-        valid_age_restrictions = [age.value for age in AgeRestriction]
-        valid_target_restrictions = [target.value for target in TargetRestrictions]
-        valid_discipline_restrictions = [discipline.value for discipline in DisciplineRestriction]
+        valid_age_restrictions = ["youth", "younger_juniors", "juniors", "seniors"]
+        valid_target_restrictions = ["static", "moving"]
+        valid_discipline_restrictions = ["pistol", "shotgun", "rifle"]
 
         if "age_restriction" in kwargs and kwargs["age_restriction"] not in valid_age_restrictions:
             raise Exception("Invalid age restriction value.")

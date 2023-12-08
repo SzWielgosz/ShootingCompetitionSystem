@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
-from app.models import Participant
+from app.models import Participant, User
 from app.schema.participant import ParticipantNode
 from app.schema.user import UserNode
 from graphql_jwt.decorators import login_required
@@ -60,6 +60,7 @@ class UpdateParticipantProfile(graphene.Mutation):
     participant = graphene.Field(ParticipantNode)
 
     class Arguments:
+        username = graphene.String(required=False)
         first_name = graphene.String(required=False)
         last_name = graphene.String(required=False)
         city = graphene.String(required=False)
@@ -77,6 +78,14 @@ class UpdateParticipantProfile(graphene.Mutation):
 
         if participant is None:
             raise Exception("Participant not found")
+        
+        if "username" in kwargs:
+            username = kwargs["username"]
+            found_user = User.objects.filter(username=username).first()
+            if found_user is None or found_user == user:
+                user.username = username
+            else:
+                raise Exception("User with this username already exists")
 
         if "first_name" in kwargs:
             user.first_name = kwargs["first_name"]
@@ -103,7 +112,7 @@ class UpdateParticipantProfile(graphene.Mutation):
         age = today.year - participant.date_of_birth.year - ((today.month, today.day) < (participant.date_of_birth.month, participant.date_of_birth.day))
 
         if age < 14:
-            raise Exception("You must me 14 or older to create an account")
+            raise Exception("You must me 14 or older")
         
         user.save()
         participant.save()

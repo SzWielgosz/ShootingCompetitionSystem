@@ -1,19 +1,35 @@
 import { gql } from "@apollo/client";
 
 export const UPDATE_ORGANIZATION_PROFILE = gql`
-mutation updateOrganizationProfile($name: String, $phoneNumber: String, $website_url: String, $city: String, postCode: String, street: String, houseNumber: String) {
-    updateParticipantProfile(name: $name, phoneNumber: $phoneNumber, website_url: $website_url, city: $city, postCode: $postCode, street: $street, houseNumber: $houseNumber) {
-      user{
+  mutation updateOrganizationProfile(
+    $name: String
+    $phoneNumber: String
+    $websiteUrl: String
+    $city: String
+    $postCode: String
+    $street: String
+    $houseNumber: String
+  ) {
+    updateOrganizationProfile(
+      name: $name
+      phoneNumber: $phoneNumber
+      websiteUrl: $websiteUrl
+      city: $city
+      postCode: $postCode
+      street: $street
+      houseNumber: $houseNumber
+    ) {
+      user {
         username
         phoneNumber
       }
-      organization{
+      organization {
         name
-        website_url
+        websiteUrl
         city
-        post_code
+        postCode
         street
-        house_number
+        houseNumber
       }
     }
   }

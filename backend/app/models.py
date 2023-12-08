@@ -17,7 +17,7 @@ class User(AbstractUser):
     is_referee = models.BooleanField("referee status", default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username']
 
 
 class Participant(models.Model):
