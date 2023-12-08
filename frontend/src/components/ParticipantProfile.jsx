@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_LOGGED_USER_PARTICIPANT } from "../graphql/queries/getLoggedUserParticipant";
 import { UPDATE_PARTICIPANT_PROFILE } from "../graphql/mutations/UpdateParticipantProfile";
+import { UPDATE_PROFILE_PICTURE } from "../graphql/mutations/UpdateProfilePicture";
 import { toast } from "react-toastify";
 
 export default function ParticipantProfile() {
@@ -17,8 +18,8 @@ export default function ParticipantProfile() {
     dateOfBirth: "",
     city: "",
   });
-
-  const [updateUser] = useMutation(UPDATE_PARTICIPANT_PROFILE);
+  const [updateProfilePicture] = useMutation(UPDATE_PROFILE_PICTURE);
+  const [updateParticipantProfile] = useMutation(UPDATE_PARTICIPANT_PROFILE);
 
   const handleEditClick = () => {
     setEditMode(true);
@@ -38,7 +39,7 @@ export default function ParticipantProfile() {
 
   const handleSaveEdit = async () => {
     try {
-      await updateUser({
+      await updateParticipantProfile({
         variables: {
           username: editedUser.username,
           firstName: editedUser.firstName,
@@ -60,11 +61,33 @@ export default function ParticipantProfile() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  if (data && data.loggedUser) {
+  function handleImage(e) {
+    const file = e.target.files[0];
+
+    updateProfilePicture({
+      variables: {
+        profilePicture: file,
+      },
+    })
+      .then((response) => {
+        console.log("Profile picture updated successfully", response);
+        refetch();
+      })
+      .catch((error) => {
+        console.error("Error updating profile picture", error);
+      });
+  }
+
+  if (data && data?.loggedUser) {
     return (
       <div>
         {editMode ? (
           <div>
+            <img
+              src={`http://localhost:8000/media/${data.loggedUser.profilePicture}`}
+              alt="Profile"
+            />
+            <input type="file" name="profile_picture" onChange={handleImage} />
             <label>
               Username:
               <input

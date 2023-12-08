@@ -11,6 +11,9 @@ import { AuthProvider } from "./hooks/useAuth";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import CompetitionDetailsPage from "./pages/CompetitionDetailsPage";
 import MyProfilePage from "./pages/MyProfilePage";
+import MyCompetitionsPage from "./pages/MyCompetitionsPage";
+import CreateCompetitionPage from "./pages/CreateCompetitionPage";
+import OrganizationCompetitionDetailsPage from "./pages/OrganizationCompetitionDetailsPage";
 
 const ROLES = {
   Participant: "Participant",
@@ -40,6 +43,33 @@ function App() {
               element={<ProtectedRoute roles={ROLES} />}
             >
               <Route path="/my_profile" element={<MyProfilePage />}></Route>
+            </Route>
+            <Route
+              path="/my_competitions"
+              element={<ProtectedRoute roles={ROLES} />}
+            >
+              <Route
+                path="/my_competitions"
+                element={<MyCompetitionsPage />}
+              ></Route>
+            </Route>
+            <Route
+              path="/my_competitions/organization/:id"
+              element={<ProtectedRoute roles={ROLES.Organization} />}
+            >
+              <Route
+                path="/my_competitions/organization/:id"
+                element={<OrganizationCompetitionDetailsPage />}
+              ></Route>
+            </Route>
+            <Route
+              path="/my_competitions/organization/create"
+              element={<ProtectedRoute roles={ROLES.Organization} />}
+            >
+              <Route
+                path="/my_competitions/organization/create"
+                element={<CreateCompetitionPage />}
+              ></Route>
             </Route>
           </Routes>
         </div>

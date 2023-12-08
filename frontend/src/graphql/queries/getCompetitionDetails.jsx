@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const GET_DETAILED_SHARED_COMPETITION = gql`
+export const GET_COMPETITION_DETAILS = gql`
   query getDetailedSharedCompetition($competitionId: ID) {
-    sharedCompetitions(competitionId: $competitionId) {
+    competitionDetails(competitionId: $competitionId) {
       edges {
         node {
           id

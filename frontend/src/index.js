@@ -11,8 +11,8 @@ import {
   createHttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-
-const httpLink = createHttpLink({
+import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
+const httpLink = createUploadLink({
   uri: "http://localhost:8000/graphql/",
   credentials: "include",
 });

@@ -15,6 +15,9 @@ export default function CalendarData() {
     GET_SHARED_COMPETITIONS,
   );
 
+  const [startDateFilter, setStartDateFilter] = useState(undefined);
+  const [endDateFilter, setEndDateFilter] = useState(undefined);
+
   useEffect(() => {
     getData({
       variables: {
@@ -26,16 +29,26 @@ export default function CalendarData() {
   }, [page, getData]);
 
   const handleSearch = () => {
+    const variables = {
+      first: PAGE_SIZE,
+      offset: page * PAGE_SIZE,
+      search: searchTerm.toLowerCase(),
+      target: targetFilter === "All" ? undefined : targetFilter,
+      ageRestriction:
+        ageRestrictionFilter === "All" ? undefined : ageRestrictionFilter,
+      discipline: disciplineFilter === "All" ? undefined : disciplineFilter,
+    };
+
+    if (startDateFilter) {
+      variables.startDate = startDateFilter;
+    }
+
+    if (endDateFilter) {
+      variables.endDate = endDateFilter;
+    }
+
     getData({
-      variables: {
-        first: PAGE_SIZE,
-        offset: page * PAGE_SIZE,
-        search: searchTerm.toLowerCase(),
-        target: targetFilter === "Any" ? undefined : targetFilter,
-        ageRestriction:
-          ageRestrictionFilter === "Any" ? undefined : ageRestrictionFilter,
-        discipline: disciplineFilter === "Any" ? undefined : disciplineFilter,
-      },
+      variables,
     });
   };
 
@@ -86,6 +99,22 @@ export default function CalendarData() {
           <option value="SHOTGUN">Strzelba</option>
           <option value="RIFLE">Karabin</option>
         </select>
+      </label>
+      <label>
+        Od:
+        <input
+          type="date"
+          value={startDateFilter}
+          onChange={(e) => setStartDateFilter(e.target.value)}
+        />
+      </label>
+      <label>
+        Do:
+        <input
+          type="date"
+          value={endDateFilter}
+          onChange={(e) => setEndDateFilter(e.target.value)}
+        />
       </label>
       <button onClick={handleSearch}>Wyszukaj</button>
       <nav>

@@ -1,11 +1,16 @@
+import OrganizationProfile from "../components/OrganizationProfile";
 import ParticipantProfile from "../components/ParticipantProfile";
-import ParticipantCompetitions from "../components/ParticipantCompetitions";
+import { useAuth } from "../hooks/useAuth";
 
 export default function MyProfilePage() {
+  const { auth } = useAuth();
   return (
     <div>
-      <ParticipantProfile />
-      <ParticipantCompetitions />
+      {auth.user.role === "Participant" ? (
+        <ParticipantProfile />
+      ) : (
+        <OrganizationProfile />
+      )}
     </div>
   );
 }

@@ -6,12 +6,22 @@ export const GET_PARTICIPANT_COMPETITIONS = gql`
     $win: Boolean
     $first: Int
     $offset: Int
+    $target: CompetitionTarget
+    $ageRestriction: CompetitionAgeRestriction
+    $discipline: CompetitionDiscipline
+    $startDate: Date
+    $endDate: Date
   ) {
     participantCompetitions(
       search: $search
       win: $win
       first: $first
       offset: $offset
+      target: $target
+      ageRestriction: $ageRestriction
+      discipline: $discipline
+      startDate: $startDate
+      endDate: $endDate
     ) {
       edges {
         node {

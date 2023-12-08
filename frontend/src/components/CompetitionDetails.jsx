@@ -1,26 +1,49 @@
 import { useNavigate } from "react-router-dom";
-import { GET_DETAILED_SHARED_COMPETITION } from "../graphql/queries/getDetailedSharedCompetition";
 import { IS_PARTICIPANT_IN_COMPETITION } from "../graphql/queries/isParticipantInCompetition";
+import { GET_COMPETITION_DETAILS } from "../graphql/queries/getCompetitionDetails";
 import { JOIN_COMPETITION } from "../graphql/mutations/joinCompetition";
 import { LEAVE_COMPETITION } from "../graphql/mutations/leaveCompetition";
 import { useQuery, useMutation } from "@apollo/client";
-import { useAuth } from "../hooks/useAuth";
 import { toast } from "react-toastify";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
 
 export default function CompetitionDetails(props) {
   const { competitionId } = props;
-  const { auth } = useAuth();
-  const { data: dataDetail } = useQuery(GET_DETAILED_SHARED_COMPETITION, {
+  const { data: dataDetail } = useQuery(GET_COMPETITION_DETAILS, {
     variables: { competitionId: competitionId },
   });
   const { data: participantInCompetition } = useQuery(
     IS_PARTICIPANT_IN_COMPETITION,
+    {
+      variables: { competitionId: competitionId },
+    },
   );
-  const [joinCompetition, { error: joinError }] = useMutation(JOIN_COMPETITION);
-  const [leaveCompetition, { error: leaveError }] =
-    useMutation(LEAVE_COMPETITION);
-  const [isParticipant, setIsParticipant] = useState(participantInCompetition);
+  const [joinCompetition] = useMutation(JOIN_COMPETITION);
+  const [leaveCompetition] = useMutation(LEAVE_COMPETITION);
+  const [isParticipantInCompetition, setIsParticipantInCompetition] = useState(
+    participantInCompetition,
+  );
+  const { auth } = useAuth();
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
+  useEffect(() => {
+    const fetchParticipantStatus = async () => {
+      try {
+        setIsParticipantInCompetition(
+          participantInCompetition?.isParticipantInCompetition,
+        );
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+
+    fetchParticipantStatus();
+  }, [participantInCompetition]);
 
   const handleJoin = async (competitionId) => {
     try {
@@ -29,7 +52,8 @@ export default function CompetitionDetails(props) {
           competitionId,
         },
       });
-      setIsParticipant(true);
+      setIsParticipantInCompetition(true);
+      window.location.reload(false);
     } catch (error) {
       toast.error(error.message);
     }
@@ -42,18 +66,16 @@ export default function CompetitionDetails(props) {
           competitionId,
         },
       });
-      setIsParticipant(false);
+      setIsParticipantInCompetition(false);
+      window.location.reload(false);
     } catch (error) {
       toast.error(error.message);
     }
   };
 
-  const participantCount = dataDetail?.sharedCompetitions?.edges?.length;
-  const navigate = useNavigate();
-
-  const handleGoBack = () => {
-    navigate(-1);
-  };
+  const participantCount =
+    dataDetail?.competitionDetails?.edges?.[0]?.node?.participantcompetitionSet
+      ?.edgeCount;
 
   const translateAgeCategory = (category) => {
     switch (category) {
@@ -110,18 +132,17 @@ export default function CompetitionDetails(props) {
   return (
     <div>
       <button onClick={handleGoBack}>Powrot</button>
-      {dataDetail && dataDetail.sharedCompetitions ? (
-        dataDetail.sharedCompetitions.edges.map((item) => (
+      {dataDetail && dataDetail.competitionDetails ? (
+        dataDetail.competitionDetails.edges.map((item) => (
           <div key={item.node.id}>
-            {isParticipant ? (
-              <button onClick={() => handleLeave(item.node.id)}>
-                Opuszcz konkurs
-              </button>
-            ) : (
-              <button onClick={() => handleJoin(item.node.id)}>
-                Dołącz do konkursu
-              </button>
-            )}
+            {auth &&
+              auth.user.role === "Participant" &&
+              item.node.status === "CREATED" &&
+              (isParticipantInCompetition ? (
+                <button onClick={() => handleLeave(item.node.id)}>Opuść</button>
+              ) : (
+                <button onClick={() => handleJoin(item.node.id)}>Dołącz</button>
+              ))}
             <p>{item.node.name}</p>
             <p>
               Prowadzone przez: {item.node.organizationUser.organization.name}
@@ -131,7 +152,7 @@ export default function CompetitionDetails(props) {
             </p>
             <p>Opis: {item.node.description}</p>
             <p>
-              dataDetail i czas:{" "}
+              Data i czas:{" "}
               {new Date(item.node.dateTime).toLocaleString(undefined, {
                 year: "numeric",
                 month: "numeric",
@@ -175,31 +196,47 @@ export default function CompetitionDetails(props) {
                     " " +
                     round.node.refereeUser.lastName}
                 </p>
-                {!item.node.status === "CREATED" ||
-                !item.node.status === "ENDED" ? (
-                  <details>
-                    <summary>Proby: </summary>
-                    <ul>
-                      {round.node.attemptSet.edges.map((attempt) => (
-                        <li key={attempt.node.number}>
-                          Proba numer: {attempt.node.number + 1}, Success:{" "}
-                          {attempt.node.success ? "Yes" : "No"}
-                          <br />
-                          Uczestnik: {
-                            attempt.node.participantUser.firstName
-                          }{" "}
-                          {attempt.node.participantUser.lastName}
+                {console.log(round.node.attemptSet.edges?.[0])}
+                <details>
+                  <summary>Proby: </summary>
+                  <ul>
+                    {[
+                      ...new Set(
+                        round.node.attemptSet.edges.map(
+                          (attempt) => attempt.node.participantUser.id,
+                        ),
+                      ),
+                    ].map((participantId) => {
+                      const participantAttempts =
+                        round.node.attemptSet.edges.filter(
+                          (attempt) =>
+                            attempt.node.participantUser.id === participantId,
+                        );
+                      const participant =
+                        participantAttempts[0].node.participantUser;
+                      return (
+                        <li key={participantId}>
+                          Uczestnik: {participant.firstName}{" "}
+                          {participant.lastName}
+                          <ul>
+                            {participantAttempts.map((attempt) => (
+                              <li key={attempt.node.number}>
+                                Proba numer: {attempt.node.number + 1}, Success:{" "}
+                                {attempt.node.success ? "Tak" : "Nie"}
+                              </li>
+                            ))}
+                          </ul>
                         </li>
-                      ))}
-                    </ul>
-                  </details>
-                ) : null}
+                      );
+                    })}
+                  </ul>
+                </details>
               </div>
             ))}
           </div>
         ))
       ) : (
-        <p>No dataDetail available</p>
+        <p>Loading...</p>
       )}
     </div>
   );

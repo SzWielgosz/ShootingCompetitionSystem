@@ -24,6 +24,7 @@ export default function Navbar() {
         ) : (
           <>
             <CustomLink to="/my_profile">Moj Profil</CustomLink>
+            <CustomLink to="/my_competitions">Moje zawody</CustomLink>
             <Logout />
           </>
         )}
