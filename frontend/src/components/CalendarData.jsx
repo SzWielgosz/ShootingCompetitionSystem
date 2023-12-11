@@ -8,9 +8,9 @@ const PAGE_SIZE = 5;
 export default function CalendarData() {
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [targetFilter, setTargetFilter] = useState(undefined);
-  const [ageRestrictionFilter, setAgeRestrictionFilter] = useState(undefined);
-  const [disciplineFilter, setDisciplineFilter] = useState(undefined);
+  const [targetFilter, setTargetFilter] = useState("All");
+  const [ageRestrictionFilter, setAgeRestrictionFilter] = useState("All");
+  const [disciplineFilter, setDisciplineFilter] = useState("All");
   const [getData, { data, loading, error }] = useLazyQuery(
     GET_SHARED_COMPETITIONS,
   );

@@ -69,12 +69,12 @@ export default function ParticipantProfile() {
         profilePicture: file,
       },
     })
-      .then((response) => {
-        console.log("Profile picture updated successfully", response);
+      .then(() => {
+        toast.success("Profile picture updated successfully");
         refetch();
       })
       .catch((error) => {
-        console.error("Error updating profile picture", error);
+        toast.error(error.message);
       });
   }
 
