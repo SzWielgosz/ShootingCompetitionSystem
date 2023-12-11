@@ -1,20 +1,25 @@
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GET_ORGANIZATION_COMPETITIONS } from "../graphql/queries/getOrganizationCompetitions";
+import {
+  translateCompetitionShareStatus,
+  translateCompetitionStatus,
+} from "../utils/Translations";
 
 const PAGE_SIZE = 5;
 
 export default function MyCompetitionsOrganization() {
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showWins, setShowWins] = useState(false);
-  const [disciplineFilter, setDisciplineFilter] = useState(undefined);
-  const [statusFilter, setStatusFilter] = useState(undefined);
-  const [targetFilter, setTargetFilter] = useState(undefined);
+  const [disciplineFilter, setDisciplineFilter] = useState("Any");
+  const [statusFilter, setStatusFilter] = useState("Any");
+  const [targetFilter, setTargetFilter] = useState("Any");
+  const [shareStatusFilter, setShareStatusFilter] = useState("Any");
   const [getData, { data, loading, error }] = useLazyQuery(
     GET_ORGANIZATION_COMPETITIONS,
   );
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,9 +28,11 @@ export default function MyCompetitionsOrganization() {
         first: PAGE_SIZE,
         offset: page * PAGE_SIZE,
         search: searchTerm.toLowerCase(),
-        ...(showWins ? { win: true } : {}),
         target: targetFilter === "Any" ? undefined : targetFilter,
         discipline: disciplineFilter === "Any" ? undefined : disciplineFilter,
+        status: statusFilter === "Any" ? undefined : statusFilter,
+        shareStatus:
+          shareStatusFilter === "Any" ? undefined : shareStatusFilter,
       },
     });
   }, [page, getData]);
@@ -36,7 +43,11 @@ export default function MyCompetitionsOrganization() {
         first: PAGE_SIZE,
         offset: page * PAGE_SIZE,
         search: searchTerm.toLowerCase(),
-        ...(showWins ? { win: true } : {}),
+        target: targetFilter === "Any" ? undefined : targetFilter,
+        discipline: disciplineFilter === "Any" ? undefined : disciplineFilter,
+        status: statusFilter === "Any" ? undefined : statusFilter,
+        shareStatus:
+          shareStatusFilter === "Any" ? undefined : shareStatusFilter,
       },
     });
   };
@@ -67,14 +78,6 @@ export default function MyCompetitionsOrganization() {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </label>
-        <label>
-          Wygrane:
-          <input
-            type="checkbox"
-            checked={showWins}
-            onChange={() => setShowWins((prev) => !prev)}
           />
         </label>
         <label>
@@ -112,6 +115,17 @@ export default function MyCompetitionsOrganization() {
             <option value="ENDED">Zakończone</option>
           </select>
         </label>
+        <label>
+          Status udostępniania:
+          <select
+            value={shareStatusFilter}
+            onChange={(e) => setShareStatusFilter(e.target.value)}
+          >
+            <option value="Any">Każde</option>
+            <option value="SHARED">Udostępnione</option>
+            <option value="NOT_SHARED">Nie udostępnione</option>
+          </select>
+        </label>
         <button onClick={handleSearch}>Wyszukaj</button>
       </div>
 
@@ -130,8 +144,12 @@ export default function MyCompetitionsOrganization() {
                   day: "numeric",
                   hour: "numeric",
                   minute: "numeric",
-                })}
-                <Link to={"/my_competitions/organization/:id" + competition.id}>Details</Link>
+                })}{" "}
+                - {translateCompetitionStatus(competition.status)} -{" "}
+                {translateCompetitionShareStatus(competition.shareStatus)} -{" "}
+                <Link to={"/my_competitions/organization/" + competition.id}>
+                  Szczegoly
+                </Link>
               </li>
             );
           })}

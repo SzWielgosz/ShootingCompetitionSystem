@@ -1,35 +1,35 @@
 DISCIPLINE_CHOICES = [
-    ("pistol", "Pistolet"),
-    ("rifle", "Karabin"),
-    ("shotgun", "Strzelba"),
+    ("PISTOL", "Pistolet"),
+    ("RIFLE", "Karabin"),
+    ("SHOTGUN", "Strzelba"),
 ]
 
 TARGET_CHOICES = [
-    ("static", "Statyczne"),
-    ("moving", "Ruchome")
+    ("STATIC", "Statyczne"),
+    ("MOVING", "Ruchome")
 ]
 
 AGE_RESTRICTIONS = [
-    ("youth", "Młodzicy"),
-    ("younger juniors", "Młodsi juniorzy"),
-    ("juniors", "Juniorzy"),
-    ("seniors", "Seniorzy")
+    ("YOUTH", "Młodzicy"),
+    ("YOUNGER_JUNIORS", "Młodsi juniorzy"),
+    ("JUNIORS", "Juniorzy"),
+    ("SENIORS", "Seniorzy")
 ]
 
 AGE_NUMBERS = [
-    ("youth", 14),
-    ("younger juniors", 15),
-    ("juniors", 17),
-    ("seniors", 20)
+    ("YOUTH", 14),
+    ("YOUNGER_JUNIORS", 15),
+    ("JUNIORS", 17),
+    ("SENIORS", 20)
 ]
 
 COMPETITION_STATUSES = [
-    ("created", "Utworzone"),
-    ("started", "Wystartowane"),
-    ("ended", "Zakończone")
+    ("CREATED", "Utworzone"),
+    ("STARTED", "Wystartowane"),
+    ("ENDED", "Zakończone")
 ]
 
 SHARE_STATUSES = [
-    ("shared", "Udostępniony"),
-    ("not_shared", "Nie udostępniony")
+    ("SHARED", "Udostępniony"),
+    ("NOT_SHARED", "Nie udostępniony")
 ]

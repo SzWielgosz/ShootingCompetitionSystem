@@ -27,6 +27,7 @@ class CompetitionQuery(graphene.ObjectType):
     participant_competitions = DjangoFilterConnectionField(CompetitionNode, search=graphene.String(), win=graphene.Boolean(), start_date=graphene.Date(), end_date=graphene.Date())
     competition_details = relay.ConnectionField(CompetitionConnection, competition_id=graphene.ID())
     organization_competitions = DjangoFilterConnectionField(CompetitionNode, search=graphene.String(), status=graphene.String(), share_status=graphene.String(), start_date=graphene.Date(), end_date=graphene.Date())
+    organization_competition_details = relay.ConnectionField(CompetitionConnection, competition_id=graphene.ID())
 
     def resolve_competitions(self, info, **kwargs):
         queryset = Competition.objects.all()
@@ -43,8 +44,9 @@ class CompetitionQuery(graphene.ObjectType):
 
         return queryset
     
-    def resolve_competition_details(self, info, competition_id, **kwargs):
+    def resolve_competition_details(self, info, **kwargs):
         try:
+            competition_id = kwargs.get("competition_id")
             decoded_id = from_global_id(competition_id)[1]
             queryset = Competition.objects.filter(pk=decoded_id)
             return queryset
@@ -52,7 +54,7 @@ class CompetitionQuery(graphene.ObjectType):
             raise Exception(f"Competition does not exist")
 
     def resolve_shared_competitions(self, info, **kwargs):
-        queryset = Competition.objects.filter(share_status="shared").exclude(status="ended").all()
+        queryset = Competition.objects.filter(share_status="SHARED").exclude(status="ENDED").all()
 
         search = kwargs.get("search")
         start_date = kwargs.get("start_date")
@@ -129,16 +131,11 @@ class CompetitionQuery(graphene.ObjectType):
         
         queryset = Competition.objects.filter(organization_user=user)
 
-        statuses = ["created", "started", "ended"]
-        share_statuses = ["not_shared", "shared"]
-
         if status:
-            if status in statuses:
-                queryset = queryset.filter(status=status)
+            queryset = queryset.filter(status=status)
 
         if share_status:
-            if share_status in share_statuses:
-                queryset = queryset.filter(share_status=share_status)
+            queryset = queryset.filter(share_status=share_status)
 
         if search:
             queryset = queryset.filter(name__icontains=search)
@@ -152,5 +149,21 @@ class CompetitionQuery(graphene.ObjectType):
         elif end_date:
             queryset = queryset.filter(date_time__lte=end_date)
             
+        
+        return queryset
+    
+
+    @login_required
+    def resolve_organization_competition_details(self, info, **kwargs):
+        user = info.context.user
+        if not user.is_organization:
+            raise Exception("User is not an organization")
+        
+        competition_id = kwargs.get("competition_id")
+        decoded_id = from_global_id(competition_id)[1]
+        queryset = Competition.objects.filter(pk=decoded_id, organization_user=user)
+        
+        if queryset is None:
+            raise Exception("Competition not found")
         
         return queryset

@@ -3,7 +3,6 @@ from graphql_jwt.decorators import login_required
 from app.models import *
 from django.db import transaction
 from datetime import datetime
-from enum import Enum
 from app.schema.competition import CompetitionNode
 from app.schema.user import UserNode
 from graphql_relay import from_global_id
@@ -35,15 +34,24 @@ class CreateCompetition(graphene.Mutation):
         
         user = info.context.user
 
+        if not name or not city or not street or not house_number:\
+            raise Exception("Fields cannot be empty.")
+        
+        if rounds_count <= 0 or attempts_count <= 0:
+            raise Exception("Rounds count and attempts count must be greater than 0")
+        
+        if participants_count <= 1:
+            raise Exception("Participants count must be higher than 1")
+
         if user.is_organization is False:
             raise Exception("User is not an organization")
 
         if date_time < datetime.now():
             raise Exception("Past date!")
         
-        valid_age_restrictions = ["youth", "younger_juniors", "juniors", "seniors"]
-        valid_target_restrictions = ["static", "moving"]
-        valid_discipline_restrictions = ["pistol", "shotgun", "rifle"]
+        valid_age_restrictions = ["YOUTH", "YOUNGER_JUNIORS", "JUNIORS", "SENIORS"]
+        valid_target_restrictions = ["STATIC", "MOVING"]
+        valid_discipline_restrictions = ["PISTOL", "SHOTGUN", "RIFLE"]
 
         if age_restriction not in valid_age_restrictions:
             raise Exception("Invalid age restriction value.")
@@ -66,8 +74,8 @@ class CreateCompetition(graphene.Mutation):
             age_restriction=age_restriction,
             attempts_count=attempts_count,
             target=target,
-            status="created",
-            share_status="not_shared",
+            status="CREATED",
+            share_status="NOT_SHARED",
             organization_user=user,
             participants_count=participants_count,
             rounds_count=rounds_count,
@@ -86,8 +94,8 @@ class EditCompetition(graphene.Mutation):
     user = graphene.Field(UserNode)
 
     class Arguments:
-        name = graphene.String()
         competition_id = graphene.ID(required=True)
+        name = graphene.String()
         discipline = graphene.String()
         description = graphene.String()
         date_time = graphene.DateTime()
@@ -98,6 +106,7 @@ class EditCompetition(graphene.Mutation):
         target = graphene.String()
         participants_count = graphene.Int()
         rounds_count = graphene.Int()
+        attempts_count = graphene.Int()
 
     @login_required
     @transaction.atomic
@@ -111,12 +120,15 @@ class EditCompetition(graphene.Mutation):
 
         competition = Competition.objects.get(pk=decoded_id, organization_user=user)
 
+        if competition.status != "CREATED":
+            raise Exception("Cannot edit competition")
+
         if "date_time" in kwargs and kwargs["date_time"] < datetime.now():
             raise Exception("Past date!")
 
-        valid_age_restrictions = ["youth", "younger_juniors", "juniors", "seniors"]
-        valid_target_restrictions = ["static", "moving"]
-        valid_discipline_restrictions = ["pistol", "shotgun", "rifle"]
+        valid_age_restrictions = ["YOUTH", "YOUNGER_JUNIORS", "JUNIORS", "SENIORS"]
+        valid_target_restrictions = ["STATIC", "MOVING"]
+        valid_discipline_restrictions = ["PISTOL", "SHOTGUN", "RIFLE"]
 
         if "age_restriction" in kwargs and kwargs["age_restriction"] not in valid_age_restrictions:
             raise Exception("Invalid age restriction value.")
@@ -214,13 +226,13 @@ class StartCompetition(graphene.Mutation):
         if not competition:
             raise Exception("Competition not found.")
         
-        if competition.share_status != "shared":
+        if competition.share_status != "SHARED":
             raise Exception("Share competition before starting.")
         
         if competition.organization_user != user:
             raise Exception("User does not have permission to start this competition.")
         
-        competition.status = "started"
+        competition.status = "STARTED"
 
         competition.save()
 
@@ -246,10 +258,10 @@ class EndCompetition(graphene.Mutation):
         if not competition:
             raise Exception("Competition not found.")
         
-        if competition.status == "ended":
+        if competition.status == "ENDED":
             raise Exception("Competition already ended")
         
-        if competition.share_status != "shared":
+        if competition.share_status != "SHARED":
             raise Exception("Share competition before starting.")
         
         if competition.organization_user != user:
@@ -258,12 +270,14 @@ class EndCompetition(graphene.Mutation):
         rounds = Round.objects.filter(competition=competition).all()
         participants_competitions = ParticipantCompetition.objects.filter(competition=competition).all()
 
-        participants_scoring = dict()
         for participant_competition in participants_competitions:
             participant_user = participant_competition.participant_user
-            participants_scoring[participant_user] = 0
+            attempts_count = Attempt.objects.filter(participant_user=participant_user).count()
 
-            print("participants_scoring: ", participants_scoring)
+            if attempts_count != competition.attempts_count:
+                raise Exception(f"Participant {participant_user.first_name + ' ' +participant_user.last_name} does not have the required number of attempts.")
+
+        participants_scoring = dict()
 
         for round in rounds:
             attempts = Attempt.objects.filter(round=round).all()
@@ -277,7 +291,7 @@ class EndCompetition(graphene.Mutation):
         winner = max(participants_scoring, key=participants_scoring.get)
         print("Wygral gracz: ", winner, " z punktacją ", participants_scoring[winner])
         
-        competition.status = "ended"
+        competition.status = "ENDED"
 
         competition.winner = winner
 

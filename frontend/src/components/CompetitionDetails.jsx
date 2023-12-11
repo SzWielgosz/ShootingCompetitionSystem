@@ -7,6 +7,12 @@ import { useQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
+import {
+  translateAgeCategory,
+  translateCompetitionDiscipline,
+  translateCompetitionStatus,
+  translateTargetType,
+} from "../utils/Translations";
 
 export default function CompetitionDetails(props) {
   const { competitionId } = props;
@@ -77,58 +83,6 @@ export default function CompetitionDetails(props) {
     dataDetail?.competitionDetails?.edges?.[0]?.node?.participantcompetitionSet
       ?.edgeCount;
 
-  const translateAgeCategory = (category) => {
-    switch (category) {
-      case "YOUTH":
-        return "Młodzież";
-      case "YOUNGER_JUNIORS":
-        return "Młodsi juniorzy";
-      case "JUNIORS":
-        return "Juniorzy";
-      case "SENIORS":
-        return "Seniorzy";
-      default:
-        return category;
-    }
-  };
-
-  const translateTargetType = (targetType) => {
-    switch (targetType) {
-      case "STATIC":
-        return "Statyczne";
-      case "MOVING":
-        return "Ruchome";
-      default:
-        return targetType;
-    }
-  };
-
-  const translateCompetitionStatus = (status) => {
-    switch (status) {
-      case "CREATED":
-        return "Utworzone";
-      case "STARTED":
-        return "Rozpoczęte";
-      case "ENDED":
-        return "Zakończone";
-      default:
-        return status;
-    }
-  };
-
-  const translateCompetitionDiscipline = (discipline) => {
-    switch (discipline) {
-      case "PISTOL":
-        return "Pistolet";
-      case "SHOTGUN":
-        return "Strzelba";
-      case "RIFLE":
-        return "Karabin";
-      default:
-        return discipline;
-    }
-  };
-
   return (
     <div>
       <button onClick={handleGoBack}>Powrot</button>
@@ -148,10 +102,6 @@ export default function CompetitionDetails(props) {
               Prowadzone przez: {item.node.organizationUser.organization.name}
             </p>
             <p>
-              Dyscyplina: {translateCompetitionDiscipline(item.node.discipline)}
-            </p>
-            <p>Opis: {item.node.description}</p>
-            <p>
               Data i czas:{" "}
               {new Date(item.node.dateTime).toLocaleString(undefined, {
                 year: "numeric",
@@ -168,6 +118,9 @@ export default function CompetitionDetails(props) {
                 item.node.houseNumber +
                 " " +
                 item.node.city}
+            </p>
+            <p>
+              Dyscyplina: {translateCompetitionDiscipline(item.node.discipline)}
             </p>
             <p>
               Kategoria wiekowa:{" "}
@@ -187,6 +140,7 @@ export default function CompetitionDetails(props) {
                 ? item.node.winner.firstname + " " + item.node.winner.lastName
                 : "Nie wyloniony"}
             </p>
+            <p>Opis: {item.node.description}</p>
             {item.node.roundSet.edges.map((round) => (
               <div key={round.node.id}>
                 <p>Runda numer: {round.node.number + 1}</p>
@@ -196,7 +150,6 @@ export default function CompetitionDetails(props) {
                     " " +
                     round.node.refereeUser.lastName}
                 </p>
-                {console.log(round.node.attemptSet.edges?.[0])}
                 <details>
                   <summary>Proby: </summary>
                   <ul>

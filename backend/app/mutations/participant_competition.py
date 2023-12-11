@@ -77,10 +77,10 @@ class LeaveCompetition(graphene.Mutation):
         if not participant_competition:
             raise Exception("Participant didn't join to competition")
         
-        if competition.status == "started":
+        if competition.status == "STARTED":
             raise Exception("You cannot leave started competition")
         
-        if competition.status == "ended":
+        if competition.status == "ENDED":
             raise Exception("You cannot leave ended competition")
         
         participant_competition.delete()
