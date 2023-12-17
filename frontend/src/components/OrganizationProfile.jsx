@@ -69,11 +69,11 @@ export default function OrganizationProfile() {
       },
     })
       .then(() => {
-        toast.success("Profile picture updated succesfully")
+        toast.success("Profile picture updated succesfully");
         refetch();
       })
       .catch((error) => {
-        toast.error(error.message)
+        toast.error(error.message);
       });
   }
 

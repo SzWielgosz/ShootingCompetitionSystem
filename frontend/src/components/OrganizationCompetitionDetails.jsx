@@ -6,6 +6,8 @@ import { SHARE_STATUS_COMPETITION } from "../graphql/mutations/ShareStatusCompet
 import { DELETE_COMPETITION } from "../graphql/mutations/DeleteCompetition";
 import { START_COMPETITION } from "../graphql/mutations/StartCompetition";
 import { END_COMPETITION } from "../graphql/mutations/EndCompetition";
+import { ASSIGN_REFEREE } from "../graphql/mutations/AssignReferee";
+import { GET_REFEREE_USERS } from "../graphql/queries/getRefereeUsers";
 import { useNavigate } from "react-router-dom";
 import {
   translateAgeCategory,
@@ -15,22 +17,33 @@ import {
 } from "../utils/Translations";
 import EditCompetitionForm from "./EditCompetitionForm";
 import { toast, ToastContainer } from "react-toastify";
+import AssignRefereePanel from "./AssignRefereePanel";
 
 export default function OrganizationCompetitionDetails(props) {
   const { competitionId } = props;
   const [isEditing, setIsEditing] = useState(false);
+  const [assignRefereeRoundId, setAssignRefereeRoundId] = useState(null);
+
+  const handleOpenAssignRefereePanel = (roundId) => {
+    setAssignRefereeRoundId(roundId);
+  };
+
   const navigate = useNavigate();
 
-  const { loading, error, data, refetch } = useQuery(
+  const { data, refetch } = useQuery(
     GET_ORGANIZATION_COMPETITION_DETAILS,
     {
       variables: { competitionId: competitionId },
     },
   );
 
+  const { data: dataReferee } =
+    useQuery(GET_REFEREE_USERS);
+
   const [editCompetition] = useMutation(EDIT_COMPETITION);
   const [deleteCompetition] = useMutation(DELETE_COMPETITION);
   const [shareStatusCompetition] = useMutation(SHARE_STATUS_COMPETITION);
+  const [assignReferee] = useMutation(ASSIGN_REFEREE);
   const [startCompetition] = useMutation(START_COMPETITION, {
     onCompleted: () => {
       refetch();
@@ -67,7 +80,7 @@ export default function OrganizationCompetitionDetails(props) {
       });
 
       if (result.data.editCompetition) {
-        toast.message("Edycja zakończona sukcesem!");
+        toast.success("Edycja zakończona sukcesem!");
         setIsEditing(false);
         refetch();
       } else {
@@ -87,7 +100,7 @@ export default function OrganizationCompetitionDetails(props) {
         },
       });
       if (result.data.shareStatusCompetition) {
-        toast.message("Udostępniono zawody");
+        toast.success("Zmieniono status udostępnienia");
         refetch();
       } else {
         toast.error("Error");
@@ -151,6 +164,26 @@ export default function OrganizationCompetitionDetails(props) {
     }
   };
 
+  const handleAssignReferee = async (roundId, refereeId) => {
+    try {
+      const result = await assignReferee({
+        variables: {
+          roundId: roundId,
+          refereeId: refereeId,
+        },
+      });
+
+      if (result.data.assignReferee) {
+        toast.success("Przypisano sędziego do rundy");
+        refetch();
+      } else {
+        toast.error(result.data.assignReferee.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   const handleCancelEdit = () => {
     setIsEditing(false);
   };
@@ -179,25 +212,25 @@ export default function OrganizationCompetitionDetails(props) {
                 <>
                   {competitionShareStatus === "SHARED" ? (
                     <div>
-                    <button
-                      onClick={() =>
-                        handleShareStatus(competitionId, "NOT_SHARED")
-                      }
-                    >
-                      Ukryj
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleStart(competitionId)
-                      }
-                    >Wystartuj</button>
+                      <button
+                        onClick={() =>
+                          handleShareStatus(competitionId, "NOT_SHARED")
+                        }
+                      >
+                        Ukryj
+                      </button>
+                      <button onClick={() => handleStart(competitionId)}>
+                        Wystartuj
+                      </button>
                     </div>
                   ) : (
                     <div>
                       <button onClick={handleDelete}>Usuń</button>
                       <button onClick={handleEdit}>Edytuj</button>
                       <button
-                        onClick={() => handleShareStatus(competitionId, "SHARED")}
+                        onClick={() =>
+                          handleShareStatus(competitionId, "SHARED")
+                        }
                       >
                         Udostępnij
                       </button>
@@ -290,6 +323,22 @@ export default function OrganizationCompetitionDetails(props) {
                       Sędzia: {round?.node?.refereeUser?.firstName ?? "Brak"}{" "}
                       {round?.node?.refereeUser?.lastName ?? ""}
                     </p>
+                    {competitionStatus !== "ENDED" && (
+                      <button
+                        onClick={() =>
+                          handleOpenAssignRefereePanel(round.node.id)
+                        }
+                      >
+                        Przypisz sędziego
+                      </button>
+                    )}
+                    {assignRefereeRoundId === round.node.id && (
+                      <AssignRefereePanel
+                        roundId={round.node.id}
+                        refereeUsers={dataReferee.refereeUsers}
+                        onAssignReferee={handleAssignReferee}
+                      />
+                    )}
                     <details>
                       <summary>Proby: </summary>
                       <ul>

@@ -5,6 +5,8 @@ from app.schema.competition import CompetitionQuery
 from app.schema.organization import OrganizationQuery
 from app.schema.participant import ParticipantQuery
 from app.schema.participant_competition import ParticipantCompetitionQuery
+from app.schema.round import RoundQuery
+from app.schema.attempt import AttemptQuery
 from app.schema.user import UserQuery
 from app.mutations.competition import CompetitionMutation
 from app.mutations.organization import OrganizationMutation
@@ -21,6 +23,8 @@ class Query(CompetitionQuery,
             ParticipantQuery,
             UserQuery,
             ParticipantCompetitionQuery,
+            RoundQuery,
+            AttemptQuery,
             graphene.ObjectType):
     pass
 

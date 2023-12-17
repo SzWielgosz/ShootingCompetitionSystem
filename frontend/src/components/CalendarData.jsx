@@ -13,6 +13,7 @@ export default function CalendarData() {
   const [disciplineFilter, setDisciplineFilter] = useState("All");
   const [getData, { data, loading, error }] = useLazyQuery(
     GET_SHARED_COMPETITIONS,
+    { fetchPolicy: "network-only" },
   );
 
   const [startDateFilter, setStartDateFilter] = useState(undefined);
@@ -33,10 +34,10 @@ export default function CalendarData() {
       first: PAGE_SIZE,
       offset: page * PAGE_SIZE,
       search: searchTerm.toLowerCase(),
-      target: targetFilter === "All" ? undefined : targetFilter,
+      target: targetFilter === "All" ? null : targetFilter,
       ageRestriction:
-        ageRestrictionFilter === "All" ? undefined : ageRestrictionFilter,
-      discipline: disciplineFilter === "All" ? undefined : disciplineFilter,
+        ageRestrictionFilter === "All" ? null : ageRestrictionFilter,
+      discipline: disciplineFilter === "All" ? null : disciplineFilter,
     };
 
     if (startDateFilter) {

@@ -3,6 +3,10 @@ from app.schema.user import UserNode
 from graphene_file_upload.scalars import Upload
 from graphql_jwt.decorators import login_required
 from app.utils.file_operations import delete_profile_picture
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from graphql_jwt.shortcuts import get_token
+
 
 class UpdateProfilePicture(graphene.Mutation):
     user = graphene.Field(UserNode)
@@ -30,7 +34,28 @@ class UpdateProfilePicture(graphene.Mutation):
         user.save()
 
         return UpdateProfilePicture(user=user)
+    
+
+class LoginReferee(graphene.Mutation):
+    token = graphene.String()
+    
+    class Arguments:
+        email = graphene.String(required=True)
+        password = graphene.String(required=True)
+
+    @classmethod
+    def mutate(cls, root, info, email, password, **kwargs):
+        user = authenticate(info.context, username=email, password=password)
+
+        if user is None or not user.is_referee:
+            raise Exception("Invalid credentials")
+
+        login(info.context, user)
+
+        return LoginReferee(token=get_token(user))
+
 
 
 class UserMutation(graphene.ObjectType):
+    login_referee = LoginReferee.Field()
     update_profile_picture = UpdateProfilePicture.Field()

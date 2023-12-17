@@ -232,6 +232,9 @@ class StartCompetition(graphene.Mutation):
         if competition.organization_user != user:
             raise Exception("User does not have permission to start this competition.")
         
+        if ParticipantCompetition.objects.filter(competition=competition).count() != competition.participants_count:
+            raise Exception("Number of participants does not match participantsCount.")
+        
         competition.status = "STARTED"
 
         competition.save()

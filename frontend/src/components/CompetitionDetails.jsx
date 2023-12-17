@@ -23,6 +23,7 @@ export default function CompetitionDetails(props) {
     IS_PARTICIPANT_IN_COMPETITION,
     {
       variables: { competitionId: competitionId },
+      fetchPolicy: "network-only"
     },
   );
   const [joinCompetition] = useMutation(JOIN_COMPETITION);
@@ -59,7 +60,6 @@ export default function CompetitionDetails(props) {
         },
       });
       setIsParticipantInCompetition(true);
-      window.location.reload(false);
     } catch (error) {
       toast.error(error.message);
     }
@@ -73,7 +73,6 @@ export default function CompetitionDetails(props) {
         },
       });
       setIsParticipantInCompetition(false);
-      window.location.reload(false);
     } catch (error) {
       toast.error(error.message);
     }

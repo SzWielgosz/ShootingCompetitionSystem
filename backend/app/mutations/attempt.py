@@ -46,11 +46,19 @@ class AssignAttemptsScore(graphene.Mutation):
         
         created_attempts = []
         for index, success_value in enumerate(success_values):
-            attempt = Attempt.objects.create(number=index, success=success_value, round=round, participant_user=participant_user)
-            attempt.save()
-            created_attempts.append(attempt)
+            existing_attempt, created = Attempt.objects.get_or_create(
+                round=round, participant_user=participant_user, number=index,
+                defaults={'success': success_value}
+            )
+
+            if not created:
+                existing_attempt.success = success_value
+                existing_attempt.save()
+
+            created_attempts.append(existing_attempt)
 
         return AssignAttemptsScore(round=round, attempts=created_attempts)
+
 
 
 class AttemptMutation(graphene.ObjectType):
