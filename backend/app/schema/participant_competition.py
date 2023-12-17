@@ -34,8 +34,10 @@ class ParticipantCompetitionQuery(graphene.ObjectType):
     @login_required
     def resolve_is_participant_in_competition(self, info, competition_id, **kwargs):
         user = info.context.user
-        participant_competition = ParticipantCompetition.objects.filter(participant_user=user).first()
-        if participant_competition:
+        decoded_id = from_global_id(competition_id)[1]
+        competition = Competition.objects.get(pk=decoded_id)
+        participant_competition = ParticipantCompetition.objects.filter(participant_user=user, competition=competition).first()
+        if participant_competition is not None:
             return True
         else:
             return False

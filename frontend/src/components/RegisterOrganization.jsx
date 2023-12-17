@@ -33,7 +33,7 @@ export default function RegisterParticipant() {
         },
       });
     } catch (error) {
-      toast(error.message);
+      toast.error(error.message);
     }
   };
 
