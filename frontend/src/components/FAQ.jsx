@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import FAQCSS from "../styles/FAQ.module.css";
 
 export default function FAQ() {
   const faqData = [
@@ -12,19 +13,19 @@ export default function FAQ() {
       id: 2,
       question: "Jak mogę przeglądać kalendarz zawodów strzeleckich?",
       answer:
-        'Po zalogowaniu, przejdź do sekcji "Kalendarz zawodów", gdzie znajdziesz listę dostępnych zawodów. Możesz przeglądać zawody według daty i lokalizacji.',
+        'Przejdź do sekcji "Kalendarz", gdzie znajdziesz listę dostępnych zawodów. Możesz przeglądać zawody z zastosowaniem zaimplementowanych filtrow.',
     },
     {
       id: 3,
       question: "Jak mogę się zapisać na zawody strzeleckie?",
       answer:
-        'Po znalezieniu interesującego cię zawodu w kalendarzu, kliknij na niego, a następnie wybierz opcję "Zapisz się". Upewnij się, że jesteś zalogowany jako uczestnik.',
+        'Zaloguj bądź zarejestruj się jako uczestnik. Przejdź do sekcji "Kalendarz" i znajdź interesujące cię zawody. Następnie wejdź w szczegoły zawodow. Jeżeli będziesz zalogowany, to wyswietli sie przycisk "Dolacz"',
     },
     {
       id: 4,
       question: "Czy mogę się wypisać z zawodów, na które się zapisałem?",
       answer:
-        'Tak, w zakładce "Moje zawody" znajdziesz listę zawodów, na które się zapisałeś. Możesz tam odwołać swoją rejestrację.',
+        'Tak, możesz tego dokonać bezpośrednio po zapisie lub w zakładce "Moje zawody" po znalezieniu zawodów z listy tych, na które się zapisałeś. Możesz tam odwołać swoją rejestrację.',
     },
     {
       id: 5,
@@ -42,17 +43,19 @@ export default function FAQ() {
     };
 
     return (
-      <div key={question}>
-        <div onClick={toggleOpen} style={{ cursor: "pointer" }}>
+      <div className={FAQCSS.faqItem}>
+        <div className={FAQCSS.question} onClick={toggleOpen}>
           <h3>{question}</h3>
         </div>
-        {isOpen && <p>{answer}</p>}
+        <div className={`${FAQCSS.answer} ${isOpen ? FAQCSS.open : ""}`}>
+          <p>{answer}</p>
+        </div>
       </div>
     );
   };
 
   return (
-    <div>
+    <div className={FAQCSS.container}>
       {faqData.map((item) => (
         <FAQItem key={item.id} question={item.question} answer={item.answer} />
       ))}

@@ -3,7 +3,8 @@ import { UPDATE_PROFILE_PICTURE } from "../graphql/mutations/UpdateProfilePictur
 import { UPDATE_ORGANIZATION_PROFILE } from "../graphql/mutations/UpdateOrganizationProfile";
 import { useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import ProfileCSS from "../styles/Profile.module.css";
 
 export default function OrganizationProfile() {
   const { loading, error, data, refetch } = useQuery(
@@ -52,8 +53,8 @@ export default function OrganizationProfile() {
         },
       });
 
+      toast.success("Pomyślnie edytowano dane");
       await refetch();
-
       setEditMode(false);
     } catch (error) {
       toast.error(error.message);
@@ -69,7 +70,7 @@ export default function OrganizationProfile() {
       },
     })
       .then(() => {
-        toast.success("Profile picture updated succesfully");
+        toast.success("Pomyślnie edytowano zdjęcie profilowe");
         refetch();
       })
       .catch((error) => {
@@ -85,8 +86,9 @@ export default function OrganizationProfile() {
     return (
       <div>
         {editMode ? (
-          <div>
+          <div className={ProfileCSS.editMode}>
             <img
+              className={ProfileCSS.profilePicture}
               src={
                 data.loggedUser.profilePicture
                   ? `http://localhost:8000/media/${data.loggedUser.profilePicture}`
@@ -178,6 +180,7 @@ export default function OrganizationProfile() {
           <div>
             <div key={data.loggedUser.id}>
               <img
+                className={ProfileCSS.profilePicture}
                 src={
                   data.loggedUser.profilePicture
                     ? `http://localhost:8000/media/${data.loggedUser.profilePicture}`
@@ -197,6 +200,7 @@ export default function OrganizationProfile() {
               <p>Kod pocztowy: {data.loggedUser.organization.postCode}</p>
             </div>
             <button onClick={handleEditClick}>Edit</button>
+            <ToastContainer />
           </div>
         )}
       </div>

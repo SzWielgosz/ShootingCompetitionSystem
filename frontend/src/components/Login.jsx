@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import LoginCSS from "../styles/Login.module.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -44,9 +45,11 @@ export default function Login() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="email">Email:</label>
+    <form className={LoginCSS.form} onSubmit={handleSubmit}>
+      Formularz logowania
+      <label className={LoginCSS.label} htmlFor="email" />
       <input
+        className={LoginCSS.input}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         type="email"
@@ -55,8 +58,9 @@ export default function Login() {
         name="Email"
       />
       <br />
-      <label htmlFor="password">Hasło:</label>
+      <label className={LoginCSS.label} htmlFor="password" />
       <input
+        className={LoginCSS.input}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         type="password"
@@ -65,7 +69,9 @@ export default function Login() {
         name="password"
       />
       <br />
-      <button type="submit">Zaloguj się</button>
+      <button className={LoginCSS.button} type="submit">
+        Zaloguj się
+      </button>
       <ToastContainer />
     </form>
   );

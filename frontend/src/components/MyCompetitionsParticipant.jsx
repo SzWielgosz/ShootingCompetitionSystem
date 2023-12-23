@@ -2,6 +2,7 @@ import { useLazyQuery } from "@apollo/client";
 import { useState, useEffect } from "react";
 import { GET_PARTICIPANT_COMPETITIONS } from "../graphql/queries/getParticipantCompetitions";
 import { Link } from "react-router-dom";
+import MyCompetitionsCSS from "../styles/MyCompetitions.module.css";
 
 const PAGE_SIZE = 5;
 
@@ -12,8 +13,10 @@ export default function MyCompetitionsParticipant() {
   const [disciplineFilter, setDisciplineFilter] = useState(undefined);
   const [statusFilter, setStatusFilter] = useState(undefined);
   const [targetFilter, setTargetFilter] = useState(undefined);
+  const [hasNextPage, setHasNextPage] = useState(true);
   const [getData, { data, loading, error }] = useLazyQuery(
     GET_PARTICIPANT_COMPETITIONS,
+    { fetchPolicy: "network-only" },
   );
 
   useEffect(() => {
@@ -28,6 +31,13 @@ export default function MyCompetitionsParticipant() {
       },
     });
   }, [page, getData]);
+
+  useEffect(() => {
+    if (data && data.participantCompetitions) {
+      const edges = data.participantCompetitions.edges || [];
+      setHasNextPage(edges.length === PAGE_SIZE);
+    }
+  }, [data]);
 
   const handleSearch = () => {
     getData({
@@ -45,35 +55,30 @@ export default function MyCompetitionsParticipant() {
   }
 
   return (
-    <div>
-      <nav>
-        <button disabled={!page} onClick={() => setPage((prev) => prev - 1)}>
-          Wróć
-        </button>
-        <span>Page {page + 1}</span>
-        <button onClick={() => setPage((prev) => prev + 1)}>Dalej</button>
-      </nav>
-
-      <div>
-        <label>
+    <div className={MyCompetitionsCSS.container}>
+      <div className={MyCompetitionsCSS.filters}>
+        <label className={MyCompetitionsCSS.label}>
           Nazwa:
           <input
+            className={MyCompetitionsCSS.input}
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </label>
-        <label>
+        <label className={MyCompetitionsCSS.label}>
           Wygrane:
           <input
+            className={MyCompetitionsCSS.input}
             type="checkbox"
             checked={showWins}
             onChange={() => setShowWins((prev) => !prev)}
           />
         </label>
-        <label>
+        <label className={MyCompetitionsCSS.label}>
           Dyscyplina
           <select
+            className={MyCompetitionsCSS.select}
             value={disciplineFilter}
             onChange={(e) => setDisciplineFilter(e.target.value)}
           >
@@ -83,20 +88,22 @@ export default function MyCompetitionsParticipant() {
             <option value="RIFLE">Karabin</option>
           </select>
         </label>
-        <label>
+        <label className={MyCompetitionsCSS.label}>
           Cele:
           <select
-            value={disciplineFilter}
-            onChange={(e) => setDisciplineFilter(e.target.value)}
+            className={MyCompetitionsCSS.select}
+            value={targetFilter}
+            onChange={(e) => setTargetFilter(e.target.value)}
           >
             <option value="Any">Każde</option>
             <option value="STATIC">Statyczne</option>
             <option value="MOVING">Ruchome</option>
           </select>
         </label>
-        <label>
+        <label className={MyCompetitionsCSS.label}>
           Status:
           <select
+            className={MyCompetitionsCSS.select}
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -106,30 +113,67 @@ export default function MyCompetitionsParticipant() {
             <option value="ENDED">Zakończone</option>
           </select>
         </label>
-        <button onClick={handleSearch}>Wyszukaj</button>
+        <button className={MyCompetitionsCSS.button} onClick={handleSearch}>Wyszukaj</button>
       </div>
+      <nav className={MyCompetitionsCSS.nav}>
+        <button className={MyCompetitionsCSS.button} disabled={!page} onClick={() => setPage((prev) => prev - 1)}>
+          Wstecz
+        </button>
+        <span>Page {page + 1}</span>
+        <button
+          className={MyCompetitionsCSS.button}
+          onClick={() => {
+            if (hasNextPage) {
+              setPage((prev) => prev + 1);
+            }
+          }}
+          disabled={!hasNextPage}
+        >
+          Dalej
+        </button>
+      </nav>
 
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <ul>
-          {data?.participantCompetitions.edges.map((edge) => {
-            const competition = edge.node;
-            return (
-              <li key={competition.id}>
-                {competition.name} - {competition.city} -{" "}
-                {new Date(competition.dateTime).toLocaleString(undefined, {
-                  year: "numeric",
-                  month: "numeric",
-                  day: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                })}
-                <Link to={"/competitions/" + competition.id}>Details</Link>
-              </li>
-            );
-          })}
-        </ul>
+        <div className={MyCompetitionsCSS.results}>
+          <table className={MyCompetitionsCSS.table}>
+          <thead>
+              <tr>
+                <th>Nazwa</th>
+                <th>Miasto</th>
+                <th>Data i czas</th>
+                <th>Szczegóły</th>
+              </tr>
+            </thead>
+            {data?.participantCompetitions.edges.map((edge) => {
+              const competition = edge.node;
+              return (
+                  <tr key={competition.id}>
+                    <td>{competition.name}</td>
+                    <td>{competition.city}</td>
+                    <td>
+                      {new Date(competition.dateTime).toLocaleString(undefined, {
+                        year: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "numeric",
+                      })}
+                    </td>
+                    <td>
+                      <Link
+                        to={"/competitions/" + competition.id}
+                        className={MyCompetitionsCSS.link}
+                      >
+                        Szczegóły
+                      </Link>
+                    </td>
+                  </tr>
+              );
+            })}
+          </table>
+        </div>
       )}
     </div>
   );

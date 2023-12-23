@@ -6,6 +6,7 @@ import {
   translateCompetitionShareStatus,
   translateCompetitionStatus,
 } from "../utils/Translations";
+import MyCompetitionsOrganizationCSS from "../styles/MyCompetitionsOrganization.module.css";
 
 const PAGE_SIZE = 5;
 
@@ -18,6 +19,7 @@ export default function MyCompetitionsOrganization() {
   const [shareStatusFilter, setShareStatusFilter] = useState("Any");
   const [getData, { data, loading, error }] = useLazyQuery(
     GET_ORGANIZATION_COMPETITIONS,
+    { fetchPolicy: "network-only" },
   );
 
   const navigate = useNavigate();
@@ -61,28 +63,24 @@ export default function MyCompetitionsOrganization() {
   }
 
   return (
-    <div>
-      <button onClick={handleCreate}>Utwórz zawody</button>
-      <nav>
-        <button disabled={!page} onClick={() => setPage((prev) => prev - 1)}>
-          Wróć
-        </button>
-        <span>Page {page + 1}</span>
-        <button onClick={() => setPage((prev) => prev + 1)}>Dalej</button>
-      </nav>
+    <div className={MyCompetitionsOrganizationCSS.container}>
+      Kliknij aby <button className={`${MyCompetitionsOrganizationCSS.button} ${MyCompetitionsOrganizationCSS.createButton}`} onClick={handleCreate}>utworzyć zawody</button>
+      <hr className={MyCompetitionsOrganizationCSS.hr}/>
 
-      <div>
-        <label>
+      <div className={MyCompetitionsOrganizationCSS.filters}>
+        <label className={MyCompetitionsOrganizationCSS.label}>
           Nazwa:
           <input
+            className={MyCompetitionsOrganizationCSS.input}
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </label>
-        <label>
+        <label className={MyCompetitionsOrganizationCSS.label}>
           Dyscyplina:
           <select
+            className={MyCompetitionsOrganizationCSS.select}
             value={disciplineFilter}
             onChange={(e) => setDisciplineFilter(e.target.value)}
           >
@@ -92,9 +90,10 @@ export default function MyCompetitionsOrganization() {
             <option value="RIFLE">Karabin</option>
           </select>
         </label>
-        <label>
+        <label className={MyCompetitionsOrganizationCSS.label}>
           Cele:
           <select
+            className={MyCompetitionsOrganizationCSS.select}
             value={targetFilter}
             onChange={(e) => setTargetFilter(e.target.value)}
           >
@@ -103,9 +102,10 @@ export default function MyCompetitionsOrganization() {
             <option value="MOVING">Ruchome</option>
           </select>
         </label>
-        <label>
+        <label className={MyCompetitionsOrganizationCSS.label}>
           Status:
           <select
+            className={MyCompetitionsOrganizationCSS.select}
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -115,9 +115,10 @@ export default function MyCompetitionsOrganization() {
             <option value="ENDED">Zakończone</option>
           </select>
         </label>
-        <label>
+        <label className={MyCompetitionsOrganizationCSS.label}>
           Status udostępniania:
           <select
+            className={MyCompetitionsOrganizationCSS.select}
             value={shareStatusFilter}
             onChange={(e) => setShareStatusFilter(e.target.value)}
           >
@@ -126,13 +127,24 @@ export default function MyCompetitionsOrganization() {
             <option value="NOT_SHARED">Nie udostępnione</option>
           </select>
         </label>
-        <button onClick={handleSearch}>Wyszukaj</button>
+        <button 
+        className={`${MyCompetitionsOrganizationCSS.button} ${MyCompetitionsOrganizationCSS.searchButton}`}
+        onClick={handleSearch}>Wyszukaj</button>
       </div>
-
+      <nav className={MyCompetitionsOrganizationCSS.nav}>
+        <button disabled={!page} onClick={() => setPage((prev) => prev - 1)} 
+        className={`${MyCompetitionsOrganizationCSS.button} ${MyCompetitionsOrganizationCSS.roundButton}`}>
+        &lt;
+        </button>
+        <span>Page {page + 1}</span>
+        <button onClick={() => setPage((prev) => prev + 1)}
+        className={`${MyCompetitionsOrganizationCSS.button} ${MyCompetitionsOrganizationCSS.roundButton}`}>
+          &gt;</button>
+      </nav>
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <ul>
+        <ul className={MyCompetitionsOrganizationCSS.list}>
           {data?.organizationCompetitions.edges.map((edge) => {
             const competition = edge.node;
             return (

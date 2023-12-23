@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User, AbstractUser
 from app.value_objects import DISCIPLINE_CHOICES, AGE_RESTRICTIONS, TARGET_CHOICES, COMPETITION_STATUSES, SHARE_STATUSES
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.hashers import make_password
 
 
 class User(AbstractUser):
@@ -18,6 +19,14 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
+
+    def save(self, *args, **kwargs):
+   
+        if self.password and not self.password.startswith(('pbkdf2_sha256$', 'bcrypt$', 'argon2')):
+        
+            self.password = make_password(self.password)
+        
+        super().save(*args, **kwargs)
 
 
 class Participant(models.Model):

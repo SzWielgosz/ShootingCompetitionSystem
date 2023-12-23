@@ -4,7 +4,7 @@ import { GET_COMPETITION_DETAILS } from "../graphql/queries/getCompetitionDetail
 import { JOIN_COMPETITION } from "../graphql/mutations/joinCompetition";
 import { LEAVE_COMPETITION } from "../graphql/mutations/leaveCompetition";
 import { useQuery, useMutation } from "@apollo/client";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import {
@@ -13,6 +13,7 @@ import {
   translateCompetitionStatus,
   translateTargetType,
 } from "../utils/Translations";
+import CompetitionDetailsCSS from "../styles/CompetitionDetails.module.css";
 
 export default function CompetitionDetails(props) {
   const { competitionId } = props;
@@ -23,7 +24,7 @@ export default function CompetitionDetails(props) {
     IS_PARTICIPANT_IN_COMPETITION,
     {
       variables: { competitionId: competitionId },
-      fetchPolicy: "network-only"
+      fetchPolicy: "network-only",
     },
   );
   const [joinCompetition] = useMutation(JOIN_COMPETITION);
@@ -60,6 +61,7 @@ export default function CompetitionDetails(props) {
         },
       });
       setIsParticipantInCompetition(true);
+      toast.success("Zapisałeś się na zawody");
     } catch (error) {
       toast.error(error.message);
     }
@@ -73,6 +75,7 @@ export default function CompetitionDetails(props) {
         },
       });
       setIsParticipantInCompetition(false);
+      toast.success("Wypisałeś się z zawodów");
     } catch (error) {
       toast.error(error.message);
     }
@@ -83,8 +86,13 @@ export default function CompetitionDetails(props) {
       ?.edgeCount;
 
   return (
-    <div>
-      <button onClick={handleGoBack}>Powrot</button>
+    <div className={CompetitionDetailsCSS.container}>
+      <button
+        onClick={handleGoBack}
+        className={CompetitionDetailsCSS.goBackButton}
+      >
+        Powrot
+      </button>
       {dataDetail && dataDetail.competitionDetails ? (
         dataDetail.competitionDetails.edges.map((item) => (
           <div key={item.node.id}>
@@ -136,7 +144,7 @@ export default function CompetitionDetails(props) {
             <p>
               Zwycięzca:{" "}
               {item.node.winner
-                ? item.node.winner.firstname + " " + item.node.winner.lastName
+                ? item.node.winner.firstName + " " + item.node.winner.lastName
                 : "Nie wyloniony"}
             </p>
             <p>Opis: {item.node.description}</p>
@@ -144,14 +152,17 @@ export default function CompetitionDetails(props) {
               <div key={round.node.id}>
                 <p>Runda numer: {round.node.number + 1}</p>
                 <p>
-                  Sędzia:{" "}
-                  {round.node.refereeUser.firstName +
-                    " " +
-                    round.node.refereeUser.lastName}
-                </p>
-                <details>
-                  <summary>Proby: </summary>
-                  <ul>
+              Sędzia:{" "}
+              {round.node.refereeUser
+                ? round.node.refereeUser.firstName + " " + round.node.refereeUser.lastName
+                : "Nie ma :)"}
+            </p>
+
+                <details className={CompetitionDetailsCSS.details}>
+                  <summary className={CompetitionDetailsCSS.detailsSummary}>
+                    Proby:{" "}
+                  </summary>
+                  <ul className={CompetitionDetailsCSS.detailsContent}>
                     {[
                       ...new Set(
                         round.node.attemptSet.edges.map(
@@ -166,18 +177,54 @@ export default function CompetitionDetails(props) {
                         );
                       const participant =
                         participantAttempts[0].node.participantUser;
+
                       return (
                         <li key={participantId}>
-                          Uczestnik: {participant.firstName}{" "}
-                          {participant.lastName}
-                          <ul>
-                            {participantAttempts.map((attempt) => (
-                              <li key={attempt.node.number}>
-                                Proba numer: {attempt.node.number + 1}, Success:{" "}
-                                {attempt.node.success ? "Tak" : "Nie"}
-                              </li>
-                            ))}
-                          </ul>
+                          <table
+                            className={CompetitionDetailsCSS.participantTable}
+                          >
+                            <tbody>
+                              <tr>
+                                <td
+                                  className={
+                                    CompetitionDetailsCSS.participantName
+                                  }
+                                >{`${participant.firstName} ${participant.lastName}`}</td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  {participantAttempts.map((attempt) => (
+                                    <p key={attempt.node.number}>
+                                      <span
+                                        className={
+                                          CompetitionDetailsCSS.attemptNumber
+                                        }
+                                      >
+                                        Próba {attempt.node.number + 1}:
+                                      </span>
+                                      {attempt.node.success ? (
+                                        <span
+                                          className={
+                                            CompetitionDetailsCSS.success
+                                          }
+                                        >
+                                          ✔
+                                        </span>
+                                      ) : (
+                                        <span
+                                          className={
+                                            CompetitionDetailsCSS.failure
+                                          }
+                                        >
+                                          ✘
+                                        </span>
+                                      )}
+                                    </p>
+                                  ))}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </li>
                       );
                     })}
@@ -185,6 +232,7 @@ export default function CompetitionDetails(props) {
                 </details>
               </div>
             ))}
+            <ToastContainer />
           </div>
         ))
       ) : (

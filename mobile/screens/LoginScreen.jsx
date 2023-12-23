@@ -40,7 +40,7 @@ const LoginScreen = ({ onLoginSuccess, navigation }) => {
         onChangeText={(text) => setPassword(text)}
         secureTextEntry={true}
       />
-      <Button title="Login" onPress={handleLogin} />
+      <Button title="Zaloguj" onPress={handleLogin} />
       {error && <Text style={styles.errorText}>{error.message}</Text>}
     </View>
   );

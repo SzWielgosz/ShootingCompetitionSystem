@@ -5,10 +5,13 @@ import { GET_REFEREE_ROUNDS } from '../graphql/queries/GetRefereeRounds';
 import { useNavigation } from '@react-navigation/native';
 
 const RoundsListScreen = () => {
-  const { loading, error, data } = useQuery(GET_REFEREE_ROUNDS);
+  const { loading, error, data, refetch } = useQuery(GET_REFEREE_ROUNDS,
+    { fetchPolicy: "network-only" },);
   const navigation = useNavigation();
 
-  if (loading) return <Text style={styles.loadingText}>Loading...</Text>;
+  if (loading) {
+    return <Text style={styles.loadingText}>Loading...</Text>;
+  }
   if (error) return <Text style={styles.errorText}>Error: {error.message}</Text>;
 
   const rounds = data.refereeRounds.edges;
@@ -22,9 +25,16 @@ const RoundsListScreen = () => {
     navigation.navigate('RoundDetailsScreen', { roundId, attemptsCount });
   };
 
+  const handleRefresh = () => {
+    refetch();
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Lista rund</Text>
+        <TouchableOpacity onPress={handleRefresh} style={styles.refreshButton}>
+            <Text style={styles.buttonText}>Odśwież</Text>
+        </TouchableOpacity>
       {rounds.map(({ node }) => (
         <View key={node.id} style={styles.roundItem}>
           <Text style={styles.roundInfo}>Runda: {node.number + 1}</Text>
@@ -76,6 +86,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+  refreshButton: {
+    padding: 8,
+    backgroundColor: '#3498db',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

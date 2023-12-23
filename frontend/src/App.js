@@ -3,10 +3,8 @@ import Navbar from "./components/NavBar";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/Register";
-import ContactPage from "./pages/ContactPage";
 import CalendarPage from "./pages/CalendarPage";
 import FAQPage from "./pages/FAQPage";
-import AboutPage from "./pages/AboutPage";
 import { AuthProvider } from "./hooks/useAuth";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import CompetitionDetailsPage from "./pages/CompetitionDetailsPage";
@@ -14,6 +12,7 @@ import MyProfilePage from "./pages/MyProfilePage";
 import MyCompetitionsPage from "./pages/MyCompetitionsPage";
 import CreateCompetitionPage from "./pages/CreateCompetitionPage";
 import OrganizationCompetitionDetailsPage from "./pages/OrganizationCompetitionDetailsPage";
+import RefereesPage from "./pages/RefereesPage";
 
 const ROLES = {
   Participant: "Participant",
@@ -35,8 +34,7 @@ function App() {
               path="/competitions/:id"
               element={<CompetitionDetailsPage />}
             />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/referees" element={<RefereesPage />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route
               path="/my_profile"

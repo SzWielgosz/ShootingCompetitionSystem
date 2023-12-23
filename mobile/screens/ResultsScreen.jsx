@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, Alert, StyleSheet } from 'react-native';
 import CheckBox from 'expo-checkbox';
 import { useMutation, useQuery } from '@apollo/client';
@@ -14,16 +14,24 @@ const ResultsScreen = ({ route }) => {
       roundId: roundId,
       participantUserId: userId,
     },
+    fetchPolicy: "network-only"
   });
 
   const [assignAttemptsScore] = useMutation(ASSIGN_ATTEMPTS_SCORE);
 
-  React.useEffect(() => {
-    if (!loading && data && data.participantAttempts && data.participantAttempts.edges) {
-      const successValues = data.participantAttempts.edges.map(edge => edge.node.success);
-      setResults(successValues || Array(attemptsCount).fill(false));
+  useEffect(() => {
+    if (error) {
+      console.error(error);
     }
-  }, [loading, data]);
+  
+    if (!loading && data && data.participantAttempts && data.participantAttempts.edges && data.participantAttempts.edges.length > 0) {
+      const successValues = data.participantAttempts.edges.map(edge => edge.node.success);
+      setResults(successValues);
+    } else {
+      setResults(prevResults => prevResults || Array(attemptsCount).fill(false));
+    }
+  }, [data, error, loading]);
+
 
   const handleSaveResult = async () => {
     try {
@@ -37,7 +45,7 @@ const ResultsScreen = ({ route }) => {
 
       Alert.alert("Przypisano wyniki");
     } catch (error) {
-      Alert.alert(error);
+      Alert.alert(error.message || "Wystąpił błąd podczas przypisywania wyników");
     }
   };
 

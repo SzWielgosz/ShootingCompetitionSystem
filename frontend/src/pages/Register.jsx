@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import RegisterParticipant from "../components/RegisterParticipant";
 import RegisterOrganization from "../components/RegisterOrganization";
+import RegisterCSS from "../styles/Register.module.css";
 
 export default function Register() {
   const [registrationType, setRegistrationType] = useState("participant");
@@ -19,14 +20,23 @@ export default function Register() {
   };
 
   return (
-    <div>
+    <div className={RegisterCSS.container}>
       {!showForm && (
         <div>
-          <button onClick={() => handleTypeChange("participant")}>
-            Rejestracja kandydata
+          <p className={RegisterCSS.prompt}>
+            Chciałbym się zarejestrować jako:
+          </p>
+          <button
+            className={RegisterCSS.button}
+            onClick={() => handleTypeChange("participant")}
+          >
+            Kandydat
           </button>
-          <button onClick={() => handleTypeChange("organization")}>
-            Rejestracja organizacji
+          <button
+            className={RegisterCSS.button}
+            onClick={() => handleTypeChange("organization")}
+          >
+            Organizacja
           </button>
         </div>
       )}
@@ -39,7 +49,11 @@ export default function Register() {
             <RegisterOrganization />
           )}
 
-          {showBackButton && <button onClick={handleGoBack}>Wróć</button>}
+          {showBackButton && (
+            <button className={RegisterCSS.button} onClick={handleGoBack}>
+              Wróć
+            </button>
+          )}
         </div>
       )}
     </div>

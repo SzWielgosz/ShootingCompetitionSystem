@@ -1,0 +1,74 @@
+.container{
+  padding-left: 200px;
+}
+
+.nav{
+  float: right;
+  margin-right: 2rem;
+  /* clear: both; */
+}
+
+.filters {
+  display: flex;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  gap:0.5rem 0;
+}
+
+.label {
+  font-weight: bold;
+  margin-right: 8px;
+  gap: 0.3rem;
+  display: flex;
+  align-items: center;
+}
+
+
+.input,
+.select,
+.dateinput {
+  padding: 8px;
+  margin-right: 10px;
+  border: 1px solid #C2C0C0;
+  border-radius: 4px;
+}
+
+.button:disabled{
+  filter: brightness(10) saturate(0.5);
+}
+
+.button {
+  padding: 8px 12px;
+  background-color: #cb1313;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.roundButton{
+  margin:0.3rem 1rem;
+  border-radius: 0.5rem;
+}
+
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.table th, .table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.searchButton {
+  margin-left: 2rem;
+}
