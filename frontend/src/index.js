@@ -11,6 +11,12 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
+
+import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
+
+loadDevMessages();
+loadErrorMessages();
+
 const httpLink = createUploadLink({
   uri: "http://localhost:8000/graphql/",
   credentials: "include",

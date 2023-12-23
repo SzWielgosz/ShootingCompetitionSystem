@@ -1,0 +1,27 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.profilePicture {
+  max-width: 250px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.viewMode table{
+  border: 1px solid #ddd;
+  margin: auto;
+}
+
+.viewMode th, tr, td{
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.editMode label {
+  display: block;
+  margin-bottom: 5px;
+}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { CREATE_COMPETITION } from "../graphql/mutations/CreateCompetition";
 import { useMutation } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateCompetition() {
   const [name, setName] = useState("");
@@ -17,6 +18,7 @@ export default function CreateCompetition() {
   const [roundsCount, setRoundsCount] = useState(0);
   const [attemptsCount, setAttemptsCount] = useState(0);
   const [createCompetition, error] = useMutation(CREATE_COMPETITION);
+  const navigate = useNavigate();
 
   function getCurrentDateTime() {
     const now = new Date();
@@ -55,7 +57,8 @@ export default function CreateCompetition() {
           attemptsCount: attemptsCount,
         },
       });
-      window.location.reload(false);
+      toast.success("Utworzono zawody");
+      navigate("/my_competitions");
     } catch (error) {
       toast.error(error.message);
     }

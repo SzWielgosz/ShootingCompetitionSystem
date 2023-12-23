@@ -272,15 +272,20 @@ class EndCompetition(graphene.Mutation):
         
         rounds = Round.objects.filter(competition=competition).all()
         participants_competitions = ParticipantCompetition.objects.filter(competition=competition).all()
+        print(participants_competitions)
+
+        participants_scoring = dict()
 
         for participant_competition in participants_competitions:
             participant_user = participant_competition.participant_user
-            attempts_count = Attempt.objects.filter(participant_user=participant_user).count()
+            attempts_count = Attempt.objects.filter(participant_user=participant_user, round__competition=competition).count()
 
-            if attempts_count != competition.attempts_count:
+
+            if attempts_count != competition.attempts_count * competition.rounds_count:
                 raise Exception(f"Participant {participant_user.first_name + ' ' +participant_user.last_name} does not have the required number of attempts.")
 
-        participants_scoring = dict()
+
+            participants_scoring[participant_user] = 0
 
         for round in rounds:
             attempts = Attempt.objects.filter(round=round).all()
@@ -299,6 +304,8 @@ class EndCompetition(graphene.Mutation):
         competition.winner = winner
 
         competition.save()
+
+        return EndCompetition(competition=competition)
 
 class CompetitionMutation(graphene.ObjectType):
     create_competition = CreateCompetition.Field()

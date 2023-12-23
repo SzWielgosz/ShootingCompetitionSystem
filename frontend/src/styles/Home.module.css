@@ -1,0 +1,12 @@
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+.ol,
+.ul {
+  list-style: none;
+  padding: 0;
+}
+

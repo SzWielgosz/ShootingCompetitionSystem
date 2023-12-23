@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useMutation, useApolloClient } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import LogoutButtonCSS from "../styles/LogoutButton.module.css";
 
 export default function Logout() {
   const client = useApolloClient();
@@ -28,7 +29,9 @@ export default function Logout() {
 
   return (
     <li>
-      <button onClick={handleLogout}>Wyloguj się</button>
+      <button className={LogoutButtonCSS.logoutButton} onClick={handleLogout}>
+        Wyloguj się
+      </button>
     </li>
   );
 }

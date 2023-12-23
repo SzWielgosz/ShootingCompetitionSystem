@@ -3,7 +3,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import { GET_LOGGED_USER_PARTICIPANT } from "../graphql/queries/getLoggedUserParticipant";
 import { UPDATE_PARTICIPANT_PROFILE } from "../graphql/mutations/UpdateParticipantProfile";
 import { UPDATE_PROFILE_PICTURE } from "../graphql/mutations/UpdateProfilePicture";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import ProfileCSS from "../styles/Profile.module.css";
 
 export default function ParticipantProfile() {
   const { loading, error, data, refetch } = useQuery(
@@ -50,8 +51,8 @@ export default function ParticipantProfile() {
         },
       });
 
+      toast.success("Pomyślnie edytowano dane");
       await refetch();
-
       setEditMode(false);
     } catch (error) {
       toast.error(error.message);
@@ -82,21 +83,19 @@ export default function ParticipantProfile() {
     return (
       <div>
         {editMode ? (
-          <div>
+          <div className={ProfileCSS.editMode}>
             <img
-              src={`http://localhost:8000/media/${data.loggedUser.profilePicture}`}
+              className={ProfileCSS.profilePicture}
+              src={
+                data.loggedUser.profilePicture
+                  ? `http://localhost:8000/media/${data.loggedUser.profilePicture}`
+                  : `http://localhost:8000/media/profile_pictures/common/blank-profile-picture.png`
+              }
               alt="Profile"
             />
             <input type="file" name="profile_picture" onChange={handleImage} />
             <label>
-              Username:
-              <input
-                type="text"
-                value={editedUser.username}
-                onChange={(e) =>
-                  setEditedUser({ ...editedUser, username: e.target.value })
-                }
-              />
+              {editedUser.username}
             </label>
             <label>
               First Name:
@@ -138,41 +137,55 @@ export default function ParticipantProfile() {
                 }
               />
             </label>
-            <label>
-              <input
-                defaultValue={editedUser.dateOfBirth}
-                onChange={(e) =>
-                  setEditedUser({
-                    ...editedUser,
-                    dateOfBirth: e.target.value,
-                  })
-                }
-                type="date"
-                placeholder="Data urodzenia"
-                id="dateOfBirth"
-                name="dateOfBirth"
-              />
-            </label>
-            <button onClick={handleSaveEdit}>Save</button>
-            <button onClick={handleCancelEdit}>Cancel</button>
+            <button onClick={handleSaveEdit}>Zapisz</button>
+            <button onClick={handleCancelEdit}>Anuluj</button>
           </div>
         ) : (
           <div>
+            <div className={ProfileCSS.viewMode}>
             <div key={data.loggedUser.id}>
               <img
-                src={`http://localhost:8000/media/${data.loggedUser.profilePicture}`}
-                alt="Profile"
+                className={ProfileCSS.profilePicture}
+                src={
+                  data.loggedUser.profilePicture
+                    ? `http://localhost:8000/media/${data.loggedUser.profilePicture}`
+                    : `http://localhost:8000/media/profile_pictures/common/blank-profile-picture.png`
+                }
+                alt="Profile Picture"
               />
-              <p>{data.loggedUser.username}</p>
-              <p>Imie: {data.loggedUser.firstName}</p>
-              <p>Nazwisko: {data.loggedUser.lastName}</p>
-              <p>Numer telefonu: {data.loggedUser.phoneNumber}</p>
-              <p>Miasto: {data.loggedUser.participant.city}</p>
-              <p>Data urodzenia: {data.loggedUser.participant.dateOfBirth}</p>
+              <table>
+                <tr>
+                  <th>Nazwa użytkownika</th>
+                  <td>{data.loggedUser.username}</td>
+                </tr>
+                <tr>
+                  <th>Imie</th>
+                  <td>{data.loggedUser.firstName}</td>
+                </tr>
+                <tr>
+                  <th>Nazwisko</th>
+                  <td>{data.loggedUser.lastName}</td>
+                </tr>
+                <tr>
+                  <th>Numer telefonu</th>
+                  <td>{data.loggedUser.phoneNumber}</td>
+                </tr>
+                <tr>
+                  <th>Miasto</th>
+                  <td>{data.loggedUser.participant.city}</td>
+                </tr>
+                <tr>
+                  <th>Data urodzenia</th>
+                  <td>{data.loggedUser.participant.dateOfBirth}</td>
+                </tr>
+              </table>
             </div>
-            <button onClick={handleEditClick}>Edit</button>
+            
+            </div>
+            <button onClick={handleEditClick}>Edytuj</button>
           </div>
         )}
+        <ToastContainer />
       </div>
     );
   } else {

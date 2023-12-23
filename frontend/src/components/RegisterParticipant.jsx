@@ -3,6 +3,7 @@ import { REGISTER_PARTICIPANT } from "../graphql/mutations/RegisterParticipant";
 import { useMutation } from "@apollo/client";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import RegisterCSS from "../styles/Register.module.css";
 
 export default function RegisterParticipant() {
   const [username, setUsername] = useState("");
@@ -35,94 +36,118 @@ export default function RegisterParticipant() {
           dateOfBirth,
         },
       });
+      toast.success("Pomyślnie zarejestrowano");
     } catch (error) {
       toast.error(error.message);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="username">Nazwa użytkownika:</label>
+    <form className={RegisterCSS.form} onSubmit={handleSubmit}>
+      <label className={RegisterCSS.label} htmlFor="username">
+        Nazwa użytkownika:
+      </label>
       <input
+        className={RegisterCSS.input}
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         type="text"
-        placeholder="Nazwa użytkownika"
+        placeholder="Wpisz nazwe użytkownika"
         id="username"
         name="username"
       />
       <br />
-      <label htmlFor="email">Email:</label>
+      <label className={RegisterCSS.label} htmlFor="email">
+        Email:
+      </label>
       <input
+        className={RegisterCSS.input}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         type="email"
-        placeholder="Email"
+        placeholder="Wpisz email"
         id="email"
         name="email"
       />
       <br />
-      <label htmlFor="password">Hasło:</label>
+      <label className={RegisterCSS.label} htmlFor="password">
+        Hasło:
+      </label>
       <input
+        className={RegisterCSS.input}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         type="password"
-        placeholder="Hasło"
+        placeholder="Wpisz hasło"
         id="password"
         name="password"
       />
       <br />
-      <label htmlFor="firstName">Imie:</label>
+      <label className={RegisterCSS.label} htmlFor="firstName">
+        Imie:
+      </label>
       <input
+        className={RegisterCSS.input}
         value={firstName}
         onChange={(e) => setFirstName(e.target.value)}
         type="text"
-        placeholder="Imie"
+        placeholder="Wpisz imie"
         id="firstName"
         name="firstName"
       />
       <br />
-      <label htmlFor="lastName">Nazwisko:</label>
+      <label className={RegisterCSS.label} htmlFor="lastName">
+        Nazwisko:
+      </label>
       <input
+        className={RegisterCSS.input}
         value={lastName}
         onChange={(e) => setLastName(e.target.value)}
         type="text"
-        placeholder="Nazwisko"
+        placeholder="Wpisz nazwisko"
         id="lastName"
         name="lastName"
       />
       <br />
-      <label htmlFor="city">Miasto:</label>
+      <label className={RegisterCSS.label} htmlFor="city">
+        Miasto:
+      </label>
       <input
+        className={RegisterCSS.input}
         value={city}
         onChange={(e) => setCity(e.target.value)}
         type="text"
-        placeholder="Miasto"
+        placeholder="Wpisz miasto"
         id="city"
         name="city"
       />
       <br />
-      <label htmlFor="phoneNumber">Numer telefonu:</label>
+      <label className={RegisterCSS.label} htmlFor="phoneNumber">
+        Numer telefonu:
+      </label>
       <input
+        className={RegisterCSS.input}
         value={phoneNumber}
         onChange={(e) => setPhoneNumber(e.target.value)}
         type="text"
-        placeholder="Numer telefonu"
+        placeholder="Wpisz numer telefonu"
         id="phoneNumber"
         name="phoneNumber"
       />
       <br />
-      <label htmlFor="dateOfBirth">Data urodzenia:</label>
+      <label className={RegisterCSS.label} htmlFor="dateOfBirth">
+        Data urodzenia:
+      </label>
       <input
+        className={RegisterCSS.input}
         defaultValue={date}
         onChange={(e) => setDateOfBirth(e.target.value)}
         type="date"
-        placeholder="Data urodzenia"
         id="dateOfBirth"
         name="dateOfBirth"
       />
       <br />
-      <button type="submit">Zarejestruj się</button>
+      <button className={RegisterCSS.registerButton} type="submit">Zarejestruj się</button>
       <ToastContainer />
     </form>
   );

@@ -30,15 +30,11 @@ export default function OrganizationCompetitionDetails(props) {
 
   const navigate = useNavigate();
 
-  const { data, refetch } = useQuery(
-    GET_ORGANIZATION_COMPETITION_DETAILS,
-    {
-      variables: { competitionId: competitionId },
-    },
-  );
+  const { data, refetch } = useQuery(GET_ORGANIZATION_COMPETITION_DETAILS, {
+    variables: { competitionId: competitionId },
+  });
 
-  const { data: dataReferee } =
-    useQuery(GET_REFEREE_USERS);
+  const { data: dataReferee } = useQuery(GET_REFEREE_USERS);
 
   const [editCompetition] = useMutation(EDIT_COMPETITION);
   const [deleteCompetition] = useMutation(DELETE_COMPETITION);
@@ -148,17 +144,14 @@ export default function OrganizationCompetitionDetails(props) {
 
   const handleDelete = async () => {
     try {
-      const result = await deleteCompetition({
+      await deleteCompetition({
         variables: {
           competitionId: competitionId,
         },
       });
 
-      if (result.data.deleteCompetition) {
-        navigate("/my_competitions/organization");
-      } else {
-        toast.error("error");
-      }
+      toast.success("Usunięto zawody");
+      navigate("/my_competitions");
     } catch (error) {
       toast.error(error.message);
     }
@@ -242,7 +235,9 @@ export default function OrganizationCompetitionDetails(props) {
           {data && data.organizationCompetitionDetails
             ? competitionStatus === "STARTED" && (
                 <>
-                  <button onClick={handleEnd}>Zakończ</button>{" "}
+                  <button onClick={() => handleEnd(competitionId)}>
+                    Zakończ
+                  </button>{" "}
                 </>
               )
             : null}
@@ -310,7 +305,7 @@ export default function OrganizationCompetitionDetails(props) {
                 <p>
                   Zwycięzca:{" "}
                   {item.node.winner
-                    ? item.node.winner.firstname +
+                    ? item.node.winner.firstName +
                       " " +
                       item.node.winner.lastName
                     : "Nie wyloniony"}

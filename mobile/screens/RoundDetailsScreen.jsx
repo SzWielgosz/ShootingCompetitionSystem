@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useQuery } from '@apollo/client';
 import { GET_ROUND_PARTICIPANTS } from '../graphql/queries/GetRoundParticipants';
-import CheckBox from 'expo-checkbox';
 
 const RoundDetailsScreen = ({ route, navigation }) => {
   const { roundId, attemptsCount } = route.params;
@@ -20,7 +19,7 @@ const RoundDetailsScreen = ({ route, navigation }) => {
     }));
   };
 
-  const navigateToResultsScreen = (userId, firstName, lastName) => {
+  const navigateToResultsScreen = (userId, firstName, lastName, attemptsCount) => {
     navigation.navigate('ResultsScreen', {
       userId,
       roundId,
@@ -51,7 +50,7 @@ const RoundDetailsScreen = ({ route, navigation }) => {
             <Text style={styles.participantInfo}>Imię: {node.firstName}</Text>
             <Text style={styles.participantInfo}>Nazwisko: {node.lastName}</Text>
             <TouchableOpacity
-              onPress={() => navigateToResultsScreen(node.id, node.firstName, node.lastName)}
+              onPress={() => navigateToResultsScreen(node.id, node.firstName, node.lastName, attemptsCount)}
               style={styles.resultsButton}
             >
               <Text style={styles.buttonText}>WYNIKI</Text>

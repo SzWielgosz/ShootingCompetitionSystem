@@ -1,0 +1,56 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: "Arial", sans-serif;
+}
+
+.p {
+  margin-bottom: 10px;
+}
+
+.details {
+  margin-top: 10px;
+}
+
+.detailsSummary {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.detailsContent {
+  list-style-type: none;
+  padding: 0;
+}
+
+.participantTable {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.participantTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.participantName {
+  font-weight: bold;
+}
+
+.attemptsList {
+  list-style-type: none;
+  padding: 0;
+}
+
+.attemptNumber {
+  margin-right: 5px;
+}
+
+.success {
+  color: green;
+}
+
+.failure {
+  color: red;
+}
