@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { IS_PARTICIPANT_IN_COMPETITION } from "../graphql/queries/isParticipantInCompetition";
 import { GET_COMPETITION_DETAILS } from "../graphql/queries/getCompetitionDetails";
 import { JOIN_COMPETITION } from "../graphql/mutations/joinCompetition";
@@ -86,12 +86,9 @@ export default function CompetitionDetails(props) {
       ?.edgeCount;
 
   return (
-    <div className={CompetitionDetailsCSS.container}>
-      <button
-        onClick={handleGoBack}
-        className={CompetitionDetailsCSS.goBackButton}
-      >
-        Powrot
+    <div>
+      <button className={CompetitionDetailsCSS.button} onClick={handleGoBack}>
+        Powrót
       </button>
       {dataDetail && dataDetail.competitionDetails ? (
         dataDetail.competitionDetails.edges.map((item) => (
@@ -100,139 +97,116 @@ export default function CompetitionDetails(props) {
               auth.user.role === "Participant" &&
               item.node.status === "CREATED" &&
               (isParticipantInCompetition ? (
-                <button onClick={() => handleLeave(item.node.id)}>Opuść</button>
+                <button
+                  className={CompetitionDetailsCSS.button}
+                  onClick={() => handleLeave(item.node.id)}
+                >
+                  Opuść
+                </button>
               ) : (
-                <button onClick={() => handleJoin(item.node.id)}>Dołącz</button>
+                <button
+                  className={CompetitionDetailsCSS.button}
+                  onClick={() => handleJoin(item.node.id)}
+                >
+                  Dołącz
+                </button>
               ))}
-            <p>{item.node.name}</p>
-            <p>
-              Prowadzone przez: {item.node.organizationUser.organization.name}
-            </p>
-            <p>
-              Data i czas:{" "}
-              {new Date(item.node.dateTime).toLocaleString(undefined, {
-                year: "numeric",
-                month: "numeric",
-                day: "numeric",
-                hour: "numeric",
-                minute: "numeric",
-              })}
-            </p>
-            <p>
-              Adres:{" "}
-              {item.node.street +
-                " " +
-                item.node.houseNumber +
-                " " +
-                item.node.city}
-            </p>
-            <p>
-              Dyscyplina: {translateCompetitionDiscipline(item.node.discipline)}
-            </p>
-            <p>
-              Kategoria wiekowa:{" "}
-              {translateAgeCategory(item.node.ageRestriction)}
-            </p>
-            <p>Cele: {translateTargetType(item.node.target)}</p>
-            <p>Ilość rund: {item.node.roundsCount}</p>
-            <p>Ilość prob: {item.node.attemptsCount}</p>
-            <p>
-              Ilosc uczestnikow:{" "}
-              {participantCount + "/" + item.node.participantsCount}
-            </p>
-            <p>Status: {translateCompetitionStatus(item.node.status)}</p>
-            <p>
-              Zwycięzca:{" "}
-              {item.node.winner
-                ? item.node.winner.firstName + " " + item.node.winner.lastName
-                : "Nie wyloniony"}
-            </p>
-            <p>Opis: {item.node.description}</p>
-            {item.node.roundSet.edges.map((round) => (
-              <div key={round.node.id}>
-                <p>Runda numer: {round.node.number + 1}</p>
-                <p>
-              Sędzia:{" "}
-              {round.node.refereeUser
-                ? round.node.refereeUser.firstName + " " + round.node.refereeUser.lastName
-                : "Nie ma :)"}
-            </p>
-
-                <details className={CompetitionDetailsCSS.details}>
-                  <summary className={CompetitionDetailsCSS.detailsSummary}>
-                    Proby:{" "}
-                  </summary>
-                  <ul className={CompetitionDetailsCSS.detailsContent}>
-                    {[
-                      ...new Set(
-                        round.node.attemptSet.edges.map(
-                          (attempt) => attempt.node.participantUser.id,
-                        ),
-                      ),
-                    ].map((participantId) => {
-                      const participantAttempts =
-                        round.node.attemptSet.edges.filter(
-                          (attempt) =>
-                            attempt.node.participantUser.id === participantId,
-                        );
-                      const participant =
-                        participantAttempts[0].node.participantUser;
-
-                      return (
-                        <li key={participantId}>
-                          <table
-                            className={CompetitionDetailsCSS.participantTable}
-                          >
-                            <tbody>
-                              <tr>
-                                <td
-                                  className={
-                                    CompetitionDetailsCSS.participantName
-                                  }
-                                >{`${participant.firstName} ${participant.lastName}`}</td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  {participantAttempts.map((attempt) => (
-                                    <p key={attempt.node.number}>
-                                      <span
-                                        className={
-                                          CompetitionDetailsCSS.attemptNumber
-                                        }
-                                      >
-                                        Próba {attempt.node.number + 1}:
-                                      </span>
-                                      {attempt.node.success ? (
-                                        <span
-                                          className={
-                                            CompetitionDetailsCSS.success
-                                          }
-                                        >
-                                          ✔
-                                        </span>
-                                      ) : (
-                                        <span
-                                          className={
-                                            CompetitionDetailsCSS.failure
-                                          }
-                                        >
-                                          ✘
-                                        </span>
-                                      )}
-                                    </p>
-                                  ))}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </details>
+            {item.node.status === "STARTED" && (
+              <div className={CompetitionDetailsCSS.linkContainer}>
+                <Link
+                  className={CompetitionDetailsCSS.link}
+                  to={`/competitions/${item.node.id}/results`}
+                >
+                  Wyniki
+                </Link>
               </div>
-            ))}
-            <ToastContainer />
+            )}
+            <div className={CompetitionDetailsCSS.container}>
+              <table className={CompetitionDetailsCSS.detailsTable}>
+                <tbody>
+                  <tr>
+                    <th colSpan={2}>Szczegóły zawodów</th>
+                  </tr>
+                  <tr>
+                    <th>Nazwa</th>
+                    <td>{item.node.name}</td>
+                  </tr>
+                  <tr>
+                    <th>Prowadzący</th>
+                    <td>{item.node.organizationUser.organization.name}</td>
+                  </tr>
+                  <tr>
+                    <th>Data i czas</th>
+                    <td>
+                      {new Date(item.node.dateTime).toLocaleString(undefined, {
+                        year: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "numeric",
+                      })}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Adres</th>
+                    <td>
+                      {item.node.street +
+                        " " +
+                        item.node.houseNumber +
+                        " " +
+                        item.node.city}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Dyscyplina</th>
+                    <td>
+                      {translateCompetitionDiscipline(item.node.discipline)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Kategoria wiekowa</th>
+                    <td>{translateAgeCategory(item.node.ageRestriction)}</td>
+                  </tr>
+                  <tr>
+                    <th>Cele</th>
+                    <td>{translateTargetType(item.node.target)}</td>
+                  </tr>
+                  <tr>
+                    <th>Ilość rund</th>
+                    <td>{item.node.roundsCount}</td>
+                  </tr>
+                  <tr>
+                    <th>Ilość prób</th>
+                    <td>{item.node.attemptsCount}</td>
+                  </tr>
+                  <tr>
+                    <th>Ilość uczestników</th>
+                    <td>
+                      {participantCount + "/" + item.node.participantsCount}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Status</th>
+                    <td>{translateCompetitionStatus(item.node.status)}</td>
+                  </tr>
+                  <tr>
+                    <th>Zwycięzca</th>
+                    <td>
+                      {item.node.winner
+                        ? item.node.winner.firstName +
+                          " " +
+                          item.node.winner.lastName
+                        : "Nie wyłoniony"}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Opis</th>
+                    <td>{item.node.description}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <ToastContainer />
+            </div>
           </div>
         ))
       ) : (

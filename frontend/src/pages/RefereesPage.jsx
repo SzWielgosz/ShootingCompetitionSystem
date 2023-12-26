@@ -1,3 +1,5 @@
+import RefereeUsers from "../components/RefereeUsers";
+
 export default function RefereesPage() {
-    return <h1>Referees</h1>
+  return <RefereeUsers />;
 }

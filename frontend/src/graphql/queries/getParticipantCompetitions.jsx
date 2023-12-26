@@ -9,6 +9,7 @@ export const GET_PARTICIPANT_COMPETITIONS = gql`
     $target: CompetitionTarget
     $ageRestriction: CompetitionAgeRestriction
     $discipline: CompetitionDiscipline
+    $status: String
     $startDate: Date
     $endDate: Date
   ) {
@@ -20,6 +21,7 @@ export const GET_PARTICIPANT_COMPETITIONS = gql`
       target: $target
       ageRestriction: $ageRestriction
       discipline: $discipline
+      status: $status
       startDate: $startDate
       endDate: $endDate
     ) {
@@ -29,6 +31,7 @@ export const GET_PARTICIPANT_COMPETITIONS = gql`
           name
           discipline
           description
+          status
           dateTime
           city
         }

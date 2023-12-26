@@ -94,7 +94,7 @@ export default function OrganizationProfile() {
                   ? `http://localhost:8000/media/${data.loggedUser.profilePicture}`
                   : `http://localhost:8000/media/profile_pictures/common/blank-profile-picture.png`
               }
-              alt="Profile Picture"
+              alt=""
             />
             <input type="file" name="profile_picture" onChange={handleImage} />
             <label>
@@ -173,36 +173,66 @@ export default function OrganizationProfile() {
                 type="text"
               />
             </label>
-            <button onClick={handleSaveEdit}>Save</button>
-            <button onClick={handleCancelEdit}>Cancel</button>
+            <button className={ProfileCSS.button} onClick={handleSaveEdit}>
+              Zapisz
+            </button>
+            <button className={ProfileCSS.button} onClick={handleCancelEdit}>
+              Anuluj
+            </button>
           </div>
         ) : (
           <div>
-            <div key={data.loggedUser.id}>
-              <img
-                className={ProfileCSS.profilePicture}
-                src={
-                  data.loggedUser.profilePicture
-                    ? `http://localhost:8000/media/${data.loggedUser.profilePicture}`
-                    : `http://localhost:8000/media/profile_pictures/common/blank-profile-picture.png`
-                }
-                alt="Profile Picture"
-              />
-              <p>{data.loggedUser.username}</p>
-              <p>Nazwa organizacji: {data.loggedUser.organization.name}</p>
-              <p>Numer telefonu: {data.loggedUser.phoneNumber}</p>
-              <p>
-                Strona internetowa: {data.loggedUser.organization.websiteUrl}
-              </p>
-              <p>Miasto: {data.loggedUser.organization.city}</p>
-              <p>Ulica: {data.loggedUser.organization.street}</p>
-              <p>Numer placówki: {data.loggedUser.organization.houseNumber}</p>
-              <p>Kod pocztowy: {data.loggedUser.organization.postCode}</p>
+            <div className={ProfileCSS.viewMode}>
+              <div key={data.loggedUser.id}>
+                <img
+                  className={ProfileCSS.profilePicture}
+                  src={
+                    data.loggedUser.profilePicture
+                      ? `http://localhost:8000/media/${data.loggedUser.profilePicture}`
+                      : `http://localhost:8000/media/profile_pictures/common/blank-profile-picture.png`
+                  }
+                  alt=""
+                />
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>Nazwa użytkownika</th>
+                      <td>{data.loggedUser.username}</td>
+                    </tr>
+                    <tr>
+                      <th>Nazwa organizacji</th>
+                      <td>{data.loggedUser.organization.name}</td>
+                    </tr>
+                    <tr>
+                      <th>Strona internetowa</th>
+                      <td>{data.loggedUser.organization.websiteUrl}</td>
+                    </tr>
+                    <tr>
+                      <th>Miasto</th>
+                      <td>{data.loggedUser.organization.city}</td>
+                    </tr>
+                    <tr>
+                      <th>Ulica</th>
+                      <td>{data.loggedUser.organization.street}</td>
+                    </tr>
+                    <tr>
+                      <th>Numer placówki</th>
+                      <td>{data.loggedUser.organization.houseNumber}</td>
+                    </tr>
+                    <tr>
+                      <th>Kod pocztowy</th>
+                      <td>{data.loggedUser.organization.postCode}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <button onClick={handleEditClick}>Edit</button>
-            <ToastContainer />
+            <button className={ProfileCSS.button} onClick={handleEditClick}>
+              Edytuj
+            </button>
           </div>
         )}
+        <ToastContainer />
       </div>
     );
   }

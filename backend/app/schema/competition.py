@@ -24,7 +24,7 @@ class CompetitionConnection(graphene.Connection):
 class CompetitionQuery(graphene.ObjectType):
     competitions = DjangoFilterConnectionField(CompetitionNode, search=graphene.String(), winner=graphene.ID())
     shared_competitions = DjangoFilterConnectionField(CompetitionNode, search=graphene.String(), start_date=graphene.Date(), end_date=graphene.Date())
-    participant_competitions = DjangoFilterConnectionField(CompetitionNode, search=graphene.String(), win=graphene.Boolean(), start_date=graphene.Date(), end_date=graphene.Date())
+    participant_competitions = DjangoFilterConnectionField(CompetitionNode, search=graphene.String(), win=graphene.Boolean(), status=graphene.String(), start_date=graphene.Date(), end_date=graphene.Date())
     competition_details = relay.ConnectionField(CompetitionConnection, competition_id=graphene.ID())
     organization_competitions = DjangoFilterConnectionField(CompetitionNode, search=graphene.String(), status=graphene.String(), share_status=graphene.String(), start_date=graphene.Date(), end_date=graphene.Date())
     organization_competition_details = relay.ConnectionField(CompetitionConnection, competition_id=graphene.ID())
@@ -92,6 +92,7 @@ class CompetitionQuery(graphene.ObjectType):
 
         search = kwargs.get("search")
         win = kwargs.get("win")
+        status = kwargs.get("status")
         start_date = kwargs.get("start_date")
         end_date = kwargs.get("end_date")
 
@@ -102,6 +103,9 @@ class CompetitionQuery(graphene.ObjectType):
 
         if win:
             queryset = queryset.filter(winner=user)
+
+        if status:
+            queryset = queryset.filter(status=status)
 
         if start_date and end_date:
             queryset = queryset.filter(date_time__range=(start_date, end_date))

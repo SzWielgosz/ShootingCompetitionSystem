@@ -1,7 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const AssignRefereePanel = ({ roundId, refereeUsers, onAssignReferee }) => {
+const AssignRefereePanel = ({
+  roundId,
+  refereeUsers,
+  assignedReferee,
+  onAssignReferee,
+}) => {
   const [selectedReferee, setSelectedReferee] = useState("");
+
+  useEffect(() => {
+    if (assignedReferee) {
+      setSelectedReferee(assignedReferee.id);
+    }
+  }, [assignedReferee]);
 
   const handleAssignReferee = () => {
     onAssignReferee(roundId, selectedReferee);
@@ -22,7 +33,9 @@ const AssignRefereePanel = ({ roundId, refereeUsers, onAssignReferee }) => {
           </option>
         ))}
       </select>
-      <button onClick={handleAssignReferee}>Przypisz</button>
+      <button onClick={handleAssignReferee} disabled={!selectedReferee}>
+        Przypisz
+      </button>
     </div>
   );
 };

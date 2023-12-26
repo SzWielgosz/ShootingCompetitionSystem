@@ -34,9 +34,9 @@ const AuthProvider = ({ children }) => {
         const decodedToken = jwtDecode(storedToken);
         const expirationTime = decodedToken.exp * 1000;
         const currentTime = new Date().getTime();
+        const timeToExpiration = expirationTime - currentTime;
 
-        if (currentTime > expirationTime) {
-          const timeToExpiration = expirationTime - currentTime;
+        if (timeToExpiration < 10000) {
           const response = await refreshToken();
           const newToken = response.data.refreshToken.token;
 

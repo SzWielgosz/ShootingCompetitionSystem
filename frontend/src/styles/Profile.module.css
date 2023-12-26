@@ -10,12 +10,14 @@
   margin-bottom: 10px;
 }
 
-.viewMode table{
+.viewMode table {
   border: 1px solid #ddd;
   margin: auto;
 }
 
-.viewMode th, tr, td{
+.viewMode th,
+.viewMode tr,
+.viewMode td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: center;
@@ -24,4 +26,19 @@
 .editMode label {
   display: block;
   margin-bottom: 5px;
+}
+
+.button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  background-color: #cb1313;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+}
+
+.button:hover {
+  background-color: #a70a0a;
 }

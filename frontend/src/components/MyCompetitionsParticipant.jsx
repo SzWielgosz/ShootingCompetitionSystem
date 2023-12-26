@@ -2,18 +2,20 @@ import { useLazyQuery } from "@apollo/client";
 import { useState, useEffect } from "react";
 import { GET_PARTICIPANT_COMPETITIONS } from "../graphql/queries/getParticipantCompetitions";
 import { Link } from "react-router-dom";
-import MyCompetitionsCSS from "../styles/MyCompetitions.module.css";
+import MyCompetitionsParticipantCSS from "../styles/MyCompetitionsParticipant.module.css";
 
 const PAGE_SIZE = 5;
 
 export default function MyCompetitionsParticipant() {
   const [page, setPage] = useState(0);
+  const [hasNextPage, setHasNextPage] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [showWins, setShowWins] = useState(false);
   const [disciplineFilter, setDisciplineFilter] = useState(undefined);
   const [statusFilter, setStatusFilter] = useState(undefined);
   const [targetFilter, setTargetFilter] = useState(undefined);
-  const [hasNextPage, setHasNextPage] = useState(true);
+  const [startDateFilter, setStartDateFilter] = useState(undefined);
+  const [endDateFilter, setEndDateFilter] = useState(undefined);
   const [getData, { data, loading, error }] = useLazyQuery(
     GET_PARTICIPANT_COMPETITIONS,
     { fetchPolicy: "network-only" },
@@ -28,6 +30,7 @@ export default function MyCompetitionsParticipant() {
         ...(showWins ? { win: true } : {}),
         target: targetFilter === "Any" ? undefined : targetFilter,
         discipline: disciplineFilter === "Any" ? undefined : disciplineFilter,
+        status: statusFilter === "Any" ? undefined : statusFilter,
       },
     });
   }, [page, getData]);
@@ -40,13 +43,25 @@ export default function MyCompetitionsParticipant() {
   }, [data]);
 
   const handleSearch = () => {
+    const variables = {
+      first: PAGE_SIZE,
+      offset: page * PAGE_SIZE,
+      search: searchTerm.toLowerCase(),
+      target: targetFilter === "Any" ? null : targetFilter,
+      discipline: disciplineFilter === "Any" ? null : disciplineFilter,
+      status: statusFilter === "Any" ? undefined : statusFilter,
+    };
+
+    if (startDateFilter) {
+      variables.startDate = startDateFilter;
+    }
+
+    if (endDateFilter) {
+      variables.endDate = endDateFilter;
+    }
+
     getData({
-      variables: {
-        first: PAGE_SIZE,
-        offset: page * PAGE_SIZE,
-        search: searchTerm.toLowerCase(),
-        ...(showWins ? { win: true } : {}),
-      },
+      variables,
     });
   };
 
@@ -55,30 +70,30 @@ export default function MyCompetitionsParticipant() {
   }
 
   return (
-    <div className={MyCompetitionsCSS.container}>
-      <div className={MyCompetitionsCSS.filters}>
-        <label className={MyCompetitionsCSS.label}>
+    <div className={MyCompetitionsParticipantCSS.container}>
+      <div className={MyCompetitionsParticipantCSS.filters}>
+        <label className={MyCompetitionsParticipantCSS.label}>
           Nazwa:
           <input
-            className={MyCompetitionsCSS.input}
+            className={MyCompetitionsParticipantCSS.input}
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </label>
-        <label className={MyCompetitionsCSS.label}>
+        <label className={MyCompetitionsParticipantCSS.label}>
           Wygrane:
           <input
-            className={MyCompetitionsCSS.input}
+            className={MyCompetitionsParticipantCSS.input}
             type="checkbox"
             checked={showWins}
             onChange={() => setShowWins((prev) => !prev)}
           />
         </label>
-        <label className={MyCompetitionsCSS.label}>
+        <label className={MyCompetitionsParticipantCSS.label}>
           Dyscyplina
           <select
-            className={MyCompetitionsCSS.select}
+            className={MyCompetitionsParticipantCSS.select}
             value={disciplineFilter}
             onChange={(e) => setDisciplineFilter(e.target.value)}
           >
@@ -88,10 +103,10 @@ export default function MyCompetitionsParticipant() {
             <option value="RIFLE">Karabin</option>
           </select>
         </label>
-        <label className={MyCompetitionsCSS.label}>
+        <label className={MyCompetitionsParticipantCSS.label}>
           Cele:
           <select
-            className={MyCompetitionsCSS.select}
+            className={MyCompetitionsParticipantCSS.select}
             value={targetFilter}
             onChange={(e) => setTargetFilter(e.target.value)}
           >
@@ -100,10 +115,10 @@ export default function MyCompetitionsParticipant() {
             <option value="MOVING">Ruchome</option>
           </select>
         </label>
-        <label className={MyCompetitionsCSS.label}>
+        <label className={MyCompetitionsParticipantCSS.label}>
           Status:
           <select
-            className={MyCompetitionsCSS.select}
+            className={MyCompetitionsParticipantCSS.select}
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -113,15 +128,42 @@ export default function MyCompetitionsParticipant() {
             <option value="ENDED">Zakończone</option>
           </select>
         </label>
-        <button className={MyCompetitionsCSS.button} onClick={handleSearch}>Wyszukaj</button>
-      </div>
-      <nav className={MyCompetitionsCSS.nav}>
-        <button className={MyCompetitionsCSS.button} disabled={!page} onClick={() => setPage((prev) => prev - 1)}>
-          Wstecz
-        </button>
-        <span>Page {page + 1}</span>
+        <label className={MyCompetitionsParticipantCSS.label}>
+          Od:
+          <input
+            className={MyCompetitionsParticipantCSS.dateinput}
+            type="date"
+            value={startDateFilter}
+            onChange={(e) => setStartDateFilter(e.target.value)}
+          />
+        </label>
+        <label className={MyCompetitionsParticipantCSS.label}>
+          Do:
+          <input
+            className={MyCompetitionsParticipantCSS.dateinput}
+            type="date"
+            value={endDateFilter}
+            onChange={(e) => setEndDateFilter(e.target.value)}
+          />
+        </label>
         <button
-          className={MyCompetitionsCSS.button}
+          className={`${MyCompetitionsParticipantCSS.button} ${MyCompetitionsParticipantCSS.searchButton}`}
+          onClick={handleSearch}
+        >
+          Wyszukaj
+        </button>
+      </div>
+      <nav className={MyCompetitionsParticipantCSS.nav}>
+        <button
+          className={`${MyCompetitionsParticipantCSS.button} ${MyCompetitionsParticipantCSS.roundButton}`}
+          disabled={!page}
+          onClick={() => setPage((prev) => prev - 1)}
+        >
+          &lt;
+        </button>
+        <span>Strona {page + 1}</span>
+        <button
+          className={`${MyCompetitionsParticipantCSS.button} ${MyCompetitionsParticipantCSS.roundButton}`}
           onClick={() => {
             if (hasNextPage) {
               setPage((prev) => prev + 1);
@@ -129,16 +171,16 @@ export default function MyCompetitionsParticipant() {
           }}
           disabled={!hasNextPage}
         >
-          Dalej
+          &gt;
         </button>
       </nav>
 
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <div className={MyCompetitionsCSS.results}>
-          <table className={MyCompetitionsCSS.table}>
-          <thead>
+        <div className={MyCompetitionsParticipantCSS.results}>
+          <table className={MyCompetitionsParticipantCSS.table}>
+            <thead>
               <tr>
                 <th>Nazwa</th>
                 <th>Miasto</th>
@@ -149,27 +191,27 @@ export default function MyCompetitionsParticipant() {
             {data?.participantCompetitions.edges.map((edge) => {
               const competition = edge.node;
               return (
-                  <tr key={competition.id}>
-                    <td>{competition.name}</td>
-                    <td>{competition.city}</td>
-                    <td>
-                      {new Date(competition.dateTime).toLocaleString(undefined, {
-                        year: "numeric",
-                        month: "numeric",
-                        day: "numeric",
-                        hour: "numeric",
-                        minute: "numeric",
-                      })}
-                    </td>
-                    <td>
-                      <Link
-                        to={"/competitions/" + competition.id}
-                        className={MyCompetitionsCSS.link}
-                      >
-                        Szczegóły
-                      </Link>
-                    </td>
-                  </tr>
+                <tr key={competition.id}>
+                  <td>{competition.name}</td>
+                  <td>{competition.city}</td>
+                  <td>
+                    {new Date(competition.dateTime).toLocaleString(undefined, {
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                    })}
+                  </td>
+                  <td>
+                    <Link
+                      to={"/competitions/" + competition.id}
+                      className={MyCompetitionsParticipantCSS.link}
+                    >
+                      Szczegóły
+                    </Link>
+                  </td>
+                </tr>
               );
             })}
           </table>
