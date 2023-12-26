@@ -167,7 +167,9 @@ export default function RegisterParticipant() {
       />
       <br />
 
-      <button className={RegisterCSS.registerButton} type="submit">Zarejestruj się</button>
+      <button className={RegisterCSS.registerButton} type="submit">
+        Zarejestruj się
+      </button>
       <ToastContainer />
     </form>
   );

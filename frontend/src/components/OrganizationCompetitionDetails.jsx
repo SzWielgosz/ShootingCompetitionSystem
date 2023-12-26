@@ -17,7 +17,9 @@ import {
 } from "../utils/Translations";
 import EditCompetitionForm from "./EditCompetitionForm";
 import { toast, ToastContainer } from "react-toastify";
+import { Link } from "react-router-dom";
 import AssignRefereePanel from "./AssignRefereePanel";
+import OrganizationCompetitionDetailsCSS from "../styles/OrganizationCompetitionDetails.module.css";
 
 export default function OrganizationCompetitionDetails(props) {
   const { competitionId } = props;
@@ -199,28 +201,49 @@ export default function OrganizationCompetitionDetails(props) {
     <div>
       {!isEditing ? (
         <div>
-          <button onClick={handleGoBack}>Powrót</button>{" "}
+          <button
+            className={OrganizationCompetitionDetailsCSS.button}
+            onClick={handleGoBack}
+          >
+            Powrót
+          </button>{" "}
+          <br />
           {data && data.organizationCompetitionDetails
             ? competitionStatus === "CREATED" && (
                 <>
                   {competitionShareStatus === "SHARED" ? (
                     <div>
                       <button
+                        className={OrganizationCompetitionDetailsCSS.button}
                         onClick={() =>
                           handleShareStatus(competitionId, "NOT_SHARED")
                         }
                       >
                         Ukryj
                       </button>
-                      <button onClick={() => handleStart(competitionId)}>
+                      <button
+                        className={OrganizationCompetitionDetailsCSS.button}
+                        onClick={() => handleStart(competitionId)}
+                      >
                         Wystartuj
                       </button>
                     </div>
                   ) : (
                     <div>
-                      <button onClick={handleDelete}>Usuń</button>
-                      <button onClick={handleEdit}>Edytuj</button>
                       <button
+                        className={OrganizationCompetitionDetailsCSS.button}
+                        onClick={handleDelete}
+                      >
+                        Usuń
+                      </button>
+                      <button
+                        className={OrganizationCompetitionDetailsCSS.button}
+                        onClick={handleEdit}
+                      >
+                        Edytuj
+                      </button>
+                      <button
+                        className={OrganizationCompetitionDetailsCSS.button}
                         onClick={() =>
                           handleShareStatus(competitionId, "SHARED")
                         }
@@ -235,7 +258,10 @@ export default function OrganizationCompetitionDetails(props) {
           {data && data.organizationCompetitionDetails
             ? competitionStatus === "STARTED" && (
                 <>
-                  <button onClick={() => handleEnd(competitionId)}>
+                  <button
+                    className={OrganizationCompetitionDetailsCSS.button}
+                    onClick={() => handleEnd(competitionId)}
+                  >
                     Zakończ
                   </button>{" "}
                 </>
@@ -243,6 +269,19 @@ export default function OrganizationCompetitionDetails(props) {
             : null}
         </div>
       ) : null}
+      {data && data.organizationCompetitionDetails
+        ? competitionStatus !== "CREATED" && (
+            <div className={OrganizationCompetitionDetailsCSS.linkContainer}>
+              <Link
+                className={OrganizationCompetitionDetailsCSS.link}
+                to={`/competitions/${data.organizationCompetitionDetails.edges[0].node.id}/results`}
+              >
+                Wyniki
+              </Link>
+              <br />
+            </div>
+          )
+        : null}
       {data && data.organizationCompetitionDetails ? (
         data.organizationCompetitionDetails.edges.map((item) => (
           <div key={item.node.id}>
@@ -266,112 +305,121 @@ export default function OrganizationCompetitionDetails(props) {
                 onCancel={handleCancelEdit}
               />
             ) : (
-              <div>
-                <p>{item.node.name}</p>
-                <p>
-                  Data i czas:{" "}
-                  {new Date(item.node.dateTime).toLocaleString(undefined, {
-                    year: "numeric",
-                    month: "numeric",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                  })}
-                </p>
-                <p>
-                  Adres:{" "}
-                  {item.node.street +
-                    " " +
-                    item.node.houseNumber +
-                    " " +
-                    item.node.city}
-                </p>
-                <p>
-                  Dyscyplina:{" "}
-                  {translateCompetitionDiscipline(item.node.discipline)}
-                </p>
-                <p>
-                  Kategoria wiekowa:{" "}
-                  {translateAgeCategory(item.node.ageRestriction)}
-                </p>
-                <p>Cele: {translateTargetType(item.node.target)}</p>
-                <p>Ilość rund: {item.node.roundsCount}</p>
-                <p>Ilość prob: {item.node.attemptsCount}</p>
-                <p>
-                  Ilosc uczestnikow:{" "}
-                  {participantCount + "/" + item.node.participantsCount}
-                </p>
-                <p>Status: {translateCompetitionStatus(item.node.status)}</p>
-                <p>
-                  Zwycięzca:{" "}
-                  {item.node.winner
-                    ? item.node.winner.firstName +
-                      " " +
-                      item.node.winner.lastName
-                    : "Nie wyloniony"}
-                </p>
-                <p>Opis: {item.node.description}</p>
-                {item.node.roundSet.edges.map((round) => (
-                  <div key={round.node.id}>
-                    <p>Runda numer: {round.node.number + 1}</p>
-                    <p>
-                      Sędzia: {round?.node?.refereeUser?.firstName ?? "Brak"}{" "}
-                      {round?.node?.refereeUser?.lastName ?? ""}
-                    </p>
-                    {competitionStatus !== "ENDED" && (
-                      <button
-                        onClick={() =>
-                          handleOpenAssignRefereePanel(round.node.id)
-                        }
-                      >
-                        Przypisz sędziego
-                      </button>
-                    )}
-                    {assignRefereeRoundId === round.node.id && (
-                      <AssignRefereePanel
-                        roundId={round.node.id}
-                        refereeUsers={dataReferee.refereeUsers}
-                        onAssignReferee={handleAssignReferee}
-                      />
-                    )}
-                    <details>
-                      <summary>Proby: </summary>
-                      <ul>
-                        {[
-                          ...new Set(
-                            round.node.attemptSet.edges.map(
-                              (attempt) => attempt.node.participantUser.id,
-                            ),
-                          ),
-                        ].map((participantId) => {
-                          const participantAttempts =
-                            round.node.attemptSet.edges.filter(
-                              (attempt) =>
-                                attempt.node.participantUser.id ===
-                                participantId,
-                            );
-                          const participant =
-                            participantAttempts[0].node.participantUser;
-                          return (
-                            <li key={participantId}>
-                              Uczestnik: {participant.firstName}{" "}
-                              {participant.lastName}
-                              <ul>
-                                {participantAttempts.map((attempt) => (
-                                  <li key={attempt.node.number}>
-                                    Proba numer: {attempt.node.number + 1},
-                                    Success:{" "}
-                                    {attempt.node.success ? "Tak" : "Nie"}
-                                  </li>
-                                ))}
-                              </ul>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </details>
-                  </div>
-                ))}
+              <div className={OrganizationCompetitionDetailsCSS.container}>
+                <table
+                  className={OrganizationCompetitionDetailsCSS.detailsTable}
+                >
+                  <tbody>
+                    <tr>
+                      <th colSpan={2}>Sczegóły zawodów</th>
+                    </tr>
+                    <tr>
+                      <th>Nazwa</th>
+                      <td>{item.node.name}</td>
+                    </tr>
+                    <tr>
+                      <th>Data i czas</th>
+                      <td>
+                        {new Date(item.node.dateTime).toLocaleString(
+                          undefined,
+                          {
+                            year: "numeric",
+                            month: "numeric",
+                            day: "numeric",
+                            hour: "numeric",
+                            minute: "numeric",
+                          },
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Adres</th>
+                      <td>
+                        {item.node.street} {item.node.houseNumber}{" "}
+                        {item.node.city}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Dyscyplina</th>
+                      <td>
+                        {translateCompetitionDiscipline(item.node.discipline)}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Kategoria wiekowa</th>
+                      <td>{translateAgeCategory(item.node.ageRestriction)}</td>
+                    </tr>
+                    <tr>
+                      <th>Cele</th>
+                      <td>{translateTargetType(item.node.target)}</td>
+                    </tr>
+                    <tr>
+                      <th>Ilość rund</th>
+                      <td>{item.node.roundsCount}</td>
+                    </tr>
+                    <tr>
+                      <th>Ilość prob</th>
+                      <td>{item.node.attemptsCount}</td>
+                    </tr>
+                    <tr>
+                      <th>Ilość uczestnikow</th>
+                      <td>
+                        {participantCount + "/" + item.node.participantsCount}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Status</th>
+                      <td>{translateCompetitionStatus(item.node.status)}</td>
+                    </tr>
+                    <tr>
+                      <th>Zwycięzca</th>
+                      <td>
+                        {item.node.winner
+                          ? item.node.winner.firstName +
+                            " " +
+                            item.node.winner.lastName
+                          : "Nie wyloniony"}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Opis</th>
+                      <td>{item.node.description}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div>
+                  <table
+                    className={OrganizationCompetitionDetailsCSS.detailsTable}
+                  >
+                    <thead>
+                      <tr>
+                        <th>Runda numer</th>
+                        <th>Sędzia</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {item?.node?.roundSet?.edges.map((round) => (
+                        <tr key={round.node.id}>
+                          <td>{round.node.number + 1}</td>
+                          <td>
+                            {competitionStatus !== "ENDED" ? (
+                              <AssignRefereePanel
+                                roundId={round.node.id}
+                                refereeUsers={dataReferee.refereeUsers}
+                                assignedReferee={round.node.refereeUser}
+                                onAssignReferee={handleAssignReferee}
+                              />
+                            ) : round.node.refereeUser ? (
+                              `${round.node.refereeUser.firstName} ${round.node.refereeUser.lastName}`
+                            ) : (
+                              "Brak sędziego"
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
           </div>

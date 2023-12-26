@@ -1,22 +1,22 @@
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GET_ORGANIZATION_COMPETITIONS } from "../graphql/queries/getOrganizationCompetitions";
-import {
-  translateCompetitionShareStatus,
-  translateCompetitionStatus,
-} from "../utils/Translations";
 import MyCompetitionsOrganizationCSS from "../styles/MyCompetitionsOrganization.module.css";
+import CalendarDataCSS from "../styles/CalendarData.module.css";
 
 const PAGE_SIZE = 5;
 
 export default function MyCompetitionsOrganization() {
   const [page, setPage] = useState(0);
+  const [hasNextPage, setHasNextPage] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [disciplineFilter, setDisciplineFilter] = useState("Any");
   const [statusFilter, setStatusFilter] = useState("Any");
   const [targetFilter, setTargetFilter] = useState("Any");
   const [shareStatusFilter, setShareStatusFilter] = useState("Any");
+  const [startDateFilter, setStartDateFilter] = useState(undefined);
+  const [endDateFilter, setEndDateFilter] = useState(undefined);
   const [getData, { data, loading, error }] = useLazyQuery(
     GET_ORGANIZATION_COMPETITIONS,
     { fetchPolicy: "network-only" },
@@ -39,18 +39,34 @@ export default function MyCompetitionsOrganization() {
     });
   }, [page, getData]);
 
+  useEffect(() => {
+    if (data && data.organizationCompetitions) {
+      const edges = data.organizationCompetitions.edges || [];
+      setHasNextPage(edges.length === PAGE_SIZE);
+    }
+  }, [data]);
+
   const handleSearch = () => {
+    const variables = {
+      first: PAGE_SIZE,
+      offset: page * PAGE_SIZE,
+      search: searchTerm.toLowerCase(),
+      target: targetFilter === "Any" ? undefined : targetFilter,
+      discipline: disciplineFilter === "Any" ? undefined : disciplineFilter,
+      status: statusFilter === "Any" ? undefined : statusFilter,
+      shareStatus: shareStatusFilter === "Any" ? undefined : shareStatusFilter,
+    };
+
+    if (startDateFilter) {
+      variables.startDate = startDateFilter;
+    }
+
+    if (endDateFilter) {
+      variables.endDate = endDateFilter;
+    }
+
     getData({
-      variables: {
-        first: PAGE_SIZE,
-        offset: page * PAGE_SIZE,
-        search: searchTerm.toLowerCase(),
-        target: targetFilter === "Any" ? undefined : targetFilter,
-        discipline: disciplineFilter === "Any" ? undefined : disciplineFilter,
-        status: statusFilter === "Any" ? undefined : statusFilter,
-        shareStatus:
-          shareStatusFilter === "Any" ? undefined : shareStatusFilter,
-      },
+      variables,
     });
   };
 
@@ -64,9 +80,14 @@ export default function MyCompetitionsOrganization() {
 
   return (
     <div className={MyCompetitionsOrganizationCSS.container}>
-      Kliknij aby <button className={`${MyCompetitionsOrganizationCSS.button} ${MyCompetitionsOrganizationCSS.createButton}`} onClick={handleCreate}>utworzyć zawody</button>
-      <hr className={MyCompetitionsOrganizationCSS.hr}/>
-
+      Kliknij aby{" "}
+      <button
+        className={`${MyCompetitionsOrganizationCSS.button} ${MyCompetitionsOrganizationCSS.createButton}`}
+        onClick={handleCreate}
+      >
+        utworzyć zawody
+      </button>
+      <hr className={MyCompetitionsOrganizationCSS.hr} />
       <div className={MyCompetitionsOrganizationCSS.filters}>
         <label className={MyCompetitionsOrganizationCSS.label}>
           Nazwa:
@@ -127,45 +148,100 @@ export default function MyCompetitionsOrganization() {
             <option value="NOT_SHARED">Nie udostępnione</option>
           </select>
         </label>
-        <button 
-        className={`${MyCompetitionsOrganizationCSS.button} ${MyCompetitionsOrganizationCSS.searchButton}`}
-        onClick={handleSearch}>Wyszukaj</button>
+        <div className={MyCompetitionsOrganizationCSS.dateFilters}>
+          <label className={MyCompetitionsOrganizationCSS.label}>
+            Od:
+            <input
+              className={MyCompetitionsOrganizationCSS.dateinput}
+              type="date"
+              value={startDateFilter}
+              onChange={(e) => setStartDateFilter(e.target.value)}
+            />
+          </label>
+          <label className={MyCompetitionsOrganizationCSS.label}>
+            Do:
+            <input
+              className={MyCompetitionsOrganizationCSS.dateinput}
+              type="date"
+              value={endDateFilter}
+              onChange={(e) => setEndDateFilter(e.target.value)}
+            />
+          </label>
+        </div>
+        <button
+          className={`${MyCompetitionsOrganizationCSS.button} ${MyCompetitionsOrganizationCSS.searchButton}`}
+          onClick={handleSearch}
+        >
+          Wyszukaj
+        </button>
       </div>
       <nav className={MyCompetitionsOrganizationCSS.nav}>
-        <button disabled={!page} onClick={() => setPage((prev) => prev - 1)} 
-        className={`${MyCompetitionsOrganizationCSS.button} ${MyCompetitionsOrganizationCSS.roundButton}`}>
-        &lt;
+        <button
+          disabled={!page}
+          onClick={() => setPage((prev) => prev - 1)}
+          className={`${MyCompetitionsOrganizationCSS.button} ${MyCompetitionsOrganizationCSS.roundButton}`}
+        >
+          &lt;
         </button>
-        <span>Page {page + 1}</span>
-        <button onClick={() => setPage((prev) => prev + 1)}
-        className={`${MyCompetitionsOrganizationCSS.button} ${MyCompetitionsOrganizationCSS.roundButton}`}>
-          &gt;</button>
+        <span>Strona {page + 1}</span>
+        <button
+          className={`${MyCompetitionsOrganizationCSS.button} ${MyCompetitionsOrganizationCSS.roundButton}`}
+          onClick={() => {
+            if (hasNextPage) {
+              setPage((prev) => prev + 1);
+            }
+          }}
+          disabled={!hasNextPage}
+        >
+          &gt;
+        </button>
       </nav>
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <ul className={MyCompetitionsOrganizationCSS.list}>
-          {data?.organizationCompetitions.edges.map((edge) => {
-            const competition = edge.node;
-            return (
-              <li key={competition.id}>
-                {competition.name} - {competition.city} -{" "}
-                {new Date(competition.dateTime).toLocaleString(undefined, {
-                  year: "numeric",
-                  month: "numeric",
-                  day: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                })}{" "}
-                - {translateCompetitionStatus(competition.status)} -{" "}
-                {translateCompetitionShareStatus(competition.shareStatus)} -{" "}
-                <Link to={"/my_competitions/organization/" + competition.id}>
-                  Szczegoly
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <table className={CalendarDataCSS.table}>
+          <thead>
+            <tr>
+              <th>Nazwa</th>
+              <th>Miasto</th>
+              <th>Data i czas</th>
+              <th>Ilość uczestników</th>
+              <th>Szczegóły</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data?.organizationCompetitions.edges.map((edge) => {
+              const competition = edge.node;
+              return (
+                <tr key={competition.id}>
+                  <td>{competition.name}</td>
+                  <td>{competition.city}</td>
+                  <td>
+                    {new Date(competition.dateTime).toLocaleString(undefined, {
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                    })}
+                  </td>
+                  <td>
+                    {competition.participantcompetitionSet.edges.length}/
+                    {competition.participantsCount}
+                  </td>
+                  <td>
+                    <Link
+                      to={"/my_competitions/organization/" + competition.id}
+                      className={CalendarDataCSS.link}
+                    >
+                      Szczegóły
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       )}
     </div>
   );

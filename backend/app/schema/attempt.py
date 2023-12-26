@@ -18,6 +18,7 @@ class AttemptConnection(graphene.Connection):
 
 class AttemptQuery(graphene.ObjectType):
     participant_attempts = relay.ConnectionField(AttemptConnection, round_id = graphene.ID(), participant_user_id=graphene.ID())
+    round_attempts = relay.ConnectionField(AttemptConnection, round_id = graphene.ID())
 
     def resolve_participant_attempts(self, info, round_id, participant_user_id, **kwargs):
         decoded_round_id = from_global_id(round_id)[1]
@@ -29,3 +30,4 @@ class AttemptQuery(graphene.ObjectType):
         attempts = Attempt.objects.filter(round=round_instance, participant_user=participant_user_instance)
 
         return attempts
+

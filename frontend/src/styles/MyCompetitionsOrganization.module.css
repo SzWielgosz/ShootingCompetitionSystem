@@ -1,8 +1,8 @@
-.container{
+.container {
   padding-left: 200px;
 }
 
-.nav{
+.nav {
   float: right;
   margin-right: 2rem;
 }
@@ -29,18 +29,16 @@
   clear: both;
 }
 
-
-
 .input,
 .select,
 .dateinput {
   padding: 8px;
   margin-right: 10px;
-  border: 1px solid #C2C0C0;
+  border: 1px solid #c2c0c0;
   border-radius: 4px;
 }
 
-.button:disabled{
+.button:disabled {
   filter: brightness(10) saturate(0.5);
 }
 
@@ -53,11 +51,10 @@
   cursor: pointer;
 }
 
-.roundButton{
-  margin:0.3rem 1rem;
+.roundButton {
+  margin: 0.3rem 1rem;
   border-radius: 0.5rem;
 }
-
 
 .table {
   width: 100%;
@@ -65,14 +62,15 @@
   margin-top: 20px;
 }
 
-.table th, .table td {
+.table th,
+.table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: center;
 }
 
-.createButton{
-  padding:1rem;
+.createButton {
+  padding: 1rem;
 }
 
 hr {
@@ -82,4 +80,17 @@ hr {
   border-top: 1px solid #ccc;
   margin: 1em 0;
   padding: 0;
+}
+
+.dateFilters {
+  margin-left: 2rem;
+  display: flex;
+}
+
+.dateinput {
+  margin-top: 0.5rem;
+}
+
+.searchButton {
+  margin-top: 0.5rem;
 }

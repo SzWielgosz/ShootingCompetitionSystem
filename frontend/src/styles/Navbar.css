@@ -68,9 +68,7 @@ body {
   height: 100%;
   top: 0;
   z-index: 2;
-
 }
-
 
 .navVertical ul {
   padding: 0;
@@ -90,7 +88,7 @@ body {
   justify-content: center;
 }
 
-.navVertical li{
+.navVertical li {
   transition:
     background-color 0.3s,
     color 0.3s;
@@ -107,8 +105,8 @@ body {
   width: 150px;
   height: auto;
 }
-@media screen and (max-width: 500px){
-  .logo{
-    width:25px;
+@media screen and (max-width: 500px) {
+  .logo {
+    width: 25px;
   }
 }

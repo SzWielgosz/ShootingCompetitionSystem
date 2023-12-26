@@ -31,15 +31,12 @@ export default function CalendarData() {
     });
   }, [page, getData]);
 
-  
   useEffect(() => {
     if (data && data.sharedCompetitions) {
       const edges = data.sharedCompetitions.edges || [];
       setHasNextPage(edges.length === PAGE_SIZE);
     }
   }, [data]);
-
-
 
   const handleSearch = () => {
     const variables = {
@@ -136,10 +133,11 @@ export default function CalendarData() {
             onChange={(e) => setEndDateFilter(e.target.value)}
           />
         </label>
-        
-      <button 
-      className={`${CalendarDataCSS.button} ${CalendarDataCSS.searchButton}`}
-       onClick={handleSearch}>
+
+        <button
+          className={`${CalendarDataCSS.button} ${CalendarDataCSS.searchButton}`}
+          onClick={handleSearch}
+        >
           Wyszukaj
         </button>
       </div>
@@ -207,9 +205,7 @@ export default function CalendarData() {
               ))}
             </tbody>
           </table>
-        ) : (
-          null
-        )}
+        ) : null}
       </div>
     </div>
   );

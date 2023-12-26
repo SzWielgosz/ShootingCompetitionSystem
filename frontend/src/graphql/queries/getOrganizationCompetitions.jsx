@@ -42,6 +42,13 @@ export const GET_ORGANIZATION_COMPETITIONS = gql`
           participantsCount
           status
           shareStatus
+          participantcompetitionSet {
+            edges {
+              node {
+                id
+              }
+            }
+          }
           roundSet {
             edges {
               node {

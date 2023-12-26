@@ -2,7 +2,7 @@ import { Link, useMatch, useResolvedPath } from "react-router-dom";
 import "../styles/Navbar.css";
 import { useAuth } from "../hooks/useAuth";
 import Logout from "./Logout";
-import logoImage from "../images/logo2.png"
+import logoImage from "../images/logo2.png";
 
 export default function Navbar() {
   const { auth } = useAuth();
@@ -18,7 +18,7 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <CustomLink to="/my_profile">Moj Profil</CustomLink>
+              <CustomLink to="/my_profile">Mój profil</CustomLink>
               <CustomLink to="/my_competitions">Moje zawody</CustomLink>
               <Logout />
             </>

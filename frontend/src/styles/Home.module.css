@@ -1,12 +1,4 @@
 .container {
-  max-width: 800px;
+  max-width: 500px;
   margin: auto;
-  padding: 20px;
 }
-
-.ol,
-.ul {
-  list-style: none;
-  padding: 0;
-}
-

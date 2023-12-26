@@ -94,9 +94,7 @@ export default function ParticipantProfile() {
               alt="Profile"
             />
             <input type="file" name="profile_picture" onChange={handleImage} />
-            <label>
-              {editedUser.username}
-            </label>
+            <label>{editedUser.username}</label>
             <label>
               First Name:
               <input
@@ -137,52 +135,57 @@ export default function ParticipantProfile() {
                 }
               />
             </label>
-            <button onClick={handleSaveEdit}>Zapisz</button>
-            <button onClick={handleCancelEdit}>Anuluj</button>
+            <button className={ProfileCSS.button} onClick={handleSaveEdit}>
+              Zapisz
+            </button>
+            <button className={ProfileCSS.button} onClick={handleCancelEdit}>
+              Anuluj
+            </button>
           </div>
         ) : (
           <div>
             <div className={ProfileCSS.viewMode}>
-            <div key={data.loggedUser.id}>
-              <img
-                className={ProfileCSS.profilePicture}
-                src={
-                  data.loggedUser.profilePicture
-                    ? `http://localhost:8000/media/${data.loggedUser.profilePicture}`
-                    : `http://localhost:8000/media/profile_pictures/common/blank-profile-picture.png`
-                }
-                alt="Profile Picture"
-              />
-              <table>
-                <tr>
-                  <th>Nazwa użytkownika</th>
-                  <td>{data.loggedUser.username}</td>
-                </tr>
-                <tr>
-                  <th>Imie</th>
-                  <td>{data.loggedUser.firstName}</td>
-                </tr>
-                <tr>
-                  <th>Nazwisko</th>
-                  <td>{data.loggedUser.lastName}</td>
-                </tr>
-                <tr>
-                  <th>Numer telefonu</th>
-                  <td>{data.loggedUser.phoneNumber}</td>
-                </tr>
-                <tr>
-                  <th>Miasto</th>
-                  <td>{data.loggedUser.participant.city}</td>
-                </tr>
-                <tr>
-                  <th>Data urodzenia</th>
-                  <td>{data.loggedUser.participant.dateOfBirth}</td>
-                </tr>
-              </table>
+              <div key={data.loggedUser.id}>
+                <img
+                  className={ProfileCSS.profilePicture}
+                  src={
+                    data.loggedUser.profilePicture
+                      ? `http://localhost:8000/media/${data.loggedUser.profilePicture}`
+                      : `http://localhost:8000/media/profile_pictures/common/blank-profile-picture.png`
+                  }
+                  alt="Profile Picture"
+                />
+                <table>
+                  <tr>
+                    <th>Nazwa użytkownika</th>
+                    <td>{data.loggedUser.username}</td>
+                  </tr>
+                  <tr>
+                    <th>Imie</th>
+                    <td>{data.loggedUser.firstName}</td>
+                  </tr>
+                  <tr>
+                    <th>Nazwisko</th>
+                    <td>{data.loggedUser.lastName}</td>
+                  </tr>
+                  <tr>
+                    <th>Numer telefonu</th>
+                    <td>{data.loggedUser.phoneNumber}</td>
+                  </tr>
+                  <tr>
+                    <th>Miasto</th>
+                    <td>{data.loggedUser.participant.city}</td>
+                  </tr>
+                  <tr>
+                    <th>Data urodzenia</th>
+                    <td>{data.loggedUser.participant.dateOfBirth}</td>
+                  </tr>
+                </table>
+              </div>
             </div>
-            
-            </div>
-            <button onClick={handleEditClick}>Edytuj</button>
+            <button className={ProfileCSS.button} onClick={handleEditClick}>
+              Edytuj
+            </button>
           </div>
         )}
         <ToastContainer />

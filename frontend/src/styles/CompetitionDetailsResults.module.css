@@ -3,7 +3,32 @@
   justify-content: center;
   max-width: 800px;
   margin: auto;
-  padding: 0.5rem;
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  border-collapse: collapse;
+  border: 1px solid #c2c0c0;
+}
+
+.table tr,
+.table th,
+.table td {
+  width: 100%;
+  border: 1px solid #c2c0c0;
+  justify-content: center;
+  display: flex;
+}
+
+.table td,
+.table th {
+  align-items: center;
+}
+
+.table th {
+  background-color: #cb1313;
+  color: #fff;
 }
 
 .button {
@@ -17,43 +42,12 @@
   border-radius: 4px;
 }
 
-.link {
-  padding: 8px 12px;
-  background-color: #cb1313;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.linkContainer {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
 .button:hover {
   background-color: #a70a0a;
 }
 
-.detailsTable {
-  width: 50%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-
-.detailsTable th,
-.detailsTable td {
-  border: 1px solid #ddd;
-}
-
-.detailsTable th {
-  background-color: #cb1313;
-  color: #fff;
-}
-
 .detailsSummary {
   cursor: pointer;
-  color: #3498db;
 }
 
 .detailsContent {
@@ -65,16 +59,14 @@
 .participantTable {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+}
+
+.participantTable p {
+  margin: 0;
 }
 
 .participantName {
   font-weight: bold;
-}
-
-.attemptNumber {
-  font-weight: bold;
-  margin-right: 5px;
 }
 
 .success {

@@ -29,7 +29,7 @@ export const translateCompetitionStatus = (status) => {
     case "CREATED":
       return "Utworzone";
     case "STARTED":
-      return "Rozpoczęte";
+      return "Wystartowane";
     case "ENDED":
       return "Zakończone";
     default:

@@ -2,29 +2,14 @@
   padding-left: 200px;
 }
 
-.nav {
-  float: right;
-  margin-right: 2rem;
-}
-
 .filters {
-  display: flex;
   margin-bottom: 20px;
   flex-wrap: wrap;
-  align-items: center;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-  gap: 0.5rem 0;
 }
 
 .label {
   font-weight: bold;
   margin-right: 8px;
-  gap: 0.3rem;
-  display: flex;
-  align-items: center;
 }
 
 .input,
@@ -36,8 +21,9 @@
   border-radius: 4px;
 }
 
-.button:disabled {
-  filter: brightness(10) saturate(0.5);
+.nav {
+  float: right;
+  margin-right: 2rem;
 }
 
 .button {
@@ -54,6 +40,15 @@
   border-radius: 0.5rem;
 }
 
+.searchButton {
+  margin-left: 2rem;
+  margin-top: 1rem;
+}
+
+.button:disabled {
+  filter: brightness(10) saturate(0.5);
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -65,8 +60,4 @@
   border: 1px solid #ddd;
   padding: 8px;
   text-align: center;
-}
-
-.searchButton {
-  margin-left: 2rem;
 }
