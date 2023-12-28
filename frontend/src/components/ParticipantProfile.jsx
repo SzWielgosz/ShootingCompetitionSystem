@@ -156,30 +156,32 @@ export default function ParticipantProfile() {
                   alt="Profile Picture"
                 />
                 <table>
-                  <tr>
-                    <th>Nazwa użytkownika</th>
-                    <td>{data.loggedUser.username}</td>
-                  </tr>
-                  <tr>
-                    <th>Imie</th>
-                    <td>{data.loggedUser.firstName}</td>
-                  </tr>
-                  <tr>
-                    <th>Nazwisko</th>
-                    <td>{data.loggedUser.lastName}</td>
-                  </tr>
-                  <tr>
-                    <th>Numer telefonu</th>
-                    <td>{data.loggedUser.phoneNumber}</td>
-                  </tr>
-                  <tr>
-                    <th>Miasto</th>
-                    <td>{data.loggedUser.participant.city}</td>
-                  </tr>
-                  <tr>
-                    <th>Data urodzenia</th>
-                    <td>{data.loggedUser.participant.dateOfBirth}</td>
-                  </tr>
+                  <tbody>
+                    <tr>
+                      <th>Nazwa użytkownika</th>
+                      <td>{data.loggedUser.username}</td>
+                    </tr>
+                    <tr>
+                      <th>Imie</th>
+                      <td>{data.loggedUser.firstName}</td>
+                    </tr>
+                    <tr>
+                      <th>Nazwisko</th>
+                      <td>{data.loggedUser.lastName}</td>
+                    </tr>
+                    <tr>
+                      <th>Numer telefonu</th>
+                      <td>{data.loggedUser.phoneNumber}</td>
+                    </tr>
+                    <tr>
+                      <th>Miasto</th>
+                      <td>{data.loggedUser.participant.city}</td>
+                    </tr>
+                    <tr>
+                      <th>Data urodzenia</th>
+                      <td>{data.loggedUser.participant.dateOfBirth}</td>
+                    </tr>
+                  </tbody>
                 </table>
               </div>
             </div>

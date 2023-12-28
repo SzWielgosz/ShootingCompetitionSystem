@@ -5,7 +5,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { ASSIGN_ATTEMPTS_SCORE } from '../graphql/mutations/AssignAttemptsScore';
 import { GET_PARTICIPANT_ROUND_ATTEMPTS } from '../graphql/queries/GetParticipantRoundAttempts';
 
-const ResultsScreen = ({ route }) => {
+const ResultsScreen = ({ route, navigation }) => {
   const { userId, roundId, attemptsCount, firstName, lastName } = route.params;
   const [results, setResults] = useState(Array(attemptsCount).fill(false));
 
@@ -44,6 +44,7 @@ const ResultsScreen = ({ route }) => {
       });
 
       Alert.alert("Przypisano wyniki");
+      navigation.goBack();
     } catch (error) {
       Alert.alert(error.message || "Wystąpił błąd podczas przypisywania wyników");
     }
@@ -52,6 +53,11 @@ const ResultsScreen = ({ route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Wprowadź wyniki dla użytkownika {firstName} {lastName}</Text>
+      {data && data.participantAttempts && data.participantAttempts.edges && data.participantAttempts.edges.length === 0 ? (
+        <Text style={styles.note}>Status wyników: Nie przypisane</Text>
+      ) : (
+        <Text style={styles.savedNote}>Status wyników: Przypisane</Text>
+      )}
       {results.map((result, index) => (
         <View key={index} style={styles.checkboxContainer}>
           <CheckBox
@@ -94,6 +100,16 @@ const styles = StyleSheet.create({
   checkboxLabel: {
     fontSize: 16,
   },
+  note: {
+    fontSize: 16,
+    color: 'red',
+    marginBottom: 10,
+  },
+  savedNote: {
+    fontSize: 16,
+    color: 'green',
+    marginBottom: 10,
+  }
 });
 
 export default ResultsScreen;

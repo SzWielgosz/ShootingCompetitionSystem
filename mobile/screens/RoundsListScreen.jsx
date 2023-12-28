@@ -91,8 +91,8 @@ const styles = StyleSheet.create({
     padding: 8,
     backgroundColor: '#3498db',
     borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignSelf: 'center',
+    marginBottom: 10,
   },
 });
 

@@ -7,6 +7,7 @@ export const GET_COMPETITION_ROUNDS = gql`
       first: $first
       offset: $offset
     ) {
+      edgeCount
       edges {
         node {
           id

@@ -1,7 +1,7 @@
 export const translateAgeCategory = (category) => {
   switch (category) {
     case "YOUTH":
-      return "Młodzież";
+      return "Młodziki";
     case "YOUNGER_JUNIORS":
       return "Młodsi juniorzy";
     case "JUNIORS":

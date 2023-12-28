@@ -1,6 +1,7 @@
 import CompetitionDetailsResultsCSS from "../styles/CompetitionDetailsResults.module.css";
 import { useQuery } from "@apollo/client";
 import { GET_COMPETITION_ROUNDS } from "../graphql/queries/getCompetitionRounds";
+import { GET_COMPETITION_ROUNDS_COUNT } from "../graphql/queries/getCompetitionRoundsCount";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -16,6 +17,12 @@ export default function CompetitionDetailsResults(props) {
     },
   });
 
+  const { data: roundsCountData } = useQuery(GET_COMPETITION_ROUNDS_COUNT, {
+    variables: {
+      competitionId: competitionId,
+    },
+  });
+
   const navigate = useNavigate();
 
   const handleGoBack = () => {
@@ -23,7 +30,8 @@ export default function CompetitionDetailsResults(props) {
   };
 
   const loadNextRound = () => {
-    if (data?.competitionRounds.edges.length > 0) {
+    const totalRounds = roundsCountData?.competitionRounds.edgeCount || 0;
+    if (currentPage * PAGE_SIZE < totalRounds - PAGE_SIZE) {
       fetchMore({
         variables: {
           offset: (currentPage + 1) * PAGE_SIZE,
@@ -64,6 +72,7 @@ export default function CompetitionDetailsResults(props) {
         <button
           className={CompetitionDetailsResultsCSS.button}
           onClick={loadNextRound}
+          disabled={currentPage * PAGE_SIZE >= (roundsCountData?.competitionRounds.edgeCount || 0) - PAGE_SIZE}
         >
           &gt;
         </button>
@@ -78,10 +87,10 @@ export default function CompetitionDetailsResults(props) {
               <table className={CompetitionDetailsResultsCSS.table}>
                 <thead>
                   <tr>
-                    <th>test</th>
+                    <th>Szczegóły rundy</th>
                   </tr>
                   <tr>
-                    <th>Numer rundy</th>
+                    <th>Numer</th>
                     <td>{item.node.number + 1}</td>
                   </tr>
                   <tr>
@@ -89,7 +98,7 @@ export default function CompetitionDetailsResults(props) {
                     <td>
                       {item.node.refereeUser
                         ? `${item.node.refereeUser.firstName} ${item.node.refereeUser.lastName}`
-                        : "Nie ma :)"}
+                        : "null"}
                     </td>
                   </tr>
                 </thead>

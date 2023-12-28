@@ -10,20 +10,10 @@ const RoundDetailsScreen = ({ route, navigation }) => {
     fetchPolicy: "network-only"
   });
 
-  const [results, setResults] = useState({});
-
-  const handleCheckBoxChange = (userId, value) => {
-    setResults((prevResults) => ({
-      ...prevResults,
-      [userId]: value,
-    }));
-  };
-
   const navigateToResultsScreen = (userId, firstName, lastName, attemptsCount) => {
     navigation.navigate('ResultsScreen', {
       userId,
       roundId,
-      handleCheckBoxChange,
       attemptsCount,
       firstName,
       lastName
@@ -53,7 +43,7 @@ const RoundDetailsScreen = ({ route, navigation }) => {
               onPress={() => navigateToResultsScreen(node.id, node.firstName, node.lastName, attemptsCount)}
               style={styles.resultsButton}
             >
-              <Text style={styles.buttonText}>WYNIKI</Text>
+              <Text style={styles.buttonText}>Przypisz wyniki</Text>
             </TouchableOpacity>
           </View>
         ))}

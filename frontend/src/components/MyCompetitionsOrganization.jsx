@@ -39,10 +39,10 @@ export default function MyCompetitionsOrganization() {
     });
   }, [page, getData]);
 
-  useEffect(() => {
+    useEffect(() => {
     if (data && data.organizationCompetitions) {
-      const edges = data.organizationCompetitions.edges || [];
-      setHasNextPage(edges.length === PAGE_SIZE);
+      const hasNextPage = data.organizationCompetitions.pageInfo.hasNextPage || false;
+      setHasNextPage(hasNextPage);
     }
   }, [data]);
 

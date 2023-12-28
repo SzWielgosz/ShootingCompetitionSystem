@@ -61,6 +61,7 @@ class Competition(models.Model):
     status = models.CharField(max_length=20, choices=COMPETITION_STATUSES, null=False, default="created")
     share_status = models.CharField(max_length=20, choices=SHARE_STATUSES, null=False, default="not_shared")
     organization_user = models.ForeignKey(User, on_delete=models.SET_NULL, limit_choices_to={"is_organization": True}, null=True)
+    is_draw = models.BooleanField(null=False, default=False)
     winner = models.ForeignKey(User, on_delete=models.SET_NULL, limit_choices_to={"is_participant": True}, null=True, related_name="participant_winner")
 
 

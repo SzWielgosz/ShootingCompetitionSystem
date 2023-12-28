@@ -25,6 +25,9 @@ export const GET_PARTICIPANT_COMPETITIONS = gql`
       startDate: $startDate
       endDate: $endDate
     ) {
+      pageInfo{
+        hasNextPage
+      }
       edges {
         node {
           id
