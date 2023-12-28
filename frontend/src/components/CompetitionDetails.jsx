@@ -111,7 +111,7 @@ export default function CompetitionDetails(props) {
                   Dołącz
                 </button>
               ))}
-            {item.node.status === "STARTED" && (
+            {item.node.status !== "CREATED" && (
               <div className={CompetitionDetailsCSS.linkContainer}>
                 <Link
                   className={CompetitionDetailsCSS.link}
@@ -192,10 +192,10 @@ export default function CompetitionDetails(props) {
                   <tr>
                     <th>Zwycięzca</th>
                     <td>
-                      {item.node.winner
-                        ? item.node.winner.firstName +
-                          " " +
-                          item.node.winner.lastName
+                      {item.node.isDraw
+                        ? "Remis"
+                        : item.node.winner
+                        ? item.node.winner.firstName + " " + item.node.winner.lastName
                         : "Nie wyłoniony"}
                     </td>
                   </tr>

@@ -248,7 +248,6 @@ class EndCompetition(graphene.Mutation):
     class Arguments:
         competition_id = graphene.ID(required=True)
 
-
     @login_required
     def mutate(self, info, competition_id):
         user = info.context.user
@@ -260,16 +259,16 @@ class EndCompetition(graphene.Mutation):
         competition = Competition.objects.filter(id=decoded_id).first()
         if not competition:
             raise Exception("Competition not found.")
-        
+
         if competition.status == "ENDED":
             raise Exception("Competition already ended")
-        
+
         if competition.share_status != "SHARED":
-            raise Exception("Share competition before starting.")
-        
+            raise Exception("Share competition before ending.")
+
         if competition.organization_user != user:
-            raise Exception("User does not have permission to start this competition.")
-        
+            raise Exception("User does not have permission to end this competition.")
+
         rounds = Round.objects.filter(competition=competition).all()
         participants_competitions = ParticipantCompetition.objects.filter(competition=competition).all()
         print(participants_competitions)
@@ -280,10 +279,8 @@ class EndCompetition(graphene.Mutation):
             participant_user = participant_competition.participant_user
             attempts_count = Attempt.objects.filter(participant_user=participant_user, round__competition=competition).count()
 
-
             if attempts_count != competition.attempts_count * competition.rounds_count:
-                raise Exception(f"Participant {participant_user.first_name + ' ' +participant_user.last_name} does not have the required number of attempts.")
-
+                raise Exception(f"Participant {participant_user.first_name + ' ' + participant_user.last_name} does not have the required number of attempts.")
 
             participants_scoring[participant_user] = 0
 
@@ -293,19 +290,26 @@ class EndCompetition(graphene.Mutation):
                 if attempt.success:
                     participants_scoring[attempt.participant_user] += 1
 
+        max_score = max(participants_scoring.values())
+
+        if list(participants_scoring.values()).count(max_score) > 1:
+            competition.is_draw = True
+            competition.winner = None
+        else:
+            winner = max(participants_scoring, key=participants_scoring.get)
+            competition.is_draw = False
+            competition.winner = winner
+
         for participant, points in participants_scoring.items():
             print(f"{participant} ma {points} punkt{'y' if points != 1 else ''}")
-    
-        winner = max(participants_scoring, key=participants_scoring.get)
-        print("Wygral gracz: ", winner, " z punktacją ", participants_scoring[winner])
-        
+
+        print("Wygral gracz: ", competition.winner, " z punktacją ", participants_scoring.get(competition.winner, 0))
+
         competition.status = "ENDED"
-
-        competition.winner = winner
-
         competition.save()
 
         return EndCompetition(competition=competition)
+
 
 class CompetitionMutation(graphene.ObjectType):
     create_competition = CreateCompetition.Field()

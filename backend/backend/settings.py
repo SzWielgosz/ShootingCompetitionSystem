@@ -31,7 +31,6 @@ INSTALLED_APPS = [
     'graphene_django',
     'django_extensions',
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
-    'graphql_auth',
     'django_filters',
     'corsheaders',
 ]
@@ -103,19 +102,6 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-GRAPHQL_JWT = {
-    "JWT_VERIFY_EXPIRATION": True,
-    "JWT_EXPIRATION_DELTA": timedelta(minutes=5),
-    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
-    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
-    "JWT_COOKIE_SECURE": False,
-    "JWT_ALLOW_ARGUMENT": True,
-    "JWT_COOKIE_SAMESITE": "Lax",
-    "JWT_REUSE_REFRESH_TOKENS": True,
-    'JWT_REFRESH_EXPIRED_HANDLER': lambda orig_iat, context: False,
-    "JWT_AUTH_HEADER_PREFIX": "Bearer"
-}
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -144,6 +130,23 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+
+from app.utils.jwt import my_jwt_payload
+
+GRAPHQL_JWT = {
+    "JWT_PAYLOAD_HANDLER": my_jwt_payload,
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=5),
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
+    "JWT_COOKIE_SECURE": False,
+    "JWT_ALLOW_ARGUMENT": True,
+    "JWT_COOKIE_SAMESITE": "Lax",
+    "JWT_REUSE_REFRESH_TOKENS": True,
+    "JWT_REFRESH_EXPIRED_HANDLER": lambda orig_iat, context: False,
+    "JWT_AUTH_HEADER_PREFIX": "Bearer"
+}
+
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

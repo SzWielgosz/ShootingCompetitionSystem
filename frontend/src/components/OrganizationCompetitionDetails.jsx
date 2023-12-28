@@ -374,11 +374,11 @@ export default function OrganizationCompetitionDetails(props) {
                     <tr>
                       <th>Zwycięzca</th>
                       <td>
-                        {item.node.winner
-                          ? item.node.winner.firstName +
-                            " " +
-                            item.node.winner.lastName
-                          : "Nie wyloniony"}
+                        {item.node.isDraw
+                          ? "Remis"
+                          : item.node.winner
+                          ? item.node.winner.firstName + " " + item.node.winner.lastName
+                          : "Nie wyłoniony"}
                       </td>
                     </tr>
                     <tr>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { jwtDecode } from "jwt-decode";
 import { REFRESH_TOKEN } from "../graphql/mutations/RefreshToken";
 import { useMutation } from "@apollo/client";
@@ -7,9 +7,9 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(null);
-  const [refreshToken, error] = useMutation(REFRESH_TOKEN);
+  const [refreshToken] = useMutation(REFRESH_TOKEN);
 
-  const updateAuth = (newToken) => {
+  const updateAuth = useCallback((newToken) => {
     if (newToken) {
       localStorage.setItem("token", newToken.token);
       const decodedToken = jwtDecode(newToken.token);
@@ -24,9 +24,9 @@ const AuthProvider = ({ children }) => {
       localStorage.removeItem("token");
       setAuth(null);
     }
-  };
+  }, []);
 
-  const refreshAuthToken = async () => {
+  const refreshAuthToken = useCallback(async () => {
     try {
       const storedToken = localStorage.getItem("token");
 
@@ -49,7 +49,7 @@ const AuthProvider = ({ children }) => {
       console.error("Error refreshing auth token:", refreshError);
       updateAuth(null);
     }
-  };
+  }, [refreshToken, updateAuth]);
 
   useEffect(() => {
     const refreshInterval = setInterval(refreshAuthToken, 1000);
@@ -57,7 +57,7 @@ const AuthProvider = ({ children }) => {
     refreshAuthToken();
 
     return () => clearInterval(refreshInterval);
-  }, []);
+  }, [refreshAuthToken]);
 
   const value = {
     auth,

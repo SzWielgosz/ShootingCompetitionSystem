@@ -6,6 +6,7 @@ from graphene import relay
 from graphql_relay import from_global_id
 from graphene_django.filter import DjangoFilterConnectionField
 from app.schema.connection import ExtendedConnection
+from graphql_jwt.decorators import login_required
 
 
 class RoundNode(DjangoObjectType):
@@ -22,18 +23,18 @@ class RoundConnection(graphene.Connection):
 
 
 class RoundQuery(graphene.ObjectType):
-    referee_rounds = relay.ConnectionField(RoundConnection)
+    referee_rounds = DjangoFilterConnectionField(RoundNode)
     round_participants = relay.ConnectionField(UserConnection, round_id=graphene.ID())
     competition_rounds = DjangoFilterConnectionField(RoundNode, competition_id = graphene.ID())
 
-
+    @login_required
     def resolve_referee_rounds(self, info, **kwargs):
         user = info.context.user
 
         if not user.is_referee:
             raise Exception("User is not a referee")
         
-        queryset = Round.objects.filter(competition__status__in=["STARTED"], referee_user=user).all()
+        queryset = Round.objects.filter(competition__status__in=["STARTED"], referee_user=user).order_by("competition__date_time", "number").all()
 
         return queryset
 

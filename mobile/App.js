@@ -54,7 +54,7 @@ const App = () => {
           <Stack.Screen 
             name="RoundsListScreen"
             options={{ 
-              title: "Lista rund",
+              title: "Rundy do rozpatrzenia",
               headerShown: true,
               headerRight: () => (
                 <View style={{ marginRight: 10 }}>

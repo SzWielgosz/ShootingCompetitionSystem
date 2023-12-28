@@ -5,7 +5,7 @@ from app.schema.participant_competition import ParticipantCompetitionNode
 from graphql_relay import from_global_id
 from graphql_jwt.decorators import login_required
 from datetime import date
-from app.value_objects import AGE_NUMBERS
+from app.utils.age_restriction import check_age_restriction
 
 
 class JoinCompetition(graphene.Mutation):
@@ -21,7 +21,7 @@ class JoinCompetition(graphene.Mutation):
         user = info.context.user
 
         if not user.is_participant:
-            raise Exception("User is not a participant")
+            raise Exception("Użytkownik nie jest uczestnikiem")
         
         participant = Participant.objects.filter(user=user).first()
 
@@ -29,27 +29,26 @@ class JoinCompetition(graphene.Mutation):
         competition = Competition.objects.filter(pk=decoded_id).first()
 
         if competition is None:
-            raise Exception("No competition found")
+            raise Exception("Nie znaleziono zawodów")
         
         existing_participation = ParticipantCompetition.objects.filter(participant_user=user, competition=competition).first()
         if existing_participation:
-            raise Exception("User is already participating in this competition")
+            raise Exception("Uczestnik aktualnie bierze udział w zawodach")
         
         today = date.today()
         age = today.year - participant.date_of_birth.year - ((today.month, today.day) < (participant.date_of_birth.month, participant.date_of_birth.day))
+        print("Wiek: ", age)
 
-        for restriction_name, restriction_age in AGE_NUMBERS:
-            if competition.age_restriction != restriction_name and age < restriction_age:
-                raise Exception("Invalid age")
+        user_age_restriction = check_age_restriction(age=age)
+
+        if user_age_restriction != competition.age_restriction:
+            raise Exception("Nieprawidłowa kategoria wiekowa")
 
         participant_competition_count = ParticipantCompetition.objects.filter(competition=competition).count()
         if participant_competition_count >= competition.participants_count:
-            raise Exception("Max count of participants")
+            raise Exception("Osiągnięto maksymalną ilość uczestników")
         
-        today = date.today()
-
         participant_competition = ParticipantCompetition.objects.create(participant_user=user, competition=competition)
-
 
         return JoinCompetition(participant_competition=participant_competition, success=True)
     
@@ -66,7 +65,7 @@ class LeaveCompetition(graphene.Mutation):
         user = info.context.user
 
         if not user.is_participant:
-            raise Exception("User is not a participant")
+            raise Exception("Użytkownik nie jest uczestnikiem")
         
         decoded_id = from_global_id(competition_id)[1]
 
@@ -75,13 +74,13 @@ class LeaveCompetition(graphene.Mutation):
         participant_competition = ParticipantCompetition.objects.filter(participant_user=user, competition=competition).first()
 
         if not participant_competition:
-            raise Exception("Participant didn't join to competition")
+            raise Exception("Uczestnik nie dołączył do zawodów")
         
         if competition.status == "STARTED":
-            raise Exception("You cannot leave started competition")
+            raise Exception("Nie można wyjść z wystartowanych zawodów")
         
         if competition.status == "ENDED":
-            raise Exception("You cannot leave ended competition")
+            raise Exception("Nie można wyjść z zakończonych zawodów")
         
         participant_competition.delete()
 
@@ -100,18 +99,18 @@ class DisqualifyParticipant(graphene.Mutation):
         user = info.context.user
 
         if not user.is_referee:
-            raise Exception("User is not a referee")
+            raise Exception("Użytkownik nie jest sędzią")
         
         decoded_id = from_global_id(participant_user_id)[1]
         participant_user = User.objects.filter(pk=decoded_id).first()
 
         if participant_user is None:
-            raise Exception("Participant not found")
+            raise Exception("Uczestnik nie znaleziony")
         
         participant_competition = ParticipantCompetition.objects.filter(participant_user=participant_user).first()
 
         if participant_competition is None:
-            raise Exception("Participant is not assigned to the competition")
+            raise Exception("Uczestnik nie jest przypisany do zawodów")
     
         participant_competition.delete()
 

@@ -37,8 +37,8 @@ export default function MyCompetitionsParticipant() {
 
   useEffect(() => {
     if (data && data.participantCompetitions) {
-      const edges = data.participantCompetitions.edges || [];
-      setHasNextPage(edges.length === PAGE_SIZE);
+      const hasNextPage = data.participantCompetitions.pageInfo.hasNextPage || false;
+      setHasNextPage(hasNextPage);
     }
   }, [data]);
 
@@ -187,7 +187,6 @@ export default function MyCompetitionsParticipant() {
                 <th>Data i czas</th>
                 <th>Szczegóły</th>
               </tr>
-            </thead>
             {data?.participantCompetitions.edges.map((edge) => {
               const competition = edge.node;
               return (
@@ -214,6 +213,7 @@ export default function MyCompetitionsParticipant() {
                 </tr>
               );
             })}
+            </thead>
           </table>
         </div>
       )}

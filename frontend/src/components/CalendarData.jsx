@@ -33,10 +33,11 @@ export default function CalendarData() {
 
   useEffect(() => {
     if (data && data.sharedCompetitions) {
-      const edges = data.sharedCompetitions.edges || [];
-      setHasNextPage(edges.length === PAGE_SIZE);
+      const hasNextPage = data.sharedCompetitions.pageInfo.hasNextPage || false;
+      setHasNextPage(hasNextPage);
     }
   }, [data]);
+
 
   const handleSearch = () => {
     const variables = {
@@ -96,7 +97,7 @@ export default function CalendarData() {
             onChange={(e) => setAgeRestrictionFilter(e.target.value)}
           >
             <option value="All">Każde</option>
-            <option value="YOUTH">Młodzież</option>
+            <option value="YOUTH">Młodziki</option>
             <option value="YOUNGER_JUNIORS">Młodsi juniorzy</option>
             <option value="JUNIORS">Juniorzy</option>
             <option value="SENIORS">Seniorzy</option>

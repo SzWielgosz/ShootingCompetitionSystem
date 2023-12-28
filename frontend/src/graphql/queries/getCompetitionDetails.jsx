@@ -19,6 +19,7 @@ export const GET_COMPETITION_DETAILS = gql`
           roundsCount
           attemptsCount
           participantsCount
+          isDraw
           winner {
             firstName
             lastName

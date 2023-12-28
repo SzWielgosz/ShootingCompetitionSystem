@@ -61,3 +61,8 @@
   padding: 8px;
   text-align: center;
 }
+
+.table th {
+  background-color: #cb1313;
+  color: #fff;
+}
