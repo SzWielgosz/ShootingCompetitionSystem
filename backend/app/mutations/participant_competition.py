@@ -37,7 +37,6 @@ class JoinCompetition(graphene.Mutation):
         
         today = date.today()
         age = today.year - participant.date_of_birth.year - ((today.month, today.day) < (participant.date_of_birth.month, participant.date_of_birth.day))
-        print("Wiek: ", age)
 
         user_age_restriction = check_age_restriction(age=age)
 

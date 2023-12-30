@@ -7,6 +7,9 @@ export const GET_COMPETITION_ROUNDS = gql`
       first: $first
       offset: $offset
     ) {
+      pageInfo{
+        hasNextPage
+      }
       edgeCount
       edges {
         node {
@@ -25,6 +28,7 @@ export const GET_COMPETITION_ROUNDS = gql`
                 success
                 participantUser {
                   id
+                  username
                   firstName
                   lastName
                 }

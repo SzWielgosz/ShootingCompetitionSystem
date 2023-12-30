@@ -2,18 +2,23 @@ import CompetitionDetailsResultsCSS from "../styles/CompetitionDetailsResults.mo
 import { useQuery } from "@apollo/client";
 import { GET_COMPETITION_ROUNDS } from "../graphql/queries/getCompetitionRounds";
 import { GET_COMPETITION_ROUNDS_COUNT } from "../graphql/queries/getCompetitionRoundsCount";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 
 export default function CompetitionDetailsResults(props) {
   const { competitionId } = props;
   const PAGE_SIZE = 1;
   const [currentPage, setCurrentPage] = useState(0);
+  const [hasNextPage, setHasNextPage] = useState(false);
   const { loading, data, fetchMore } = useQuery(GET_COMPETITION_ROUNDS, {
     variables: {
       competitionId: competitionId,
       first: PAGE_SIZE,
       offset: currentPage * PAGE_SIZE,
+    },
+    onCompleted: (newData) => {
+      const pageInfo = newData?.competitionRounds?.pageInfo;
+      setHasNextPage(pageInfo?.hasNextPage || false);
     },
   });
 
@@ -30,8 +35,7 @@ export default function CompetitionDetailsResults(props) {
   };
 
   const loadNextRound = () => {
-    const totalRounds = roundsCountData?.competitionRounds.edgeCount || 0;
-    if (currentPage * PAGE_SIZE < totalRounds - PAGE_SIZE) {
+    if (hasNextPage) {
       fetchMore({
         variables: {
           offset: (currentPage + 1) * PAGE_SIZE,
@@ -66,13 +70,14 @@ export default function CompetitionDetailsResults(props) {
         <button
           className={CompetitionDetailsResultsCSS.button}
           onClick={loadPreviousRound}
+          disabled={currentPage === 0}
         >
           &lt;
         </button>
         <button
           className={CompetitionDetailsResultsCSS.button}
           onClick={loadNextRound}
-          disabled={currentPage * PAGE_SIZE >= (roundsCountData?.competitionRounds.edgeCount || 0) - PAGE_SIZE}
+          disabled={!hasNextPage}
         >
           &gt;
         </button>
@@ -106,62 +111,71 @@ export default function CompetitionDetailsResults(props) {
                   <tr>
                     <th>Próby</th>
                   </tr>
-                  {[
-                    ...new Set(
+                  {item.node.attemptSet.edges && item.node.attemptSet.edges.length > 0 ? (
+                    [...new Set(
                       item.node.attemptSet.edges.map(
                         (attempt) => attempt.node.participantUser.id,
                       ),
-                    ),
-                  ].map((participantId) => {
-                    const participantAttempts =
-                      item.node.attemptSet.edges.filter(
-                        (attempt) =>
-                          attempt.node.participantUser.id === participantId,
+                    )].map((participantId) => {
+                      const participantAttempts =
+                        item.node.attemptSet.edges.filter(
+                          (attempt) =>
+                            attempt.node.participantUser.id === participantId,
+                        );
+                      const sortedAttempts = participantAttempts.sort(
+                        (a, b) => a.node.number - b.node.number
                       );
-                    const participant =
-                      participantAttempts[0].node.participantUser;
-                    return (
-                      <tr key={participantId}>
-                        <td
-                          className={
-                            CompetitionDetailsResultsCSS.participantName
-                          }
-                        >
-                          {`${participant.firstName} ${participant.lastName}`}
-                        </td>
-                        <td>
-                          {participantAttempts.map((attempt) => (
-                            <p key={attempt.node.number}>
-                              <span
-                                className={
-                                  CompetitionDetailsResultsCSS.attemptNumber
-                                }
-                              >
-                                {attempt.node.number + 1}:
-                              </span>
-                              {attempt.node.success ? (
+                      const participant =
+                        sortedAttempts[0].node.participantUser;
+                      return (
+                        <tr key={participantId}>
+                          <td
+                            className={
+                              CompetitionDetailsResultsCSS.participantName
+                            }
+                          >
+                            <Link to={`/participants/${participantId}`}>
+                              {`${participant.username} ${participant.firstName} ${participant.lastName}`}
+                            </Link>
+                          </td>
+                          <td>
+                            {sortedAttempts.map((attempt) => (
+                              <p key={attempt.node.number}>
                                 <span
                                   className={
-                                    CompetitionDetailsResultsCSS.success
+                                    CompetitionDetailsResultsCSS.attemptNumber
                                   }
                                 >
-                                  ✔
+                                  {attempt.node.number + 1}:
                                 </span>
-                              ) : (
-                                <span
-                                  className={
-                                    CompetitionDetailsResultsCSS.failure
-                                  }
-                                >
-                                  ✘
-                                </span>
-                              )}
-                            </p>
-                          ))}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                                {attempt.node.success ? (
+                                  <span
+                                    className={
+                                      CompetitionDetailsResultsCSS.success
+                                    }
+                                  >
+                                    ✔
+                                  </span>
+                                ) : (
+                                  <span
+                                    className={
+                                      CompetitionDetailsResultsCSS.failure
+                                    }
+                                  >
+                                    ✘
+                                  </span>
+                                )}
+                              </p>
+                            ))}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan="2">Zawody w toku...</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

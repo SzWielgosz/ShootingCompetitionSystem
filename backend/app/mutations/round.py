@@ -19,7 +19,7 @@ class AssignRefereeToRound(graphene.Mutation):
         user = info.context.user
 
         if not user.is_organization:
-            raise Exception("User is not an organization")
+            raise Exception("Użytkownik nie jest organizacją")
         
         decoded_round_id = from_global_id(round_id)[1]
         decoded_referee_id = from_global_id(referee_id)[1]
@@ -27,10 +27,10 @@ class AssignRefereeToRound(graphene.Mutation):
         round = Round.objects.filter(pk=decoded_round_id).first()
 
         if round is None:
-            raise Exception("Round does not exist")
+            raise Exception("Runda nie została znaleziona")
         
         if round.competition.organization_user != user:
-            raise Exception("Competition is not assigned to this organization")
+            raise Exception("Zawody nie są przypisane dla tej organizacji")
         
         referee = get_user_model().objects.filter(pk=decoded_referee_id, is_referee=True).first()
 

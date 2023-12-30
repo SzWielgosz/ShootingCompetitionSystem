@@ -14,6 +14,7 @@ import CreateCompetitionPage from "./pages/CreateCompetitionPage";
 import OrganizationCompetitionDetailsPage from "./pages/OrganizationCompetitionDetailsPage";
 import RefereesPage from "./pages/RefereesPage";
 import CompetitionDetailsResultsPage from "./pages/CompetitionDetailsResultsPage";
+import PublicParticipantProfilePage from "./pages/PublicParticipantProfilePage";
 
 const ROLES = {
   Participant: "Participant",
@@ -74,6 +75,9 @@ function App() {
                 element={<CreateCompetitionPage />}
               ></Route>
             </Route>
+            <Route path="/participants/:id"
+            element={<PublicParticipantProfilePage />}
+            />
           </Routes>
         </div>
       </AuthProvider>

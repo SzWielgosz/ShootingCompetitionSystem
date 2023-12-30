@@ -18,7 +18,7 @@ class RegisterReferee(graphene.Mutation):
         existing_user = get_user_model().objects.filter(email=email).first()
 
         if existing_user:
-            raise Exception("User with this email already exists.")
+            raise Exception("Użytkownik z tym adresem email istnieje")
         
         user = get_user_model()
         new_user = user(username=username, email=email, first_name=first_name, last_name=last_name, phone_number=phone_number, 

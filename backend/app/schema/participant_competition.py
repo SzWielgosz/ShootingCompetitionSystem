@@ -28,7 +28,7 @@ class ParticipantCompetitionQuery(graphene.ObjectType):
             participants_in_competition = ParticipantCompetition.objects.filter(competition=competition)
             return participants_in_competition
         except Competition.DoesNotExist:
-            raise Exception("Competition does not exist")
+            raise Exception("Zawody nie istnieją")
         
     
     @login_required

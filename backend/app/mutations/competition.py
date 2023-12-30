@@ -34,33 +34,36 @@ class CreateCompetition(graphene.Mutation):
         
         user = info.context.user
 
+        if user.is_organization is False:
+            raise Exception("Użytkownik nie jest organizacją")
+
         if not name or not city or not street or not house_number:\
-            raise Exception("Fields cannot be empty.")
+            raise Exception("Pola nie mogą być puste")
         
-        if rounds_count <= 0 or attempts_count <= 0:
-            raise Exception("Rounds count and attempts count must be greater than 0")
+        if rounds_count <= 0 or rounds_count > 6:
+            raise Exception("Ilość rund musi być większa niż 0 i mniejsza lub równa 6")
+        
+        if attempts_count <= 0 or attempts_count > 10:
+            raise Exception("Ilość prób musi być większa niż 0 i mniejsza lub równa 10")
         
         if participants_count <= 1:
-            raise Exception("Participants count must be higher than 1")
-
-        if user.is_organization is False:
-            raise Exception("User is not an organization")
+            raise Exception("Ilość uczestników musi być większa niż 1 i mniejsza lub równa 8")
 
         if date_time < datetime.now():
-            raise Exception("Past date!")
+            raise Exception("Data z przeszłości")
         
         valid_age_restrictions = ["YOUTH", "YOUNGER_JUNIORS", "JUNIORS", "SENIORS"]
         valid_target_restrictions = ["STATIC", "MOVING"]
         valid_discipline_restrictions = ["PISTOL", "SHOTGUN", "RIFLE"]
 
         if age_restriction not in valid_age_restrictions:
-            raise Exception("Invalid age restriction value.")
+            raise Exception("Nieprawidłowe organiczenia wieku")
         
         if target not in valid_target_restrictions:
-            raise Exception("Invalid target restriction value.")
+            raise Exception("Nieprawidłowy typ celu")
         
         if discipline not in valid_discipline_restrictions:
-            raise Exception("Invalid discipline restriction value.")
+            raise Exception("Nieprawidłowa dyscyplina")
         
 
         competition = Competition(
@@ -114,30 +117,30 @@ class EditCompetition(graphene.Mutation):
         user = info.context.user
 
         if user.is_organization is False:
-            raise Exception("User is not an organization")
+            raise Exception("Użytkownik nie jest organizacją")
         
         decoded_id = from_global_id(competition_id)[1]
 
         competition = Competition.objects.get(pk=decoded_id, organization_user=user)
 
         if competition.status != "CREATED":
-            raise Exception("Cannot edit competition")
+            raise Exception("Nie można edytować zawodów mających status inny niż 'Utworzone'")
 
         if "date_time" in kwargs and kwargs["date_time"] < datetime.now():
-            raise Exception("Past date!")
+            raise Exception("Data z przeszłości")
 
         valid_age_restrictions = ["YOUTH", "YOUNGER_JUNIORS", "JUNIORS", "SENIORS"]
         valid_target_restrictions = ["STATIC", "MOVING"]
         valid_discipline_restrictions = ["PISTOL", "SHOTGUN", "RIFLE"]
 
         if "age_restriction" in kwargs and kwargs["age_restriction"] not in valid_age_restrictions:
-            raise Exception("Invalid age restriction value.")
+            raise Exception("Nieprawidłowe organiczenia wieku")
 
         if "target" in kwargs and kwargs["target"] not in valid_target_restrictions:
-            raise Exception("Invalid target restriction value.")
+            raise Exception("Nieprawidłowy typ celu")
 
         if "discipline" in kwargs and kwargs["discipline"] not in valid_discipline_restrictions:
-            raise Exception("Invalid discipline restriction value.")
+            raise Exception("Nieprawidłowa dyscyplina")
 
         for field, value in kwargs.items():
             setattr(competition, field, value)
@@ -159,16 +162,16 @@ class DeleteCompetition(graphene.Mutation):
         user = info.context.user
 
         if not user.is_organization:
-            raise Exception("User is not an organization")
+            raise Exception("Użytkownik nie jest organizacją")
         
         decoded_id = from_global_id(competition_id)[1]
         competition = Competition.objects.filter(id=decoded_id).first()
 
         if not competition:
-            raise Exception("Competition not found")
+            raise Exception("Nie znaleziono zawodów")
         
         if competition.organization_user != user:
-            raise Exception("User is not assigned to competition")
+            raise Exception("Organizacja nie jest przypisana do zawodów")
         
         competition.delete()
 
@@ -187,19 +190,19 @@ class ShareStatusCompetition(graphene.Mutation):
         decoded_id = from_global_id(competition_id)[1]
 
         if not user.is_organization:
-            raise Exception("User is not an organization.")
+            raise Exception("Użytkownik nie jest organizacją")
 
         competition = Competition.objects.filter(id=decoded_id).first()
         if not competition:
-            raise Exception("Competition not found.")
+            raise Exception("Nie znaleziono zawodów")
         
         if competition.organization_user != user:
-            raise Exception("User does not have permission to share this competition.")
+            raise Exception("Użytkownik nie ma uprawnień do udostępnienia tych zawodów")
         
         rounds = Round.objects.filter(competition=competition)
         for round in rounds:
             if round.referee_user is None:
-                raise Exception("Assign referees to all rounds before sharing.")
+                raise Exception("Proszę przypisać sędziów do wszystkich rund przed udostępnieniem")
         
         competition.share_status = share_status
 
@@ -220,20 +223,20 @@ class StartCompetition(graphene.Mutation):
         decoded_id = from_global_id(competition_id)[1]
 
         if not user.is_organization:
-            raise Exception("User is not an organization.")
+            raise Exception("Użytkownik nie jest organizacją.")
 
         competition = Competition.objects.filter(id=decoded_id).first()
         if not competition:
-            raise Exception("Competition not found.")
+            raise Exception("Nie znaleziono zawodów")
         
         if competition.share_status != "SHARED":
-            raise Exception("Share competition before starting.")
+            raise Exception("Proszę udostępnić zawody przed wystartowaniem")
         
         if competition.organization_user != user:
-            raise Exception("User does not have permission to start this competition.")
+            raise Exception("Nie posiadasz uprawnień do wystartowania tych zawodów")
         
         if ParticipantCompetition.objects.filter(competition=competition).count() != competition.participants_count:
-            raise Exception("Number of participants does not match participantsCount.")
+            raise Exception("ilość uczestników nie jest zapełniona")
         
         competition.status = "STARTED"
 
@@ -254,20 +257,20 @@ class EndCompetition(graphene.Mutation):
         decoded_id = from_global_id(competition_id)[1]
 
         if not user.is_organization:
-            raise Exception("User is not an organization.")
+            raise Exception("Użytkownik nie jest organizacją.")
 
         competition = Competition.objects.filter(id=decoded_id).first()
         if not competition:
-            raise Exception("Competition not found.")
+            raise Exception("Nie znaleziono zawodów")
 
         if competition.status == "ENDED":
-            raise Exception("Competition already ended")
+            raise Exception("Zawody już się zakończyły")
 
         if competition.share_status != "SHARED":
-            raise Exception("Share competition before ending.")
+            raise Exception("Udostępnij zawody przed zakończeniem")
 
         if competition.organization_user != user:
-            raise Exception("User does not have permission to end this competition.")
+            raise Exception("Nie posiadasz uprawnień do zakończenia tych zawodów")
 
         rounds = Round.objects.filter(competition=competition).all()
         participants_competitions = ParticipantCompetition.objects.filter(competition=competition).all()
@@ -280,7 +283,7 @@ class EndCompetition(graphene.Mutation):
             attempts_count = Attempt.objects.filter(participant_user=participant_user, round__competition=competition).count()
 
             if attempts_count != competition.attempts_count * competition.rounds_count:
-                raise Exception(f"Participant {participant_user.first_name + ' ' + participant_user.last_name} does not have the required number of attempts.")
+                raise Exception(f"Uczestnik {participant_user.first_name + ' ' + participant_user.last_name} nie ma wymaganej ilości prób")
 
             participants_scoring[participant_user] = 0
 

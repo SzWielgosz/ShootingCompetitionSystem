@@ -28,17 +28,22 @@ class RegisterParticipant(graphene.Mutation):
     @transaction.atomic
     def mutate(self, info, username, email, password, first_name, last_name, city, date_of_birth, phone_number):
         if not all([username, email, password, first_name, last_name, city, date_of_birth, phone_number]):
-            raise Exception("All fields must be filled")
+            raise Exception("Wszystkie pola muszą być uzupełnione")
+        
         existing_user = get_user_model().objects.filter(email=email).first()
+        existing_user_2 = get_user_model().objects.filter(username=username).first()
 
         if existing_user:
-            raise Exception("User with this email already exists.")
+            raise Exception("Użytkownik z tym adresem email istnieje")
+        
+        if existing_user_2:
+            raise Exception("Użytkownik z tą nazwą użytkownika istnieje")
         
         today = date.today()
         age = today.year - date_of_birth.year - ((today.month, today.day) < (date_of_birth.month, date_of_birth.day))
 
         if age < 14:
-            raise Exception("You must me 14 or older to create an account")
+            raise Exception("Użytkownik musi mieć minimum 14 lat, aby założyć konto")
         
         validate_email(email)
         validate_password(password)
@@ -52,7 +57,7 @@ class RegisterParticipant(graphene.Mutation):
         participant = Participant(user=new_user, date_of_birth=date_of_birth, city=city)
         participant.save()
 
-        return RegisterParticipant(success=True, message="Participant registered successfully")
+        return RegisterParticipant(success=True, message="Uczestnik został zarejestrowany pomyślnie")
     
 
 class UpdateParticipantProfile(graphene.Mutation):
@@ -72,12 +77,12 @@ class UpdateParticipantProfile(graphene.Mutation):
         user = info.context.user
 
         if user.is_participant is not True:
-            raise Exception("User is not a participant")
+            raise Exception("Użytkownik nie jest uczestnikiem")
         
         participant = Participant.objects.filter(user=user).first()
 
         if participant is None:
-            raise Exception("Participant not found")
+            raise Exception("Nieudana próba znalezienia uczestnika")
         
         if "username" in kwargs:
             username = kwargs["username"]
@@ -85,7 +90,7 @@ class UpdateParticipantProfile(graphene.Mutation):
             if found_user is None or found_user == user:
                 user.username = username
             else:
-                raise Exception("User with this username already exists")
+                raise Exception("Nazwa użytkownika jest już wykorzystywana")
 
         if "first_name" in kwargs:
             user.first_name = kwargs["first_name"]
@@ -99,7 +104,7 @@ class UpdateParticipantProfile(graphene.Mutation):
             if phone_pattern.match(kwargs["phone_number"]):
                 user.phone_number = kwargs["phone_number"]
             else:
-                raise Exception("Invalid phone number")
+                raise Exception("Nieprawidłowy numer telefonu")
             
 
         if "city" in kwargs:
@@ -112,7 +117,7 @@ class UpdateParticipantProfile(graphene.Mutation):
         age = today.year - participant.date_of_birth.year - ((today.month, today.day) < (participant.date_of_birth.month, participant.date_of_birth.day))
 
         if age < 14:
-            raise Exception("You must me 14 or older")
+            raise Exception("Użytkownik musi mieć minimum 14 lat, aby założyć konto")
         
         user.save()
         participant.save()

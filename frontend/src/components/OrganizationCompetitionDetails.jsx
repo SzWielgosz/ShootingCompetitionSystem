@@ -24,11 +24,6 @@ import OrganizationCompetitionDetailsCSS from "../styles/OrganizationCompetition
 export default function OrganizationCompetitionDetails(props) {
   const { competitionId } = props;
   const [isEditing, setIsEditing] = useState(false);
-  const [assignRefereeRoundId, setAssignRefereeRoundId] = useState(null);
-
-  const handleOpenAssignRefereePanel = (roundId) => {
-    setAssignRefereeRoundId(roundId);
-  };
 
   const navigate = useNavigate();
 
@@ -72,6 +67,7 @@ export default function OrganizationCompetitionDetails(props) {
           city: formData.city,
           ageRestriction: formData.ageRestriction,
           target: formData.target,
+          participantsCount: formData.participantsCount,
           roundsCount: formData.roundsCount,
           attemptsCount: formData.attemptsCount,
         },
@@ -402,7 +398,7 @@ export default function OrganizationCompetitionDetails(props) {
                         <tr key={round.node.id}>
                           <td>{round.node.number + 1}</td>
                           <td>
-                            {competitionStatus !== "ENDED" ? (
+                            {competitionStatus === "CREATED" ? (
                               <AssignRefereePanel
                                 roundId={round.node.id}
                                 refereeUsers={dataReferee.refereeUsers}

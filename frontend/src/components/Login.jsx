@@ -40,7 +40,9 @@ export default function Login() {
       setAuth({ user, token });
       navigate("/");
     } catch (error) {
-      toast.error(error.message);
+      if(error.message === "Please enter valid credentials"){
+        toast.error("Nieprawidłowe dane ");
+      }
     }
   };
 
