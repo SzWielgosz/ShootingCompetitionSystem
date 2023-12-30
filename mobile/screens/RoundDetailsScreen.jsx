@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   resultsButton: {
-    backgroundColor: '#3498db',
+    backgroundColor: '#cb1313',
     padding: 10,
     borderRadius: 5,
     width: 100,
@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center',
+    backgroundColor: '#cb1313',
   },
   resultsContainer: {},
   resultItem: {

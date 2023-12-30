@@ -51,7 +51,7 @@ class CompetitionQuery(graphene.ObjectType):
             queryset = Competition.objects.filter(pk=decoded_id)
             return queryset
         except Competition.DoesNotExist:
-            raise Exception(f"Competition does not exist")
+            raise Exception("Zawody nie istnieją")
 
     def resolve_shared_competitions(self, info, **kwargs):
         queryset = Competition.objects.filter(share_status="SHARED").exclude(status="ENDED").all()
@@ -88,7 +88,7 @@ class CompetitionQuery(graphene.ObjectType):
         user = info.context.user
 
         if not user.is_participant:
-            raise Exception("User is not a Participant")
+            raise Exception("Użytkownik nie jest uczestnikiem")
 
         search = kwargs.get("search")
         win = kwargs.get("win")
@@ -125,7 +125,7 @@ class CompetitionQuery(graphene.ObjectType):
         user = info.context.user
 
         if not user.is_organization:
-            raise Exception("User is not an Organization")
+            raise Exception("Użytkownik nie jest organizacją")
         
         search = kwargs.get("search")
         start_date = kwargs.get("start_date")
@@ -161,13 +161,13 @@ class CompetitionQuery(graphene.ObjectType):
     def resolve_organization_competition_details(self, info, **kwargs):
         user = info.context.user
         if not user.is_organization:
-            raise Exception("User is not an organization")
+            raise Exception("Użytkownik nie jest organizacją")
         
         competition_id = kwargs.get("competition_id")
         decoded_id = from_global_id(competition_id)[1]
         queryset = Competition.objects.filter(pk=decoded_id, organization_user=user)
         
         if queryset is None:
-            raise Exception("Competition not found")
+            raise Exception("Nie udało się znaleźć zawodów")
         
         return queryset

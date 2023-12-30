@@ -46,6 +46,10 @@
   background-color: #a70a0a;
 }
 
+.button:disabled {
+  filter: brightness(10) saturate(0.5);
+}
+
 .detailsSummary {
   cursor: pointer;
 }

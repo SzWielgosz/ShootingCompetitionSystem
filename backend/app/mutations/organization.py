@@ -30,12 +30,12 @@ class RegisterOrganization(graphene.Mutation):
     @transaction.atomic
     def mutate(self, info, username, email, password, name, street, house_number, city, post_code, phone_number):
         if not all([username, email, password, name, street, house_number, city, post_code, phone_number]):
-            raise Exception("All fields must be filled")
+            raise Exception("Wszystkie pola muszą być uzupełnione")
 
         existing_user = get_user_model().objects.filter(email=email).first()
 
         if existing_user:
-            raise Exception("User with this email already exists")
+            raise Exception("Użytkownik z tym adresem email już istnieje")
         
         validate_email(email)
         validate_password(password)
@@ -48,7 +48,7 @@ class RegisterOrganization(graphene.Mutation):
         organization = Organization(user=new_user, name=name, street=street, city=city, post_code=post_code, house_number=house_number)
         organization.save()
 
-        return RegisterOrganization(success=True, message="Organization registered successfully")
+        return RegisterOrganization(success=True, message="Organizacja zarejestrowana pomyślnie")
     
 
 class UpdateOrganizationProfile(graphene.Mutation):
@@ -70,12 +70,12 @@ class UpdateOrganizationProfile(graphene.Mutation):
         user = info.context.user
 
         if user.is_organization is not True:
-            raise Exception("User is not an organization")
+            raise Exception("Użytkownik nie jest organizacją")
         
         organization = Organization.objects.filter(user=user).first()
 
         if organization is None:
-            raise Exception("Organization not found")
+            raise Exception("Organizacja nie została znaleziona")
         
         if "name" in kwargs:
             user.name = kwargs["name"]
@@ -98,7 +98,7 @@ class UpdateOrganizationProfile(graphene.Mutation):
             if phone_pattern.match(kwargs["phone_number"]):
                 user.phone_number = kwargs["phone_number"]
             else:
-                raise Exception("Invalid phone number")
+                raise Exception("Nieprawidłowy numer telefonu")
 
         
         user.save()

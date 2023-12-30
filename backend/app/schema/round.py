@@ -30,9 +30,8 @@ class RoundQuery(graphene.ObjectType):
     @login_required
     def resolve_referee_rounds(self, info, **kwargs):
         user = info.context.user
-
         if not user.is_referee:
-            raise Exception("User is not a referee")
+            raise Exception("Użytkownik nie jest sędzią")
         
         queryset = Round.objects.filter(competition__status__in=["STARTED"], referee_user=user).order_by("competition__date_time", "number").all()
 
@@ -54,12 +53,12 @@ class RoundQuery(graphene.ObjectType):
             return participants
 
         except Round.DoesNotExist:
-            raise Exception("Round not found")
+            raise Exception("Runda nie została znaleziona")
         
 
     def resolve_competition_rounds(self, info, competition_id, **kwargs):
-        try:
 
+        try:
             decoded_id = from_global_id(competition_id)[1]
             competition = Competition.objects.get(id=decoded_id)
 
@@ -68,7 +67,7 @@ class RoundQuery(graphene.ObjectType):
             return rounds
 
         except Round.DoesNotExist:
-            raise Exception("Round not found")
+            raise Exception("Runda nie została znaleziona")
 
 
 

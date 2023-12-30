@@ -1,22 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useMutation } from '@apollo/client';
-import { LOGIN_REFEREE } from '../graphql/mutations/LoginReferee';
+import { LOGIN_USER } from '../graphql/mutations/Login';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../useAuth';
+import { jwtDecode } from 'jwt-decode';
 
-const LoginScreen = ({ onLoginSuccess, navigation }) => {
+
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { setAuth, auth } = useAuth();
 
-  const [loginReferee, { error }] = useMutation(LOGIN_REFEREE);
+  const [loginReferee, { error }] = useMutation(LOGIN_USER);
 
   const handleLogin = async () => {
     try {
       const result = await loginReferee({
         variables: { email, password },
       });
-
-      const token = result.data.loginReferee.token;
-      onLoginSuccess(token);
+      const token = result.data.tokenAuth.token;
+      const user = jwtDecode(token).email;
+      AsyncStorage.setItem("token", token);
+      setAuth({ user, token });
       navigation.reset({
         index: 0,
         routes: [{ name: 'RoundsListScreen' }],
@@ -40,7 +46,7 @@ const LoginScreen = ({ onLoginSuccess, navigation }) => {
         onChangeText={(text) => setPassword(text)}
         secureTextEntry={true}
       />
-      <Button title="Zaloguj" onPress={handleLogin} />
+      <Button title="Zaloguj" onPress={handleLogin} color="#cb1313"/>
       {error && <Text style={styles.errorText}>{error.message}</Text>}
     </View>
   );

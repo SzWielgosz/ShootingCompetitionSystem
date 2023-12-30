@@ -4,10 +4,12 @@ import CheckBox from 'expo-checkbox';
 import { useMutation, useQuery } from '@apollo/client';
 import { ASSIGN_ATTEMPTS_SCORE } from '../graphql/mutations/AssignAttemptsScore';
 import { GET_PARTICIPANT_ROUND_ATTEMPTS } from '../graphql/queries/GetParticipantRoundAttempts';
+import { useAuth } from '../useAuth';
 
 const ResultsScreen = ({ route, navigation }) => {
   const { userId, roundId, attemptsCount, firstName, lastName } = route.params;
   const [results, setResults] = useState(Array(attemptsCount).fill(false));
+  const { auth } = useAuth
 
   const { loading, error, data } = useQuery(GET_PARTICIPANT_ROUND_ATTEMPTS, {
     variables: {
@@ -25,8 +27,15 @@ const ResultsScreen = ({ route, navigation }) => {
     }
   
     if (!loading && data && data.participantAttempts && data.participantAttempts.edges && data.participantAttempts.edges.length > 0) {
-      const successValues = data.participantAttempts.edges.map(edge => edge.node.success);
-      setResults(successValues);
+      const successValues = data.participantAttempts.edges.map(edge => {
+        return {
+          success: edge.node.success,
+          number: edge.node.number,
+        };
+      });
+    
+      successValues.sort((a, b) => a.number - b.number);
+      setResults(successValues.map(item => item.success));
     } else {
       setResults(prevResults => prevResults || Array(attemptsCount).fill(false));
     }
@@ -74,7 +83,7 @@ const ResultsScreen = ({ route, navigation }) => {
           <Text style={styles.checkboxLabel}>Próba {index + 1}: {result ? 'Trafił' : 'Nie trafił'}</Text>
         </View>
       ))}
-      <Button title="Zapisz wyniki" onPress={handleSaveResult} />
+      <Button title="Zapisz wyniki" onPress={handleSaveResult} color="#cb1313"/>
     </View>
   );
 };

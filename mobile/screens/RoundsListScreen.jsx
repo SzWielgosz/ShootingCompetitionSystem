@@ -3,16 +3,19 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useQuery } from '@apollo/client';
 import { GET_REFEREE_ROUNDS } from '../graphql/queries/GetRefereeRounds';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../useAuth';
+import { useEffect } from 'react';
 
 const RoundsListScreen = () => {
   const { loading, error, data, refetch } = useQuery(GET_REFEREE_ROUNDS,
     { fetchPolicy: "network-only" },);
   const navigation = useNavigation();
+  const { auth } = useAuth();
 
   if (loading) {
     return <Text style={styles.loadingText}>Loading...</Text>;
   }
-  if (error) return <Text style={styles.errorText}>Error: {error.message}</Text>;
+  if (error) return <Text style={styles.errorText}>{error.message}</Text>;
 
   const rounds = data.refereeRounds.edges;
 
@@ -82,6 +85,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     alignSelf: 'flex-end',
+    backgroundColor: '#cb1313'
   },
   buttonText: {
     color: '#fff',
@@ -89,7 +93,7 @@ const styles = StyleSheet.create({
   },
   refreshButton: {
     padding: 8,
-    backgroundColor: '#3498db',
+    backgroundColor: '#cb1313',
     borderRadius: 5,
     alignSelf: 'center',
     marginBottom: 10,
