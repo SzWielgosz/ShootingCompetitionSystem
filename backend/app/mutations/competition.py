@@ -142,6 +142,16 @@ class EditCompetition(graphene.Mutation):
         if "discipline" in kwargs and kwargs["discipline"] not in valid_discipline_restrictions:
             raise Exception("Nieprawidłowa dyscyplina")
 
+        old_rounds_count = competition.rounds_count - 1
+        new_rounds_count = kwargs.get("rounds_count", competition.rounds_count) - 1
+
+        if new_rounds_count < old_rounds_count:
+            Round.objects.filter(competition=competition, number__gt=new_rounds_count).delete()
+        elif new_rounds_count > old_rounds_count:
+            for number in range(old_rounds_count, new_rounds_count):
+                round = Round(number=number + 1, competition=competition)
+                round.save()
+
         for field, value in kwargs.items():
             setattr(competition, field, value)
 
@@ -281,7 +291,8 @@ class EndCompetition(graphene.Mutation):
         for participant_competition in participants_competitions:
             participant_user = participant_competition.participant_user
             attempts_count = Attempt.objects.filter(participant_user=participant_user, round__competition=competition).count()
-
+            print("attempts_count: ", attempts_count)
+            print("competition attempts count: ", competition.attempts_count * competition.rounds_count)
             if attempts_count != competition.attempts_count * competition.rounds_count:
                 raise Exception(f"Uczestnik {participant_user.first_name + ' ' + participant_user.last_name} nie ma wymaganej ilości prób")
 

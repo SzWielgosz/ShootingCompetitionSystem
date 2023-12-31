@@ -33,7 +33,14 @@ export default function OrganizationCompetitionDetails(props) {
 
   const { data: dataReferee } = useQuery(GET_REFEREE_USERS);
 
-  const [editCompetition] = useMutation(EDIT_COMPETITION);
+  const [editCompetition] = useMutation(EDIT_COMPETITION, {
+    refetchQueries: [
+      {
+        query: GET_ORGANIZATION_COMPETITION_DETAILS,
+        variables: { competitionId: competitionId },
+      },
+    ],
+  });
   const [deleteCompetition] = useMutation(DELETE_COMPETITION);
   const [shareStatusCompetition] = useMutation(SHARE_STATUS_COMPETITION);
   const [assignReferee] = useMutation(ASSIGN_REFEREE);
@@ -394,14 +401,17 @@ export default function OrganizationCompetitionDetails(props) {
                       </tr>
                     </thead>
                     <tbody>
-                      {item?.node?.roundSet?.edges.map((round) => (
+                    {item?.node?.roundSet?.edges
+                      .slice()
+                      .sort((a, b) => a.node.number - b.node.number)
+                      .map((round) => (
                         <tr key={round.node.id}>
                           <td>{round.node.number + 1}</td>
                           <td>
                             {competitionStatus === "CREATED" ? (
                               <AssignRefereePanel
                                 roundId={round.node.id}
-                                refereeUsers={dataReferee.refereeUsers}
+                                refereeUsers={dataReferee?.refereeUsers}
                                 assignedReferee={round.node.refereeUser}
                                 onAssignReferee={handleAssignReferee}
                               />
