@@ -17,11 +17,10 @@ h2 {
 }
 
 .refereeList li {
-  margin-bottom: 10px;
   padding: 8px;
   background-color: #f5f5f5;
   border: 1px solid #ddd;
   border-radius: 4px;
   width: 50%;
-  margin: auto;
+  margin: 10px auto;
 }

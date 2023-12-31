@@ -1,7 +1,6 @@
 import CompetitionDetailsResultsCSS from "../styles/CompetitionDetailsResults.module.css";
 import { useQuery } from "@apollo/client";
 import { GET_COMPETITION_ROUNDS } from "../graphql/queries/getCompetitionRounds";
-import { GET_COMPETITION_ROUNDS_COUNT } from "../graphql/queries/getCompetitionRoundsCount";
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 
@@ -19,12 +18,6 @@ export default function CompetitionDetailsResults(props) {
     onCompleted: (newData) => {
       const pageInfo = newData?.competitionRounds?.pageInfo;
       setHasNextPage(pageInfo?.hasNextPage || false);
-    },
-  });
-
-  const { data: roundsCountData } = useQuery(GET_COMPETITION_ROUNDS_COUNT, {
-    variables: {
-      competitionId: competitionId,
     },
   });
 
@@ -55,6 +48,8 @@ export default function CompetitionDetailsResults(props) {
       setCurrentPage(currentPage - 1);
     }
   };
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div>
@@ -135,7 +130,9 @@ export default function CompetitionDetailsResults(props) {
                             }
                           >
                             <Link to={`/participants/${participantId}`}>
-                              {`${participant.username} ${participant.firstName} ${participant.lastName}`}
+                            <span>{participant.username}</span>
+                            <br />
+                            <span>{`${participant.firstName} ${participant.lastName}`}</span>
                             </Link>
                           </td>
                           <td>

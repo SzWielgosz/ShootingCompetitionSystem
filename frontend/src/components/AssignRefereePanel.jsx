@@ -27,7 +27,7 @@ const AssignRefereePanel = ({
         <option value="" disabled>
           Wybierz sędziego
         </option>
-        {refereeUsers.edges.map((referee) => (
+        {refereeUsers?.edges.map((referee) => (
           <option key={referee.node.id} value={referee.node.id}>
             {referee.node.firstName} {referee.node.lastName}
           </option>
