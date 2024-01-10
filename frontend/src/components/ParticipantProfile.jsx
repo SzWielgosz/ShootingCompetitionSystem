@@ -96,7 +96,7 @@ export default function ParticipantProfile() {
             <input type="file" name="profile_picture" onChange={handleImage} />
             <label>{editedUser.username}</label>
             <label>
-              First Name:
+              Imie:
               <input
                 type="text"
                 value={editedUser.firstName}
@@ -106,7 +106,7 @@ export default function ParticipantProfile() {
               />
             </label>
             <label>
-              Last Name:
+              Nazwisko:
               <input
                 type="text"
                 value={editedUser.lastName}
@@ -116,7 +116,7 @@ export default function ParticipantProfile() {
               />
             </label>
             <label>
-              Phone Number:
+              Numer telefonu:
               <input
                 type="text"
                 value={editedUser.phoneNumber}
@@ -126,7 +126,7 @@ export default function ParticipantProfile() {
               />
             </label>
             <label>
-              City:
+              Miasto:
               <input
                 type="text"
                 value={editedUser.city}

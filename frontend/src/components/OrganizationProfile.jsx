@@ -96,19 +96,14 @@ export default function OrganizationProfile() {
               }
               alt=""
             />
-            <input type="file" name="profile_picture" onChange={handleImage} />
-            <label>
-              Username:
-              <input
-                type="text"
-                value={editedUser.username}
-                onChange={(e) =>
-                  setEditedUser({ ...editedUser, username: e.target.value })
-                }
-              />
+            <label className={ProfileCSS.fileLabel}>
+              Zmień zdjęcie profilowe
+              <input type="file" className={ProfileCSS.fileButton} title=""name="profile_picture" onChange={handleImage} />
             </label>
+            <label>{editedUser.username}</label>
+            <div className={ProfileCSS.inputs}>
             <label>
-              Name:
+              Nazwa:
               <input
                 type="text"
                 value={editedUser.name}
@@ -118,7 +113,7 @@ export default function OrganizationProfile() {
               />
             </label>
             <label>
-              websiteUrl
+              Strona internetowa:
               <input
                 type="url"
                 value={editedUser.websiteUrl}
@@ -128,7 +123,7 @@ export default function OrganizationProfile() {
               />
             </label>
             <label>
-              City:
+              Miasto:
               <input
                 type="text"
                 value={editedUser.city}
@@ -138,7 +133,7 @@ export default function OrganizationProfile() {
               />
             </label>
             <label>
-              postCode:
+              Kod pocztowy:
               <input
                 type="text"
                 value={editedUser.postCode}
@@ -148,7 +143,7 @@ export default function OrganizationProfile() {
               />
             </label>
             <label>
-              Street:
+              Ulica:
               <input
                 defaultValue={editedUser.street}
                 onChange={(e) =>
@@ -161,7 +156,7 @@ export default function OrganizationProfile() {
               />
             </label>
             <label>
-              houseNumber:
+              Numer placówki:
               <input
                 defaultValue={editedUser.houseNumber}
                 onChange={(e) =>
@@ -173,12 +168,15 @@ export default function OrganizationProfile() {
                 type="text"
               />
             </label>
-            <button className={ProfileCSS.button} onClick={handleSaveEdit}>
-              Zapisz
-            </button>
-            <button className={ProfileCSS.button} onClick={handleCancelEdit}>
-              Anuluj
-            </button>
+            </div>
+            <div>
+              <button className={ProfileCSS.button} onClick={handleSaveEdit}>
+                Zapisz
+              </button>
+              <button className={ProfileCSS.button} onClick={handleCancelEdit}>
+                Anuluj
+              </button>
+            </div>
           </div>
         ) : (
           <div>

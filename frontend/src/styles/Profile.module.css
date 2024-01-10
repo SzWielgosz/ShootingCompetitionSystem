@@ -24,9 +24,37 @@
   text-align: center;
 }
 
-.editMode label {
-  display: block;
-  margin-bottom: 5px;
+.editMode{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.editMode input {
+  width: 100%;
+}
+
+.fileButton{
+  display: none;
+}
+
+.fileLabel{
+  border-radius: 4px;
+  margin: auto;
+  background-color: #cb1313;
+  color: white;
+  cursor: pointer;
+  width: 50%;
+}
+
+.inputs{
+  padding-right: 1rem;
+  padding-left: 1rem;
 }
 
 .button {

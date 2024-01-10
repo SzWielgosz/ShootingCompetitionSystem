@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useQuery } from '@apollo/client';
 import { GET_REFEREE_ROUNDS } from '../graphql/queries/GetRefereeRounds';
 import { useNavigation } from '@react-navigation/native';
@@ -33,7 +33,7 @@ const RoundsListScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Lista rund</Text>
         <TouchableOpacity onPress={handleRefresh} style={styles.refreshButton}>
             <Text style={styles.buttonText}>Odśwież</Text>
@@ -48,7 +48,7 @@ const RoundsListScreen = () => {
           </TouchableOpacity>
         </View>
       ))}
-    </View>
+    </ScrollView>
   );
 };
 

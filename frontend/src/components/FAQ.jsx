@@ -7,7 +7,7 @@ export default function FAQ() {
       id: 1,
       question: "Jak zarejestrować się na stronie?",
       answer:
-        "W celu rejestracji na naszą stronę wybierz sekcję Zarejestruj się, wybierz interesującą cię rolę, wprowadź niezbędne informację a na koniec wciśnij przycisk Zarejestruj. Jeżeli wprowadzone dane będą prawidłowe, nastąpi zarejestrowanie użytkownika, które następnie można wykorzystać w czelu zalogowania się do systemu",
+        "W celu rejestracji na naszą stronę wybierz sekcję 'Zarejestruj się', wybierz interesującą cię rolę, wprowadź niezbędne informację a na koniec wciśnij przycisk 'Zarejestruj się'. Jeżeli wprowadzone dane będą prawidłowe, nastąpi zarejestrowanie użytkownika, które następnie można wykorzystać w celu zalogowania się do systemu",
     },
     {
       id: 2,
@@ -19,7 +19,7 @@ export default function FAQ() {
       id: 3,
       question: "Jak mogę się zapisać na zawody strzeleckie?",
       answer:
-        'Zaloguj bądź zarejestruj się jako uczestnik. Przejdź do sekcji "Kalendarz" i znajdź interesujące cię zawody. Następnie wejdź w szczegoły zawodow. Jeżeli będziesz zalogowany, to wyswietli sie przycisk "Dolacz"',
+        'Zaloguj się jako kandydat. Przejdź do sekcji "Kalendarz" i znajdź interesujące cię zawody. Następnie wejdź w szczegóły zawodów. Jeżeli będziesz zalogowany, a ilość miejsc nie została jeszcze zapełniona, to wyświetli się przycisk "Dołącz"',
     },
     {
       id: 4,

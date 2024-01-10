@@ -62,6 +62,8 @@ class CompetitionQuery(graphene.ObjectType):
         status = kwargs.get("status")
         share_status = kwargs.get("share_status")
 
+        queryset = queryset.order_by("date_time")
+
         if search:
             queryset = queryset.filter(name__icontains=search)
 
@@ -133,7 +135,7 @@ class CompetitionQuery(graphene.ObjectType):
         status = kwargs.get("status")
         share_status = kwargs.get("share_status")
         
-        queryset = Competition.objects.filter(organization_user=user)
+        queryset = Competition.objects.filter(organization_user=user).order_by("date_time").all()
 
         if status:
             queryset = queryset.filter(status=status)

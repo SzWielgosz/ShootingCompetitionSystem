@@ -42,7 +42,7 @@ const LoginScreen = ({ navigation }) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        placeholder="Hasło"
         onChangeText={(text) => setPassword(text)}
         secureTextEntry={true}
       />

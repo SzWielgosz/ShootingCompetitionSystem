@@ -248,7 +248,7 @@ export default function CreateCompetition() {
         />
         <p>Pozostało znaków: {255 - description.length}</p>
         <button className={CreateCompetitionCSS.button} type="submit">
-          Utworz
+          Utwórz
         </button>
         <ToastContainer />
       </form>

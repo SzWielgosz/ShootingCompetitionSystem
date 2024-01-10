@@ -18,7 +18,7 @@ class User(AbstractUser):
     is_referee = models.BooleanField("referee status", default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = ['username', 'phone_number']
 
     def __str__(self):
         return f"{self.username} {self.first_name} {self.last_name} {self.email}"
