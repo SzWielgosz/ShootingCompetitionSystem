@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from datetime import timedelta
+from pathlib import Path
 import os
 
 # Quick-start development settings - unsuitable for production
@@ -19,6 +20,13 @@ import os
 CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+ALLOWED_HOSTS = ["10.0.2.2", "localhost", "127.0.0.1"]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
