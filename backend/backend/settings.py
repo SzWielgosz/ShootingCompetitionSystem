@@ -11,13 +11,22 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from datetime import timedelta
+from pathlib import Path
+import os
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+ALLOWED_HOSTS = ["10.0.2.2", "localhost", "127.0.0.1"]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -30,18 +39,20 @@ INSTALLED_APPS = [
     'graphene_django',
     'django_extensions',
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
-    'graphql_auth',
     'django_filters',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -100,13 +111,6 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-GRAPHQL_JWT = {
-    "JWT_VERIFY_EXPIRATION": True,
-    "JWT_EXPIRATION_DELTA": timedelta(minutes=15),
-    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
-    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
-}
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -135,3 +139,23 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+
+from app.utils.jwt import my_jwt_payload
+
+GRAPHQL_JWT = {
+    "JWT_PAYLOAD_HANDLER": my_jwt_payload,
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=5),
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
+    "JWT_COOKIE_SECURE": False,
+    "JWT_ALLOW_ARGUMENT": True,
+    "JWT_COOKIE_SAMESITE": "Lax",
+    "JWT_REUSE_REFRESH_TOKENS": True,
+    "JWT_REFRESH_EXPIRED_HANDLER": lambda orig_iat, context: False,
+    "JWT_AUTH_HEADER_PREFIX": "Bearer"
+}
+
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -1,0 +1,68 @@
+.container {
+  padding-left: 150px;
+}
+
+.filters {
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.label {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.input,
+.select,
+.dateinput {
+  padding: 8px;
+  margin-right: 10px;
+  border: 1px solid #c2c0c0;
+  border-radius: 4px;
+}
+
+.nav {
+  float: right;
+  margin-right: 2rem;
+}
+
+.button {
+  padding: 8px 12px;
+  background-color: #cb1313;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.roundButton {
+  margin: 0.3rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.searchButton {
+  margin-left: 4rem;
+  margin-top: 1rem;
+}
+
+.button:disabled {
+  filter: brightness(10) saturate(0.5);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.table th,
+.table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.table th {
+  background-color: #cb1313;
+  color: #fff;
+}

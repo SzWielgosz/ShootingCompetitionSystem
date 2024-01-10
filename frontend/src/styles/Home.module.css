@@ -1,0 +1,54 @@
+.container {
+  max-width: 60%;
+  margin: auto;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  padding: 0.5rem 0.5rem 0 0.5rem
+}
+
+.side {
+  display: flex;
+  justify-content: space-between;
+}
+
+.section{
+  max-width: 400px;
+  width: 48%;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  padding: 0.5rem
+}
+
+.h1{
+  max-width: 100%;
+}
+
+.title{
+  display: flex;
+  justify-content: center;
+}
+
+.subtitle{
+  padding-bottom: auto;
+}
+
+.informations{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.flag{
+  background: linear-gradient(180deg, #FFFF 50%, #cb1313 50%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.subtitleh2{
+  color: white;
+}

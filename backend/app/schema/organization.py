@@ -16,11 +16,4 @@ class OrganizationConnection(graphene.Connection):
 
 
 class OrganizationQuery(graphene.ObjectType):
-    organization_competitions = graphene.List(CompetitionNode)
-
-    @login_required
-    def resolve_organization_competitions(self, info, **kwargs):
-        user = info.context.user
-        if user.is_organization:
-            return Competition.objects.filter(organization_user=user)
-        return None
+    pass

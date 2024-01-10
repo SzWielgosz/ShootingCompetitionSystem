@@ -1,0 +1,86 @@
+.container {
+  display: flex;
+  justify-content: center;
+  max-width: 800px;
+  margin: auto;
+  padding: 0.5rem;
+}
+
+.button {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  background-color: #cb1313;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+}
+
+.link {
+  padding: 8px 12px;
+  background-color: #cb1313;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.linkContainer {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.button:hover {
+  background-color: #a70a0a;
+}
+
+.detailsTable {
+  width: 50%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.detailsTable th,
+.detailsTable td {
+  border: 1px solid #ddd;
+}
+
+.detailsTable th {
+  background-color: #cb1313;
+  color: #fff;
+}
+
+.detailsSummary {
+  cursor: pointer;
+  color: #3498db;
+}
+
+.detailsContent {
+  margin-top: 0;
+  list-style-type: none;
+  padding: 0;
+}
+
+.participantTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.participantName {
+  font-weight: bold;
+}
+
+.attemptNumber {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.success {
+  color: green;
+}
+
+.failure {
+  color: red;
+}

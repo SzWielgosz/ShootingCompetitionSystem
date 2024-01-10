@@ -1,0 +1,82 @@
+.container {
+  display: flex;
+  justify-content: center;
+  max-width: 800px;
+  margin: auto;
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  border-collapse: collapse;
+  border: 1px solid #c2c0c0;
+}
+
+.table tr,
+.table th,
+.table td {
+  width: 100%;
+  border: 1px solid #c2c0c0;
+  justify-content: center;
+  display: flex;
+}
+
+.table td,
+.table th {
+  align-items: center;
+}
+
+.table th {
+  background-color: #cb1313;
+  color: #fff;
+}
+
+.button {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  background-color: #cb1313;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+}
+
+.button:hover {
+  background-color: #a70a0a;
+}
+
+.button:disabled {
+  filter: brightness(10) saturate(0.5);
+}
+
+.detailsSummary {
+  cursor: pointer;
+}
+
+.detailsContent {
+  margin-top: 0;
+  list-style-type: none;
+  padding: 0;
+}
+
+.participantTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.participantTable p {
+  margin: 0;
+}
+
+.participantName {
+  font-weight: bold;
+}
+
+.success {
+  color: green;
+}
+
+.failure {
+  color: red;
+}

@@ -4,6 +4,12 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
 from app.models import Organization
 from django.db import transaction
+from app.models import Participant
+from app.schema.organization import OrganizationNode
+from app.schema.user import UserNode
+from graphql_jwt.decorators import login_required
+from datetime import date
+import re
 
 
 class RegisterOrganization(graphene.Mutation):
@@ -23,10 +29,13 @@ class RegisterOrganization(graphene.Mutation):
 
     @transaction.atomic
     def mutate(self, info, username, email, password, name, street, house_number, city, post_code, phone_number):
+        if not all([username, email, password, name, street, house_number, city, post_code, phone_number]):
+            raise Exception("Wszystkie pola muszą być uzupełnione")
+
         existing_user = get_user_model().objects.filter(email=email).first()
 
         if existing_user:
-            raise Exception("User with this email already exists.")
+            raise Exception("Użytkownik z tym adresem email już istnieje")
         
         validate_email(email)
         validate_password(password)
@@ -39,8 +48,65 @@ class RegisterOrganization(graphene.Mutation):
         organization = Organization(user=new_user, name=name, street=street, city=city, post_code=post_code, house_number=house_number)
         organization.save()
 
-        return RegisterOrganization(success=True, message="Organization registered successfully")
+        return RegisterOrganization(success=True, message="Organizacja zarejestrowana pomyślnie")
+    
+
+class UpdateOrganizationProfile(graphene.Mutation):
+    user = graphene.Field(UserNode)
+    organization = graphene.Field(OrganizationNode)
+
+    class Arguments:
+        username = graphene.String(required=False)
+        phone_number = graphene.String(required=False)
+        name = graphene.String(required=False)
+        website_url = graphene.String(required=False)
+        city = graphene.String(required=False)
+        post_code = graphene.String(required=False)
+        street = graphene.String(required=False)
+        house_number = graphene.String(required=False)
+
+    @login_required
+    def mutate(self, info, **kwargs):
+        user = info.context.user
+
+        if user.is_organization is not True:
+            raise Exception("Użytkownik nie jest organizacją")
+        
+        organization = Organization.objects.filter(user=user).first()
+
+        if organization is None:
+            raise Exception("Organizacja nie została znaleziona")
+        
+        if "name" in kwargs:
+            user.name = kwargs["name"]
+
+        if "website_url" in kwargs:
+            organization.website_url = kwargs["website_url"]
+
+        if "city" in kwargs:
+            organization.city = kwargs["city"]
+
+        if "street" in kwargs:
+            organization.street = kwargs["street"]
+
+        if "house_number" in kwargs:
+            organization.house_number = kwargs["house_number"]
+
+        if "phone_number" in kwargs:
+            phone_pattern = re.compile(r'^\d{6,14}$')
+
+            if phone_pattern.match(kwargs["phone_number"]):
+                user.phone_number = kwargs["phone_number"]
+            else:
+                raise Exception("Nieprawidłowy numer telefonu")
+
+        
+        user.save()
+        organization.save()
+
+        return UpdateOrganizationProfile(user=user, organization=organization)
     
 
 class OrganizationMutation(graphene.ObjectType):
     register_organization = RegisterOrganization.Field()
+    update_organization_profile = UpdateOrganizationProfile.Field()
