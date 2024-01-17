@@ -27,14 +27,14 @@ export default function OrganizationProfile() {
   const handleEditClick = () => {
     setEditMode(true);
     setEditedUser({
-      username: data.loggedUser.username,
-      name: data.loggedUser.organization.name,
-      websiteUrl: data.loggedUser.organization.websiteUrl,
-      phoneNumber: data.loggedUser.phoneNumber,
-      city: data.loggedUser.organization.city,
-      street: data.loggedUser.organization.street,
-      houseNumber: data.loggedUser.organization.houseNumber,
-      postCode: data.loggedUser.organization.postCode,
+      username: data?.loggedUser.username,
+      name: data?.loggedUser?.organization.name,
+      websiteUrl: data?.loggedUser?.organization.websiteUrl,
+      phoneNumber: data?.loggedUser.phoneNumber,
+      city: data?.loggedUser?.organization.city,
+      street: data?.loggedUser?.organization.street,
+      houseNumber: data?.loggedUser?.organization.houseNumber,
+      postCode: data?.loggedUser?.organization.postCode,
     });
   };
 
@@ -199,27 +199,27 @@ export default function OrganizationProfile() {
                     </tr>
                     <tr>
                       <th>Nazwa organizacji</th>
-                      <td>{data.loggedUser.organization.name}</td>
+                      <td>{data?.loggedUser?.organization?.name}</td>
                     </tr>
                     <tr>
                       <th>Strona internetowa</th>
-                      <td>{data.loggedUser.organization.websiteUrl}</td>
+                      <td>{data?.loggedUser?.organization?.websiteUrl}</td>
                     </tr>
                     <tr>
                       <th>Miasto</th>
-                      <td>{data.loggedUser.organization.city}</td>
+                      <td>{data?.loggedUser?.organization?.city}</td>
                     </tr>
                     <tr>
                       <th>Ulica</th>
-                      <td>{data.loggedUser.organization.street}</td>
+                      <td>{data?.loggedUser?.organization?.street}</td>
                     </tr>
                     <tr>
                       <th>Numer placówki</th>
-                      <td>{data.loggedUser.organization.houseNumber}</td>
+                      <td>{data?.loggedUser?.organization?.houseNumber}</td>
                     </tr>
                     <tr>
                       <th>Kod pocztowy</th>
-                      <td>{data.loggedUser.organization.postCode}</td>
+                      <td>{data?.loggedUser?.organization?.postCode}</td>
                     </tr>
                   </tbody>
                 </table>

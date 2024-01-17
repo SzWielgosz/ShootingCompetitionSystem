@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useQuery } from '@apollo/client';
 import { GET_ROUND_PARTICIPANTS } from '../graphql/queries/GetRoundParticipants';
 
@@ -31,7 +31,7 @@ const RoundDetailsScreen = ({ route, navigation }) => {
   const participants = data?.roundParticipants.edges;
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.header}>Uczestnicy:</Text>
       <View style={styles.participantsContainer}>
         {participants.map(({ node }) => (
@@ -48,7 +48,7 @@ const RoundDetailsScreen = ({ route, navigation }) => {
           </View>
         ))}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

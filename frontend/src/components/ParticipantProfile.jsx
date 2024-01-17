@@ -29,8 +29,8 @@ export default function ParticipantProfile() {
       firstName: data.loggedUser.firstName,
       lastName: data.loggedUser.lastName,
       phoneNumber: data.loggedUser.phoneNumber,
-      city: data.loggedUser.participant.city,
-      dateOfBirth: data.loggedUser.participant.dateOfBirth,
+      city: data.loggedUser?.participant?.city,
+      dateOfBirth: data.loggedUser?.participant?.dateOfBirth,
     });
   };
 
@@ -175,11 +175,11 @@ export default function ParticipantProfile() {
                     </tr>
                     <tr>
                       <th>Miasto</th>
-                      <td>{data.loggedUser.participant.city}</td>
+                      <td>{data.loggedUser?.participant?.city}</td>
                     </tr>
                     <tr>
                       <th>Data urodzenia</th>
-                      <td>{data.loggedUser.participant.dateOfBirth}</td>
+                      <td>{data.loggedUser?.participant?.dateOfBirth}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -194,6 +194,6 @@ export default function ParticipantProfile() {
       </div>
     );
   } else {
-    return <p>No data available</p>;
+    return <p>brak dostępnych danych</p>;
   }
 }

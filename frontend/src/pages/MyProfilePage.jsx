@@ -8,8 +8,12 @@ export default function MyProfilePage() {
     <div>
       {auth.user.role === "Participant" ? (
         <ParticipantProfile />
-      ) : (
+      ) : auth.user.role === "Organization" ? (
         <OrganizationProfile />
+      ) : (
+        <div>
+          Nieznana rola użytkownika
+        </div>
       )}
     </div>
   );
