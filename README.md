@@ -33,3 +33,24 @@ To make this project work on your machine you have to install:
 After that you have to type `docker compose up` in the main folder and the containers should build and start.
 
 To check the mobile app open your android phone emulator, go to the **mobile** folder and type `npm install` and then `npm start` and after the execution press a to open the project in the emulator.
+
+Lastly you have to put database configuration in the settings.py or create local_settings.py and put here:
+```python
+SECRET_KEY = generated_key
+```
+example generator <a href="https://djecrety.ir/">here</a>
+- configured DATABASES
+```python
+# Example
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydb',
+        'USER': 'myuser',
+        'PASSWORD': 'mypassword',
+        'HOST': 'db',
+        'PORT': '5432',
+    }
+}
+```
+
