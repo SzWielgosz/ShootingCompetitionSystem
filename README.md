@@ -22,3 +22,14 @@ API created using Django alongside with Graphql. It is responsible for business 
 Created using React. It is responsible for sending the data to an API and it's proper visualisation afterwards.
 ### Mobile
 Created using React Native. It is responsible for the same work as frontend but on a mobile devices.
+
+
+## How to enable this project
+To make this project work on your machine you have to install:
+- Docker <a href="https://www.docker.com/">link</a>
+- React Native (For mobile app) <a href="https://reactnative.dev/">link</a>
+- Android phone emulator for example from Android Studio <a href="https://developer.android.com/studio">link</a>
+
+After that you have to type `docker compose up` in the main folder and the containers should build and start.
+
+To check the mobile app open your android phone emulator, go to the **mobile** folder and type `npm install` and then `npm start` and after the execution press a to open the project in the emulator.
