@@ -24,8 +24,6 @@ CORS_ALLOW_CREDENTIALS = True
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-CORS_ALLOW_ALL_ORIGINS = True
-
 ALLOWED_HOSTS = ["10.0.2.2", "localhost", "127.0.0.1"]
 
 INSTALLED_APPS = [
