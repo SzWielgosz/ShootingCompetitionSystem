@@ -52,3 +52,13 @@
 .subtitleh2{
   color: white;
 }
+
+
+@media (max-width: 768px) {
+  .container{
+    max-width: 90%;
+  }
+  .section{
+    overflow: hidden;
+  }
+}

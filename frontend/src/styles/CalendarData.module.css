@@ -1,15 +1,10 @@
 .container {
-  padding-left: 150px;
-}
-
-.nav {
-  float: right;
-  margin-right: 2rem;
+  margin-left: 150px;
 }
 
 .filters {
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
   align-items: center;
   text-align: center;
@@ -72,6 +67,21 @@
   color: #fff;
 }
 
-.searchButton {
-  margin-left: 2rem;
+@media (max-width: 768px) {
+  .container{
+    margin: 0;
+  }
+  .section{
+    overflow: hidden;
+  }
+  .results{
+    overflow-x: scroll;
+    width: 100%;
+  }
+
+  .filters{
+    display: flex;
+    flex-direction: column;
+  }
+
 }

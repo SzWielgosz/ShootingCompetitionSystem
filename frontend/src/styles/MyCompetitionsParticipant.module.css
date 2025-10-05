@@ -1,15 +1,25 @@
 .container {
-  padding-left: 150px;
+  margin-left: 150px;
 }
 
 .filters {
-  margin-bottom: 20px;
+  display: flex;
+  margin-bottom: 10px;
   flex-wrap: wrap;
+  align-items: center;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  gap: 0.5rem 0;
 }
 
 .label {
   font-weight: bold;
   margin-right: 8px;
+  gap: 0.3rem;
+  display: flex;
+  align-items: center;
 }
 
 .input,
@@ -19,11 +29,6 @@
   margin-right: 10px;
   border: 1px solid #c2c0c0;
   border-radius: 4px;
-}
-
-.nav {
-  float: right;
-  margin-right: 2rem;
 }
 
 .button {
@@ -38,11 +43,6 @@
 .roundButton {
   margin: 0.3rem 1rem;
   border-radius: 0.5rem;
-}
-
-.searchButton {
-  margin-left: 4rem;
-  margin-top: 1rem;
 }
 
 .button:disabled {
@@ -65,4 +65,23 @@
 .table th {
   background-color: #cb1313;
   color: #fff;
+}
+
+@media (max-width: 768px) {
+  .container{
+    margin: 0;
+  }
+  .section{
+    overflow: hidden;
+  }
+  .results{
+    overflow-x: scroll;
+    width: 100%;
+  }
+
+  .filters{
+    display: flex;
+    flex-direction: column;
+  }
+
 }

@@ -3,12 +3,16 @@ import "../styles/Navbar.css";
 import { useAuth } from "../hooks/useAuth";
 import Logout from "./Logout";
 import logoImage from "../images/logo2.png";
+import Hamburger from "hamburger-react";
+import { useState } from "react";
 
 export default function Navbar() {
   const { auth } = useAuth();
+  const[isOpen, setOpen] = useState(false);
 
   return (
     <div>
+      <Hamburger toggled={isOpen} toggle={setOpen} style={{ position: "absolute" }}/>
       <nav className="navHorizontal">
         <ul>
           {!auth ? (
@@ -25,6 +29,18 @@ export default function Navbar() {
           )}
         </ul>
       </nav>
+      {
+        isOpen &&       
+        <nav className="navVerticalMobile">
+          <ul>
+            <img src={logoImage} alt="Logo" className="logo" />
+            <CustomLink to="/">Home</CustomLink>
+            <CustomLink to="/calendar">Kalendarz</CustomLink>
+            <CustomLink to="/referees">Sędziowie</CustomLink>
+            <CustomLink to="/faq">FAQ</CustomLink>
+          </ul>
+        </nav>
+      }
       <nav className="navVertical">
         <ul>
           <img src={logoImage} alt="Logo" className="logo" />
@@ -43,7 +59,7 @@ function CustomLink({ to, children, ...props }) {
   const isActive = useMatch({ path: resolvedPath.pathname, end: true });
 
   return (
-    <li className={isActive ? "active" : ""}>
+    <li className={isActive ? "navItem active" : "navItem"}>
       <Link to={to} {...props}>
         {children}
       </Link>

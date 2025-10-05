@@ -1,6 +1,6 @@
 .container {
-  max-width: 800px;
-  margin: auto;
+  max-width: 70%;
+  margin-left: 20%;
 }
 
 .faqItem {
@@ -31,10 +31,15 @@
 
 .answer p {
   margin: 0;
-  font-size: 16px;
 }
 
 .answer.open {
   display: block;
   background-color: #ede8e8;
+}
+
+@media (max-width: 768px) {
+  .container {
+    margin: auto;
+  }
 }

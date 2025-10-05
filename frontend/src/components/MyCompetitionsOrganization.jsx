@@ -19,7 +19,7 @@ export default function MyCompetitionsOrganization() {
   const [endDateFilter, setEndDateFilter] = useState(undefined);
   const [getData, { data, loading, error }] = useLazyQuery(
     GET_ORGANIZATION_COMPETITIONS,
-    { fetchPolicy: "network-only" },
+    { fetchPolicy: "network-only" }
   );
 
   const navigate = useNavigate();
@@ -39,9 +39,10 @@ export default function MyCompetitionsOrganization() {
     });
   }, [page, getData]);
 
-    useEffect(() => {
+  useEffect(() => {
     if (data && data.organizationCompetitions) {
-      const hasNextPage = data.organizationCompetitions.pageInfo.hasNextPage || false;
+      const hasNextPage =
+        data.organizationCompetitions.pageInfo.hasNextPage || false;
       setHasNextPage(hasNextPage);
     }
   }, [data]);
@@ -168,13 +169,13 @@ export default function MyCompetitionsOrganization() {
             />
           </label>
         </div>
-        <button
-          className={`${MyCompetitionsOrganizationCSS.button} ${MyCompetitionsOrganizationCSS.searchButton}`}
-          onClick={handleSearch}
-        >
-          Wyszukaj
-        </button>
       </div>
+      <button
+        className={`${MyCompetitionsOrganizationCSS.button} ${MyCompetitionsOrganizationCSS.searchButton}`}
+        onClick={handleSearch}
+      >
+        Wyszukaj
+      </button>
       <nav className={MyCompetitionsOrganizationCSS.nav}>
         <button
           disabled={!page}
