@@ -14,7 +14,7 @@ export default function CalendarData() {
   const [disciplineFilter, setDisciplineFilter] = useState("All");
   const [getData, { data, loading, error }] = useLazyQuery(
     GET_SHARED_COMPETITIONS,
-    { fetchPolicy: "network-only" },
+    { fetchPolicy: "network-only" }
   );
 
   const [startDateFilter, setStartDateFilter] = useState(undefined);
@@ -37,7 +37,6 @@ export default function CalendarData() {
       setHasNextPage(hasNextPage);
     }
   }, [data]);
-
 
   const handleSearch = () => {
     const variables = {
@@ -134,14 +133,13 @@ export default function CalendarData() {
             onChange={(e) => setEndDateFilter(e.target.value)}
           />
         </label>
-
-        <button
-          className={`${CalendarDataCSS.button} ${CalendarDataCSS.searchButton}`}
-          onClick={handleSearch}
-        >
-          Wyszukaj
-        </button>
       </div>
+      <button
+        className={`${CalendarDataCSS.button} ${CalendarDataCSS.searchButton}`}
+        onClick={handleSearch}
+      >
+        Wyszukaj
+      </button>
       <nav className={CalendarDataCSS.nav}>
         <button
           className={`${CalendarDataCSS.button} ${CalendarDataCSS.roundButton}`}

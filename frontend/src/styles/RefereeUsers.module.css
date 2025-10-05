@@ -1,6 +1,6 @@
 .container {
   max-width: 600px;
-  margin: auto;
+  margin-left: 30%;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -23,4 +23,11 @@ h2 {
   border-radius: 4px;
   width: 50%;
   margin: 10px auto;
+}
+
+@media (max-width: 768px) {
+  .container{
+    margin: auto;
+  }
+
 }
