@@ -105,8 +105,90 @@ body {
   width: 150px;
   height: auto;
 }
-@media screen and (max-width: 500px) {
+
+.hamburger-react{
+  display: none;
+  position: absolute;
+}
+
+.navVerticalMobile{
+  display: none;
+}
+
+
+@media (max-width: 768px) {
+
   .logo {
     width: 25px;
   }
+
+  .hamburger-react{
+    display: block;
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    z-index: 10 !important;
+  }
+
+  .navHorizontal{
+    justify-content: center;
+  }
+
+  .navVertical{
+    display: none;
+  }
+
+.navVerticalMobile {
+  color: inherit;
+  background-color: white;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border: 1px solid #c2c0c0;
+  gap: 2rem;
+  position: fixed;
+  height: 100%;
+  top: 0;
+  z-index: 2;
+}
+
+.navVerticalMobile ul {
+  padding: 0;
+  margin-top: 50px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.navVerticalMobile a {
+  color: inherit;
+  text-decoration: none;
+  height: 100%;
+  display: flex;
+  border: 1px solid #c2c0c0;
+  padding: 0.25rem;
+  justify-content: center;
+}
+
+.navVerticalMobile li {
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.navVerticalMobile li.active,
+.navVerticalMobile li:hover {
+  background-color: #cb1313;
+  color: white;
+}
+
+.logo{
+  display: none;
+}
+
+.navItem a{
+  padding: 0.5rem;
+}
+
 }
