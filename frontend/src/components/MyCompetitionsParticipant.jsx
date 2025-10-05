@@ -18,7 +18,7 @@ export default function MyCompetitionsParticipant() {
   const [endDateFilter, setEndDateFilter] = useState(undefined);
   const [getData, { data, loading, error }] = useLazyQuery(
     GET_PARTICIPANT_COMPETITIONS,
-    { fetchPolicy: "network-only" },
+    { fetchPolicy: "network-only" }
   );
 
   useEffect(() => {
@@ -37,7 +37,8 @@ export default function MyCompetitionsParticipant() {
 
   useEffect(() => {
     if (data && data.participantCompetitions) {
-      const hasNextPage = data.participantCompetitions.pageInfo.hasNextPage || false;
+      const hasNextPage =
+        data.participantCompetitions.pageInfo.hasNextPage || false;
       setHasNextPage(hasNextPage);
     }
   }, [data]);
@@ -146,13 +147,13 @@ export default function MyCompetitionsParticipant() {
             onChange={(e) => setEndDateFilter(e.target.value)}
           />
         </label>
-        <button
-          className={`${MyCompetitionsParticipantCSS.button} ${MyCompetitionsParticipantCSS.searchButton}`}
-          onClick={handleSearch}
-        >
-          Wyszukaj
-        </button>
       </div>
+      <button
+        className={`${MyCompetitionsParticipantCSS.button} ${MyCompetitionsParticipantCSS.searchButton}`}
+        onClick={handleSearch}
+      >
+        Wyszukaj
+      </button>
       <nav className={MyCompetitionsParticipantCSS.nav}>
         <button
           className={`${MyCompetitionsParticipantCSS.button} ${MyCompetitionsParticipantCSS.roundButton}`}
@@ -187,32 +188,35 @@ export default function MyCompetitionsParticipant() {
                 <th>Data i czas</th>
                 <th>Szczegóły</th>
               </tr>
-            {data?.participantCompetitions.edges.map((edge) => {
-              const competition = edge.node;
-              return (
-                <tr key={competition.id}>
-                  <td>{competition.name}</td>
-                  <td>{competition.city}</td>
-                  <td>
-                    {new Date(competition.dateTime).toLocaleString(undefined, {
-                      year: "numeric",
-                      month: "numeric",
-                      day: "numeric",
-                      hour: "numeric",
-                      minute: "numeric",
-                    })}
-                  </td>
-                  <td>
-                    <Link
-                      to={"/competitions/" + competition.id}
-                      className={MyCompetitionsParticipantCSS.link}
-                    >
-                      Szczegóły
-                    </Link>
-                  </td>
-                </tr>
-              );
-            })}
+              {data?.participantCompetitions.edges.map((edge) => {
+                const competition = edge.node;
+                return (
+                  <tr key={competition.id}>
+                    <td>{competition.name}</td>
+                    <td>{competition.city}</td>
+                    <td>
+                      {new Date(competition.dateTime).toLocaleString(
+                        undefined,
+                        {
+                          year: "numeric",
+                          month: "numeric",
+                          day: "numeric",
+                          hour: "numeric",
+                          minute: "numeric",
+                        }
+                      )}
+                    </td>
+                    <td>
+                      <Link
+                        to={"/competitions/" + competition.id}
+                        className={MyCompetitionsParticipantCSS.link}
+                      >
+                        Szczegóły
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
             </thead>
           </table>
         </div>
